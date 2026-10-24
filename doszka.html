@@ -1,0 +1,4306 @@
+<!doctype html>
+<html lang="pl">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <title>GeoBoard Studio</title>
+
+  <style>
+    :root {
+      --navy: #10283d;
+      --blue: #2478d4;
+      --violet: #715bd1;
+      --danger: #e65c5c;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      color: #183247;
+      background: #dceaf2;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      color: #fff;
+      background: linear-gradient(120deg, #10283d, #244f79);
+      box-shadow: 0 3px 16px #10283d55;
+      z-index: 10;
+    }
+
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 9px;
+      letter-spacing: .15em;
+      color: #a8e6ef;
+    }
+
+    .topActions {
+      margin-left: auto;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 9px;
+      padding: 8px 11px;
+      background: #fff;
+      color: #10283d;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn.dark {
+      background: #28577d;
+      color: #fff;
+    }
+
+    .btn.danger {
+      background: #e65c5c;
+      color: #fff;
+    }
+
+    .workspace {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 270px 1fr 230px;
+    }
+
+    .left,
+    .right {
+      overflow: auto;
+      background: #f8fbfd;
+      padding: 10px;
+    }
+
+    .left {
+      border-right: 1px solid #c7d6df;
+    }
+
+    .right {
+      border-left: 1px solid #c7d6df;
+    }
+
+    .group {
+      margin-bottom: 11px;
+      border: 1px solid #d3e0e7;
+      border-radius: 13px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .group h3 {
+      margin: 0;
+      padding: 8px 10px;
+      font-size: 12px;
+      letter-spacing: .05em;
+      background: #e9f2f7;
+    }
+
+    .tools {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      padding: 7px;
+    }
+
+    .tool {
+      border: 1px solid #cad8e0;
+      border-radius: 9px;
+      padding: 8px 4px;
+      background: #fff;
+      color: #203c50;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .tool span {
+      display: block;
+      font-size: 21px;
+      margin-bottom: 2px;
+    }
+
+    .tool.active {
+      color: #fff;
+      border-color: #2478d4;
+      background: linear-gradient(135deg, #2478d4, #715bd1);
+    }
+
+    .stageWrap {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      background: #b9cbd6;
+      overflow: hidden;
+    }
+
+    .stage {
+      position: absolute;
+      inset: 12px;
+      border-radius: 13px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 9px 30px #10283d45;
+    }
+
+    #board {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .hint {
+      position: absolute;
+      left: 24px;
+      bottom: 23px;
+      max-width: 540px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: #10283ddd;
+      color: #fff;
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    .zoom {
+      position: absolute;
+      right: 24px;
+      bottom: 23px;
+      display: flex;
+      gap: 5px;
+    }
+
+    .zoom button {
+      width: 35px;
+      height: 35px;
+      border: 0;
+      border-radius: 9px;
+      background: #fff;
+      box-shadow: 0 3px 12px #10283d44;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .field {
+      margin: 8px 0;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+
+    .field input[type=color] {
+      width: 100%;
+      height: 35px;
+      border: 1px solid #ccd9e1;
+      border-radius: 8px;
+    }
+
+    .field input[type=range],
+    .field select {
+      width: 100%;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 5px;
+      margin-top: 7px;
+    }
+
+    .swatch {
+      height: 27px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px #9eb0bc;
+      cursor: pointer;
+    }
+
+    .checks label {
+      display: block;
+      padding: 5px 0;
+      font-size: 12px;
+    }
+
+    .info {
+      padding: 9px;
+      border-radius: 10px;
+      background: #edf6ff;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .layerList {
+      max-height: 180px;
+      overflow: auto;
+      font-size: 11px;
+    }
+
+    .layer {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px;
+      border-bottom: 1px solid #e4ebef;
+    }
+
+    .layer button {
+      margin-left: auto;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .statusbar {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      padding: 5px 12px;
+      background: #10283d;
+      color: #d9edf6;
+      font-size: 11px;
+    }
+
+    .statusbar span:last-child {
+      margin-left: auto;
+    }
+
+    .object.selected>* {
+      filter: drop-shadow(0 0 5px #ffad00);
+    }
+
+    .handle {
+      fill: #fff;
+      stroke: #ff9400;
+      stroke-width: 2;
+      vector-effect: non-scaling-stroke;
+      pointer-events: none;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: #10283d99;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .dialog {
+      width: min(520px, 92%);
+      padding: 22px;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 20px 60px #0005;
+    }
+
+    @media(max-width:850px) {
+      .workspace {
+        grid-template-columns: 170px 1fr;
+      }
+
+      .right {
+        display: none;
+      }
+
+      .tools {
+        grid-template-columns: 1fr;
+      }
+
+      .topActions .btn:nth-child(n+5) {
+        display: none;
+      }
+    }
+
+    @media(max-width:560px) {
+      .workspace {
+        grid-template-columns: 120px 1fr;
+      }
+
+      .tool {
+        font-size: 10px;
+      }
+
+      .tool span {
+        font-size: 17px;
+      }
+
+      .top {
+        padding: 6px;
+      }
+
+      .stage {
+        inset: 5px;
+      }
+
+      .hint {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+      }
+
+      .zoom {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <header class="top">
+
+      <div class="brand">
+        <small>INTERAKTYWNA PRACOWNIA</small>
+        📐 GeoBoard Studio
+      </div>
+
+      <div class="topActions">
+        <button class="btn" id="undo">↶ Cofnij</button>
+        <button class="btn" id="redo">↷ Ponów</button>
+        <button class="btn" id="newBoard">✨ Nowa</button>
+        <button class="btn" id="saveProject">💾 Zapisz</button>
+        <button class="btn" id="openProject">📂 Otwórz</button>
+        <button class="btn" id="exportSvg">SVG</button>
+        <button class="btn" id="exportPng">PNG</button>
+        <button class="btn dark" id="help">? Pomoc</button>
+        <input id="fileInput" type="file" accept=".json,application/json" hidden>
+      </div>
+
+    </header>
+
+    <main class="workspace">
+
+      <aside class="left">
+
+        <div class="group">
+          <h3>WYBIERANIE</h3>
+          <div class="tools">
+
+            <button class="tool active" data-tool="select">
+              <span>↖</span>Wybierz / przesuń
+            </button>
+
+            <button class="tool" data-tool="pan">
+              <span>✋</span>Przesuń widok
+            </button>
+
+            <button class="tool" data-tool="eraser">
+              <span>⌫</span>Gumka
+            </button>
+
+            <button class="tool" data-tool="text">
+              <span>T</span>Tekst
+            </button>
+
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>RYSOWANIE ODRĘCZNE</h3>
+          <div class="tools">
+
+            <button class="tool" data-tool="pencil">
+              <span>✏️</span>Ołówek
+            </button>
+
+            <button class="tool" data-tool="pen">
+              <span>🖊️</span>Pióro
+            </button>
+
+            <button class="tool" data-tool="marker">
+              <span>🖍️</span>Marker
+            </button>
+
+            <button class="tool" data-tool="highlighter">
+              <span>▰</span>Zakreślacz
+            </button>
+
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>PUNKTY I PROSTE</h3>
+          <div class="tools">
+
+            <button class="tool" data-tool="point"><span>●</span>Punkt</button>
+            <button class="tool" data-tool="segment"><span>━</span>Odcinek</button>
+            <button class="tool" data-tool="line"><span>↔</span>Prosta</button>
+            <button class="tool" data-tool="ray"><span>→</span>Półprosta</button>
+            <button class="tool" data-tool="vector"><span>➜</span>Wektor</button>
+            <button class="tool" data-tool="midpoint"><span>◉</span>Środek</button>
+            <button class="tool" data-tool="parallel"><span>∥</span>Równoległa</button>
+            <button class="tool" data-tool="perpendicular"><span>⊥</span>Prostopadła</button>
+
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>FIGURY</h3>
+          <div class="tools">
+
+            <button class="tool" data-tool="triangle"><span>△</span>Trójkąt</button>
+            <button class="tool" data-tool="rectangle"><span>▭</span>Prostokąt</button>
+            <button class="tool" data-tool="square"><span>□</span>Kwadrat</button>
+            <button class="tool" data-tool="polygon"><span>⬠</span>Wielokąt</button>
+            <button class="tool" data-tool="circle"><span>○</span>Okrąg</button>
+            <button class="tool" data-tool="disk"><span>●</span>Koło</button>
+            <button class="tool" data-tool="ellipse"><span>⬭</span>Elipsa</button>
+            <button class="tool" data-tool="angle"><span>∠</span>Kąt</button>
+
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>BRYŁY 3D</h3>
+          <div class="tools">
+
+            <button class="tool" data-tool="cube"><span>◇</span>Sześcian</button>
+            <button class="tool" data-tool="cuboid"><span>▱</span>Prostopadłościan</button>
+            <button class="tool" data-tool="prism"><span>⬡</span>Graniastosłup</button>
+            <button class="tool" data-tool="pyramid"><span>△</span>Ostrosłup</button>
+            <button class="tool" data-tool="cylinder"><span>▱</span>Walec</button>
+            <button class="tool" data-tool="cone"><span>◭</span>Stożek</button>
+            <button class="tool" data-tool="sphere"><span>◉</span>Kula</button>
+
+          </div>
+        </div>
+
+        <div class="group">
+          <h3>POMIARY</h3>
+          <div class="tools">
+
+            <button class="tool" data-tool="distance"><span>📏</span>Długość</button>
+            <button class="tool" data-tool="angleMeasure"><span>°</span>Miara kąta</button>
+            <button class="tool" data-tool="area"><span>▧</span>Pole figury</button>
+            <button class="tool" data-tool="label"><span>A</span>Etykieta</button>
+
+          </div>
+        </div>
+
+      </aside>
+
+      <section class="stageWrap">
+
+        <div class="stage">
+
+          <svg id="board" viewBox="0 0 1200 750" xmlns="http://www.w3.org/2000/svg">
+
+            <defs>
+
+              <pattern id="smallGrid" width="25" height="25" patternUnits="userSpaceOnUse">
+
+                <path d="M25 0H0V25" fill="none" stroke="#e4edf2" stroke-width="1" />
+
+              </pattern>
+
+              <pattern id="grid" width="125" height="125" patternUnits="userSpaceOnUse">
+
+                <rect width="125" height="125" fill="url(#smallGrid)" />
+
+                <path d="M125 0H0V125" fill="none" stroke="#cbdbe4" stroke-width="1.5" />
+
+              </pattern>
+
+              <marker id="arrowEnd" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+
+                <path d="M0,0 L0,6 L9,3 z" fill="#2478d4" />
+
+              </marker>
+
+              <marker id="arrowStart" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto">
+
+                <path d="M9,0 L9,6 L0,3 z" fill="#2478d4" />
+
+              </marker>
+
+            </defs>
+
+            <rect id="bg" width="1200" height="750" fill="#ffffff" />
+
+            <rect id="gridLayer" width="1200" height="750" fill="url(#grid)" pointer-events="none" />
+
+            <g id="axesLayer" pointer-events="none">
+
+              <line x1="0" y1="375" x2="1200" y2="375" stroke="#8ba3b2" stroke-width="2" />
+
+              <line x1="600" y1="0" x2="600" y2="750" stroke="#8ba3b2" stroke-width="2" />
+
+              <text x="1170" y="365" font-size="18">x</text>
+
+              <text x="610" y="25" font-size="18">y</text>
+
+            </g>
+
+            <g id="objectsLayer"></g>
+
+            <g id="previewLayer" pointer-events="none"></g>
+
+            <g id="handlesLayer" pointer-events="none"></g>
+
+          </svg>
+
+        </div>
+
+        <div class="hint" id="hint">
+          Wybierz narzędzie.
+        </div>
+
+        <div class="zoom">
+          <button id="zoomOut">−</button>
+          <button id="zoomReset">⌂</button>
+          <button id="zoomIn">+</button>
+        </div>
+
+      </section>
+
+      <aside class="right">
+
+        <div class="group">
+
+          <h3>STYL I KOLORY</h3>
+
+          <div style="padding:8px">
+
+            <div class="field">
+
+              <label>Kolor linii</label>
+
+              <input type="color" id="stroke" value="#2478d4">
+
+              <div class="palette">
+
+                <button class="swatch" data-color="#111827" style="background:#111827"></button>
+
+                <button class="swatch" data-color="#ef4444" style="background:#ef4444"></button>
+
+                <button class="swatch" data-color="#f59e0b" style="background:#f59e0b"></button>
+
+                <button class="swatch" data-color="#22c55e" style="background:#22c55e"></button>
+
+                <button class="swatch" data-color="#2478d4" style="background:#2478d4"></button>
+
+                <button class="swatch" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+
+                <button class="swatch" data-color="#ec4899" style="background:#ec4899"></button>
+
+                <button class="swatch" data-color="#06b6d4" style="background:#06b6d4"></button>
+
+                <button class="swatch" data-color="#78350f" style="background:#78350f"></button>
+
+                <button class="swatch" data-color="#64748b" style="background:#64748b"></button>
+
+                <button class="swatch" data-color="#ffffff" style="background:#fff"></button>
+
+                <button class="swatch" data-color="#84cc16" style="background:#84cc16"></button>
+
+              </div>
+
+            </div>
+
+            <div class="field">
+
+              <label>Kolor wypełnienia</label>
+
+              <input type="color" id="fill" value="#b9e6f2">
+
+            </div>
+
+            <div class="field">
+
+              <label>
+                Grubość:
+                <span id="widthValue">4</span>
+              </label>
+
+              <input type="range" id="width" min="1" max="32" value="4">
+
+            </div>
+
+            <div class="field">
+
+              <label>Przezroczystość</label>
+
+              <input type="range" id="opacity" min="0" max="100" value="35">
+
+            </div>
+
+            <div class="field">
+
+              <label>Styl linii</label>
+
+              <select id="dash">
+
+                <option value="">ciągła</option>
+                <option value="12 8">przerywana</option>
+                <option value="3 7">kropkowana</option>
+
+              </select>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="group">
+
+          <h3>WIDOK</h3>
+
+          <div class="checks" style="padding:8px">
+
+            <label>
+              <input type="checkbox" id="showGrid" checked>
+              siatka
+            </label>
+
+            <label>
+              <input type="checkbox" id="showAxes" checked>
+              osie układu
+            </label>
+
+            <label>
+              <input type="checkbox" id="snap" checked>
+              przyciąganie do siatki
+            </label>
+
+            <label>
+              <input type="checkbox" id="showLabels" checked>
+              nazwy punktów
+            </label>
+
+          </div>
+        </div>
+
+        <div class="group">
+
+          <h3>ZAZNACZONY OBIEKT</h3>
+
+          <div class="info" id="selectionInfo">
+            Nie wybrano obiektu.
+          </div>
+
+          <div style="padding:8px">
+
+            <button class="btn danger" style="width:100%" id="deleteSelected">
+              Usuń zaznaczony
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="group">
+
+          <h3>WARSTWY</h3>
+
+          <div class="layerList" id="layerList"></div>
+
+        </div>
+
+      </aside>
+
+    </main>
+
+    <footer class="statusbar">
+
+      <span id="toolStatus">
+        Narzędzie: wybieranie
+      </span>
+
+      <span id="coordStatus">
+        x: 0, y: 0
+      </span>
+
+      <span>
+        Esc — anuluj • Delete — usuń • Ctrl/Cmd+Z — cofnij
+      </span>
+
+    </footer>
+
+  </div>
+
+  <div class="modal" id="helpModal">
+
+    <div class="dialog">
+
+      <h2>Jak korzystać z GeoBoard?</h2>
+
+      <p>
+        Wybierz Ołówek, Pióro, Marker lub Zakreślacz,
+        następnie przytrzymaj przycisk myszy albo palec
+        i rysuj po planszy.
+      </p>
+
+      <p>
+        Gumka usuwa cały wskazany obiekt lub cały zapisany
+        odręczny ślad.
+      </p>
+
+      <button class="btn dark" id="closeHelp">
+        Zamknij
+      </button>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    (function () {
+
+      'use strict';
+
+      /* ============================
+         ELEMENTY
+      ============================ */
+
+      var svg =
+        document.getElementById('board');
+
+      var objectsLayer =
+        document.getElementById('objectsLayer');
+
+      var previewLayer =
+        document.getElementById('previewLayer');
+
+      var handlesLayer =
+        document.getElementById('handlesLayer');
+
+
+      /* ============================
+         STAN
+      ============================ */
+
+      var tool = 'select';
+
+      var objects = [];
+
+      var history = [];
+
+      var future = [];
+
+      var selected = null;
+
+      var letters = 0;
+
+      var draft = [];
+
+      var interaction = null;
+
+      var livePath = null;
+
+      var liveObject = null;
+
+      var view = {
+        x: 0,
+        y: 0,
+        w: 1200,
+        h: 750
+      };
+
+
+      /* ============================
+         PODPOWIEDZI
+      ============================ */
+
+      var hints = {
+
+        select:
+          'Kliknij obiekt, aby go zaznaczyć. Przeciągnij, aby przesunąć.',
+
+        pan:
+          'Przeciągnij planszę.',
+
+        eraser:
+          'Kliknij obiekt, aby go usunąć.',
+
+        pencil:
+          'Przytrzymaj i rysuj ołówkiem.',
+
+        pen:
+          'Przytrzymaj i pisz piórem.',
+
+        marker:
+          'Przytrzymaj i rysuj markerem.',
+
+        highlighter:
+          'Przytrzymaj i zaznaczaj.',
+
+        point:
+          'Kliknij miejsce punktu.',
+
+        segment:
+          'Kliknij dwa końce odcinka.',
+
+        line:
+          'Kliknij dwa punkty prostej.',
+
+        ray:
+          'Kliknij początek i drugi punkt.',
+
+        vector:
+          'Kliknij początek i koniec wektora.',
+
+        midpoint:
+          'Kliknij dwa punkty.',
+
+        parallel:
+          'Kliknij dwa punkty kierunku i punkt nowej prostej.',
+
+        perpendicular:
+          'Kliknij dwa punkty kierunku i punkt nowej prostej.',
+
+        triangle:
+          'Kliknij trzy wierzchołki.',
+
+        rectangle:
+          'Przeciągnij prostokąt.',
+
+        square:
+          'Przeciągnij kwadrat.',
+
+        polygon:
+          'Klikaj wierzchołki. Podwójne kliknięcie kończy.',
+
+        circle:
+          'Przeciągnij od środka.',
+
+        disk:
+          'Przeciągnij od środka.',
+
+        ellipse:
+          'Przeciągnij elipsę.',
+
+        angle:
+          'Kliknij trzy punkty kąta.',
+
+        distance:
+          'Kliknij dwa punkty.',
+
+        angleMeasure:
+          'Kliknij trzy punkty.',
+
+        area:
+          'Kliknij figurę.',
+
+        text:
+          'Kliknij miejsce tekstu.',
+
+        label:
+          'Kliknij miejsce etykiety.',
+
+        cube:
+          'Przeciągnij bryłę.',
+
+        cuboid:
+          'Przeciągnij bryłę.',
+
+        prism:
+          'Przeciągnij bryłę.',
+
+        pyramid:
+          'Przeciągnij bryłę.',
+
+        cylinder:
+          'Przeciągnij bryłę.',
+
+        cone:
+          'Przeciągnij bryłę.',
+
+        sphere:
+          'Przeciągnij bryłę.'
+
+      };
+
+
+      /* ============================
+         POMOCNICZE
+      ============================ */
+
+      function uid() {
+
+        return 'D' +
+          Date.now().toString(36) +
+          Math.random().toString(36).slice(2, 8);
+
+      }
+
+
+      function style() {
+
+        return {
+
+          stroke:
+            document.getElementById('stroke').value,
+
+          fill:
+            document.getElementById('fill').value,
+
+          width:
+            Number(
+              document.getElementById('width').value
+            ),
+
+          opacity:
+            Number(
+              document.getElementById('opacity').value
+            ) / 100,
+
+          dash:
+            document.getElementById('dash').value
+
+        };
+
+      }
+
+
+      function isFreeTool(t) {
+
+        return [
+          'pencil',
+          'pen',
+          'marker',
+          'highlighter'
+        ].indexOf(t) !== -1;
+
+      }
+
+
+      function isDragShape(t) {
+
+        return [
+          'rectangle',
+          'square',
+          'circle',
+          'disk',
+          'ellipse',
+          'cube',
+          'cuboid',
+          'prism',
+          'pyramid',
+          'cylinder',
+          'cone',
+          'sphere'
+        ].indexOf(t) !== -1;
+
+      }
+
+
+      function boardPoint(e) {
+
+        var rect =
+          svg.getBoundingClientRect();
+
+        return {
+
+          x:
+            view.x +
+            (e.clientX - rect.left) *
+            view.w /
+            rect.width,
+
+          y:
+            view.y +
+            (e.clientY - rect.top) *
+            view.h /
+            rect.height
+
+        };
+
+      }
+
+
+      function snapPoint(p) {
+
+        if (
+          !document.getElementById('snap').checked
+        ) {
+
+          return p;
+
+        }
+
+        return {
+
+          x:
+            Math.round(p.x / 25) * 25,
+
+          y:
+            Math.round(p.y / 25) * 25
+
+        };
+
+      }
+
+
+      function pointName() {
+
+        var n = letters++;
+
+        return String.fromCharCode(
+          65 + n % 26
+        ) +
+          (
+            n >= 26
+              ? Math.floor(n / 26)
+              : ''
+          );
+
+      }
+
+
+      function esc(value) {
+
+        return String(value).replace(
+          /[&<>"']/g,
+          function (c) {
+
+            return {
+
+              '&': '&amp;',
+              '<': '&lt;',
+              '>': '&gt;',
+              '"': '&quot;',
+              "'": '&#39;'
+
+            }[c];
+
+          }
+        );
+
+      }
+
+
+      function saveHistory() {
+
+        history.push(
+          JSON.stringify(objects)
+        );
+
+        if (history.length > 80) {
+          history.shift();
+        }
+
+        future = [];
+
+      }
+
+
+      function undo() {
+
+        if (!history.length) {
+          return;
+        }
+
+        future.push(
+          JSON.stringify(objects)
+        );
+
+        objects =
+          JSON.parse(
+            history.pop()
+          );
+
+        selected = null;
+
+        render();
+
+      }
+
+
+      function redo() {
+
+        if (!future.length) {
+          return;
+        }
+
+        history.push(
+          JSON.stringify(objects)
+        );
+
+        objects =
+          JSON.parse(
+            future.pop()
+          );
+
+        selected = null;
+
+        render();
+
+      }
+
+
+      function addObject(o) {
+
+        saveHistory();
+
+        if (!o.id) {
+          o.id = uid();
+        }
+
+        if (!o.s) {
+          o.s = style();
+        }
+
+        objects.push(o);
+
+        draft = [];
+
+        render();
+
+      }
+
+
+      function removeId(id) {
+
+        saveHistory();
+
+        objects =
+          objects.filter(
+            function (o) {
+              return o.id !== id;
+            }
+          );
+
+        if (selected === id) {
+          selected = null;
+        }
+
+        render();
+
+      }
+
+
+      function ptsString(points) {
+
+        return points
+          .map(
+            function (p) {
+              return p.x + ',' + p.y;
+            }
+          )
+          .join(' ');
+
+      }
+
+
+      function ext(a, b, forward) {
+
+        var dx = b.x - a.x;
+        var dy = b.y - a.y;
+
+        var len =
+          Math.hypot(dx, dy) || 1;
+
+        var k =
+          2200 / len;
+
+        if (forward) {
+
+          return {
+
+            a: a,
+
+            b: {
+              x: a.x + dx * k,
+              y: a.y + dy * k
+            }
+
+          };
+
+        }
+
+        return {
+
+          a: {
+            x: a.x - dx * k,
+            y: a.y - dy * k
+          },
+
+          b: {
+            x: a.x + dx * k,
+            y: a.y + dy * k
+          }
+
+        };
+
+      }
+
+
+      function angleDeg(a, b, c) {
+
+        var u =
+          Math.atan2(
+            a.y - b.y,
+            a.x - b.x
+          );
+
+        var v =
+          Math.atan2(
+            c.y - b.y,
+            c.x - b.x
+          );
+
+        var d =
+          Math.abs(
+            (v - u) * 180 / Math.PI
+          );
+
+        return d > 180
+          ? 360 - d
+          : d;
+
+      }
+
+
+      function polygonArea(points) {
+
+        var a = 0;
+
+        for (
+          var i = 0;
+          i < points.length;
+          i++
+        ) {
+
+          var j =
+            (i + 1) % points.length;
+
+          a +=
+            points[i].x * points[j].y -
+            points[j].x * points[i].y;
+
+        }
+
+        return Math.abs(a) / 2 / 625;
+
+      }
+
+
+      /* ============================
+         RYSOWANIE ODRĘCZNE
+      ============================ */
+
+      function inkParams(type, s) {
+
+        var base =
+          Math.max(
+            1,
+            Number(s.width) || 4
+          );
+
+        if (type === 'pencil') {
+
+          return {
+            width:
+              Math.max(1, base * .55),
+            opacity: .88
+          };
+
+        }
+
+        if (type === 'pen') {
+
+          return {
+            width:
+              Math.max(2, base),
+            opacity: 1
+          };
+
+        }
+
+        if (type === 'marker') {
+
+          return {
+            width:
+              Math.max(7, base * 2.2),
+            opacity: .8
+          };
+
+        }
+
+        return {
+          width:
+            Math.max(18, base * 4),
+          opacity:
+            Math.min(
+              .35,
+              Math.max(
+                .12,
+                s.opacity || .3
+              )
+            )
+        };
+
+      }
+
+
+      function pointsToPath(points) {
+
+        if (!points.length) {
+          return '';
+        }
+
+        var d =
+          'M ' +
+          points[0].x +
+          ' ' +
+          points[0].y;
+
+        for (
+          var i = 1;
+          i < points.length;
+          i++
+        ) {
+
+          d +=
+            ' L ' +
+            points[i].x +
+            ' ' +
+            points[i].y;
+
+        }
+
+        return d;
+
+      }
+
+
+      function freehandHtml(o) {
+
+        if (
+          !o.p ||
+          !o.p.length
+        ) {
+          return '';
+        }
+
+        var par =
+          inkParams(
+            o.type,
+            o.s
+          );
+
+        return '<path ' +
+          'd="' + pointsToPath(o.p) + '" ' +
+          'fill="none" ' +
+          'stroke="' + o.s.stroke + '" ' +
+          'stroke-width="' + par.width + '" ' +
+          'stroke-opacity="' + par.opacity + '" ' +
+          'stroke-linecap="round" ' +
+          'stroke-linejoin="round" ' +
+          'vector-effect="non-scaling-stroke"/>';
+      }
+
+
+      function startInk(e) {
+
+        e.preventDefault();
+
+        var p =
+          boardPoint(e);
+
+        var s =
+          style();
+
+        var par =
+          inkParams(tool, s);
+
+        saveHistory();
+
+        liveObject = {
+
+          id: uid(),
+
+          type: tool,
+
+          p: [
+            {
+              x: p.x,
+              y: p.y
+            }
+          ],
+
+          s: s
+
+        };
+
+        livePath =
+          document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path'
+          );
+
+        livePath.setAttribute(
+          'd',
+          'M ' + p.x + ' ' + p.y
+        );
+
+        livePath.setAttribute(
+          'fill',
+          'none'
+        );
+
+        livePath.setAttribute(
+          'stroke',
+          s.stroke
+        );
+
+        livePath.setAttribute(
+          'stroke-width',
+          String(par.width)
+        );
+
+        livePath.setAttribute(
+          'stroke-opacity',
+          String(par.opacity)
+        );
+
+        livePath.setAttribute(
+          'stroke-linecap',
+          'round'
+        );
+
+        livePath.setAttribute(
+          'stroke-linejoin',
+          'round'
+        );
+
+        livePath.setAttribute(
+          'vector-effect',
+          'non-scaling-stroke'
+        );
+
+        livePath.setAttribute(
+          'pointer-events',
+          'none'
+        );
+
+        previewLayer.appendChild(
+          livePath
+        );
+
+        interaction = {
+
+          type: 'ink',
+
+          pointerId: e.pointerId
+
+        };
+
+        try {
+
+          svg.setPointerCapture(
+            e.pointerId
+          );
+
+        }
+        catch (err) { }
+
+      }
+
+
+      function moveInk(e) {
+
+        if (
+          !interaction ||
+          interaction.type !== 'ink' ||
+          !liveObject ||
+          !livePath
+        ) {
+          return;
+        }
+
+        e.preventDefault();
+
+        var p =
+          boardPoint(e);
+
+        var last =
+          liveObject.p[
+          liveObject.p.length - 1
+          ];
+
+        var distance =
+          Math.hypot(
+            p.x - last.x,
+            p.y - last.y
+          );
+
+        if (distance < .6) {
+          return;
+        }
+
+        liveObject.p.push({
+
+          x: p.x,
+          y: p.y
+
+        });
+
+        livePath.setAttribute(
+          'd',
+          pointsToPath(
+            liveObject.p
+          )
+        );
+
+      }
+
+
+      function endInk() {
+
+        if (
+          !interaction ||
+          interaction.type !== 'ink'
+        ) {
+          return false;
+        }
+
+        if (liveObject) {
+
+          if (
+            liveObject.p.length === 1
+          ) {
+
+            liveObject.p.push({
+
+              x:
+                liveObject.p[0].x + .7,
+
+              y:
+                liveObject.p[0].y + .7
+
+            });
+
+          }
+
+          objects.push(
+            liveObject
+          );
+
+        }
+
+        try {
+
+          if (
+            interaction.pointerId !== undefined &&
+            svg.hasPointerCapture(
+              interaction.pointerId
+            )
+          ) {
+
+            svg.releasePointerCapture(
+              interaction.pointerId
+            );
+
+          }
+
+        }
+        catch (err) { }
+
+        interaction = null;
+
+        liveObject = null;
+
+        livePath = null;
+
+        previewLayer.innerHTML = '';
+
+        render();
+
+        return true;
+
+      }
+
+
+      /* ============================
+         KSZTAŁTY
+      ============================ */
+
+      function shape(o) {
+
+        var s =
+          o.s || style();
+
+        var p =
+          o.p || [];
+
+        if (isFreeTool(o.type)) {
+
+          return '<g class="object ' +
+            (
+              selected === o.id
+                ? 'selected'
+                : ''
+            ) +
+            '" data-id="' +
+            o.id +
+            '">' +
+            freehandHtml(o) +
+            '</g>';
+
+        }
+
+        var stroke =
+          'stroke="' + s.stroke + '" ' +
+          'stroke-width="' + s.width + '" ' +
+          'stroke-dasharray="' + (s.dash || '') + '" ' +
+          'vector-effect="non-scaling-stroke"';
+
+        var fill =
+          'fill="' + s.fill + '" ' +
+          'fill-opacity="' + s.opacity + '"';
+
+        var h = '';
+
+        if (o.type === 'point') {
+
+          if (!p[0]) {
+            return '';
+          }
+
+          h =
+            '<circle cx="' +
+            p[0].x +
+            '" cy="' +
+            p[0].y +
+            '" r="7" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>';
+
+          if (
+            document.getElementById('showLabels').checked
+          ) {
+
+            h +=
+              '<text x="' +
+              (p[0].x + 10) +
+              '" y="' +
+              (p[0].y - 10) +
+              '" font-size="19" fill="' +
+              s.stroke +
+              '">' +
+              esc(o.text || 'A') +
+              '</text>';
+
+          }
+
+        }
+
+        else if (
+          [
+            'segment',
+            'line',
+            'ray',
+            'vector',
+            'distance'
+          ].indexOf(o.type) !== -1
+        ) {
+
+          if (p.length < 2) {
+            return '';
+          }
+
+          var q;
+
+          if (o.type === 'line') {
+
+            q =
+              ext(
+                p[0],
+                p[1],
+                false
+              );
+
+          }
+
+          else if (o.type === 'ray') {
+
+            q =
+              ext(
+                p[0],
+                p[1],
+                true
+              );
+
+          }
+
+          else {
+
+            q = {
+              a: p[0],
+              b: p[1]
+            };
+
+          }
+
+          var marker = '';
+
+          if (
+            o.type === 'vector' ||
+            o.type === 'ray'
+          ) {
+
+            marker =
+              ' marker-end="url(#arrowEnd)"';
+
+          }
+
+          if (o.type === 'line') {
+
+            marker =
+              ' marker-start="url(#arrowStart)" marker-end="url(#arrowEnd)"';
+
+          }
+
+          h =
+            '<line x1="' +
+            q.a.x +
+            '" y1="' +
+            q.a.y +
+            '" x2="' +
+            q.b.x +
+            '" y2="' +
+            q.b.y +
+            '" ' +
+            stroke +
+            marker +
+            '/>';
+
+          if (o.type === 'distance') {
+
+            var distance =
+              Math.hypot(
+                p[1].x - p[0].x,
+                p[1].y - p[0].y
+              ) / 25;
+
+            h +=
+              '<text x="' +
+              ((p[0].x + p[1].x) / 2) +
+              '" y="' +
+              ((p[0].y + p[1].y) / 2 - 12) +
+              '" font-size="18" font-weight="bold" fill="' +
+              s.stroke +
+              '">' +
+              distance.toFixed(2) +
+              ' j.</text>';
+
+          }
+
+        }
+
+        else if (
+          o.type === 'triangle' ||
+          o.type === 'polygon'
+        ) {
+
+          h =
+            '<polygon points="' +
+            ptsString(p) +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>';
+
+        }
+
+        else if (
+          o.type === 'rectangle' ||
+          o.type === 'square'
+        ) {
+
+          if (p.length < 2) {
+            return '';
+          }
+
+          var a =
+            p[0];
+
+          var b =
+            p[1];
+
+          var w =
+            b.x - a.x;
+
+          var hh =
+            b.y - a.y;
+
+          if (o.type === 'square') {
+
+            var side =
+              Math.max(
+                Math.abs(w),
+                Math.abs(hh)
+              );
+
+            w =
+              Math.sign(w || 1) *
+              side;
+
+            hh =
+              Math.sign(hh || 1) *
+              side;
+
+          }
+
+          h =
+            '<rect x="' +
+            Math.min(a.x, a.x + w) +
+            '" y="' +
+            Math.min(a.y, a.y + hh) +
+            '" width="' +
+            Math.abs(w) +
+            '" height="' +
+            Math.abs(hh) +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>';
+
+        }
+
+        else if (
+          o.type === 'circle' ||
+          o.type === 'disk'
+        ) {
+
+          if (p.length < 2) {
+            return '';
+          }
+
+          var radius =
+            Math.hypot(
+              p[1].x - p[0].x,
+              p[1].y - p[0].y
+            );
+
+          h =
+            '<circle cx="' +
+            p[0].x +
+            '" cy="' +
+            p[0].y +
+            '" r="' +
+            radius +
+            '" ' +
+            (
+              o.type === 'disk'
+                ? fill
+                : 'fill="none"'
+            ) +
+            ' ' +
+            stroke +
+            '/>';
+
+        }
+
+        else if (o.type === 'ellipse') {
+
+          if (p.length < 2) {
+            return '';
+          }
+
+          h =
+            '<ellipse cx="' +
+            p[0].x +
+            '" cy="' +
+            p[0].y +
+            '" rx="' +
+            Math.abs(
+              p[1].x - p[0].x
+            ) +
+            '" ry="' +
+            Math.abs(
+              p[1].y - p[0].y
+            ) +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>';
+
+        }
+
+        else if (
+          o.type === 'angle' ||
+          o.type === 'angleMeasure'
+        ) {
+
+          if (p.length < 3) {
+            return '';
+          }
+
+          h =
+            '<line x1="' +
+            p[1].x +
+            '" y1="' +
+            p[1].y +
+            '" x2="' +
+            p[0].x +
+            '" y2="' +
+            p[0].y +
+            '" ' +
+            stroke +
+            '/>' +
+
+            '<line x1="' +
+            p[1].x +
+            '" y1="' +
+            p[1].y +
+            '" x2="' +
+            p[2].x +
+            '" y2="' +
+            p[2].y +
+            '" ' +
+            stroke +
+            '/>';
+
+          if (
+            o.type === 'angleMeasure'
+          ) {
+
+            h +=
+              '<text x="' +
+              (p[1].x + 35) +
+              '" y="' +
+              (p[1].y - 15) +
+              '" font-size="18" font-weight="bold" fill="' +
+              s.stroke +
+              '">' +
+              angleDeg(
+                p[0],
+                p[1],
+                p[2]
+              ).toFixed(1) +
+              '°</text>';
+
+          }
+
+        }
+
+        else if (o.type === 'text') {
+
+          if (!p[0]) {
+            return '';
+          }
+
+          h =
+            '<text x="' +
+            p[0].x +
+            '" y="' +
+            p[0].y +
+            '" font-size="' +
+            (o.size || 24) +
+            '" fill="' +
+            s.stroke +
+            '">' +
+            esc(o.text) +
+            '</text>';
+
+        }
+
+        else if (
+          [
+            'cube',
+            'cuboid',
+            'prism',
+            'pyramid',
+            'cylinder',
+            'cone',
+            'sphere'
+          ].indexOf(o.type) !== -1
+        ) {
+
+          h =
+            shape3D(
+              o,
+              stroke,
+              fill
+            );
+
+        }
+
+        return '<g class="object ' +
+          (
+            selected === o.id
+              ? 'selected'
+              : ''
+          ) +
+          '" data-id="' +
+          o.id +
+          '">' +
+          h +
+          '</g>';
+
+      }
+
+
+      function shape3D(o, stroke, fill) {
+
+        var p =
+          o.p || [];
+
+        if (p.length < 2) {
+          return '';
+        }
+
+        var a =
+          p[0];
+
+        var b =
+          p[1];
+
+        var x =
+          Math.min(a.x, b.x);
+
+        var y =
+          Math.min(a.y, b.y);
+
+        var w =
+          Math.max(
+            70,
+            Math.abs(b.x - a.x)
+          );
+
+        var h =
+          Math.max(
+            70,
+            Math.abs(b.y - a.y)
+          );
+
+        var x2 =
+          x + w;
+
+        var y2 =
+          y + h;
+
+        var dx =
+          Math.min(
+            55,
+            w * .25
+          );
+
+        var dy =
+          Math.min(
+            45,
+            h * .25
+          );
+
+        if (
+          o.type === 'cube' ||
+          o.type === 'cuboid'
+        ) {
+
+          return '' +
+
+            '<rect x="' +
+            (x + dx) +
+            '" y="' +
+            (y + dy) +
+            '" width="' +
+            (w - dx) +
+            '" height="' +
+            (h - dy) +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>' +
+
+            '<polyline points="' +
+            x + ',' + y + ' ' +
+            (x2 - dx) + ',' + y + ' ' +
+            x2 + ',' + (y + dy) +
+            '" fill="none" ' +
+            stroke +
+            '/>' +
+
+            '<line x1="' +
+            x +
+            '" y1="' +
+            y +
+            '" x2="' +
+            (x + dx) +
+            '" y2="' +
+            (y + dy) +
+            '" ' +
+            stroke +
+            '/>' +
+
+            '<line x1="' +
+            (x2 - dx) +
+            '" y1="' +
+            y +
+            '" x2="' +
+            x2 +
+            '" y2="' +
+            (y + dy) +
+            '" ' +
+            stroke +
+            '/>';
+
+        }
+
+        if (o.type === 'pyramid') {
+
+          return '' +
+
+            '<polygon points="' +
+            (x + w / 2) + ',' + y + ' ' +
+            x + ',' + y2 + ' ' +
+            x2 + ',' + y2 +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>' +
+
+            '<line x1="' +
+            (x + w / 2) +
+            '" y1="' +
+            y +
+            '" x2="' +
+            (x + w * .55) +
+            '" y2="' +
+            (y2 - dy) +
+            '" ' +
+            stroke +
+            '/>';
+
+        }
+
+        if (o.type === 'cylinder') {
+
+          return '' +
+
+            '<rect x="' +
+            x +
+            '" y="' +
+            (y + dy / 2) +
+            '" width="' +
+            w +
+            '" height="' +
+            (h - dy) +
+            '" ' +
+            fill +
+            ' stroke="none"/>' +
+
+            '<ellipse cx="' +
+            (x + w / 2) +
+            '" cy="' +
+            (y + dy / 2) +
+            '" rx="' +
+            (w / 2) +
+            '" ry="' +
+            (dy / 2) +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>' +
+
+            '<line x1="' +
+            x +
+            '" y1="' +
+            (y + dy / 2) +
+            '" x2="' +
+            x +
+            '" y2="' +
+            (y2 - dy / 2) +
+            '" ' +
+            stroke +
+            '/>' +
+
+            '<line x1="' +
+            x2 +
+            '" y1="' +
+            (y + dy / 2) +
+            '" x2="' +
+            x2 +
+            '" y2="' +
+            (y2 - dy / 2) +
+            '" ' +
+            stroke +
+            '/>' +
+
+            '<ellipse cx="' +
+            (x + w / 2) +
+            '" cy="' +
+            (y2 - dy / 2) +
+            '" rx="' +
+            (w / 2) +
+            '" ry="' +
+            (dy / 2) +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>';
+
+        }
+
+        if (o.type === 'cone') {
+
+          return '' +
+
+            '<polygon points="' +
+            (x + w / 2) + ',' + y + ' ' +
+            x + ',' + (y2 - dy / 2) + ' ' +
+            x2 + ',' + (y2 - dy / 2) +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>' +
+
+            '<ellipse cx="' +
+            (x + w / 2) +
+            '" cy="' +
+            (y2 - dy / 2) +
+            '" rx="' +
+            (w / 2) +
+            '" ry="' +
+            (dy / 2) +
+            '" fill="none" ' +
+            stroke +
+            '/>';
+
+        }
+
+        if (o.type === 'sphere') {
+
+          return '' +
+
+            '<ellipse cx="' +
+            (x + w / 2) +
+            '" cy="' +
+            (y + h / 2) +
+            '" rx="' +
+            (w / 2) +
+            '" ry="' +
+            (h / 2) +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>' +
+
+            '<ellipse cx="' +
+            (x + w / 2) +
+            '" cy="' +
+            (y + h / 2) +
+            '" rx="' +
+            (w / 2) +
+            '" ry="' +
+            Math.max(12, h * .16) +
+            '" fill="none" ' +
+            stroke +
+            '/>';
+
+        }
+
+        if (o.type === 'prism') {
+
+          return '' +
+
+            '<polygon points="' +
+            (x + w / 2) + ',' + y + ' ' +
+            x + ',' + y2 + ' ' +
+            x2 + ',' + y2 +
+            '" ' +
+            fill +
+            ' ' +
+            stroke +
+            '/>' +
+
+            '<polygon points="' +
+            (x + w / 2 + dx) + ',' + (y + dy) + ' ' +
+            (x + dx) + ',' + (y2 - dy) + ' ' +
+            (x2 + dx) + ',' + (y2 - dy) +
+            '" fill="none" ' +
+            stroke +
+            '/>';
+
+        }
+
+        return '';
+
+      }
+
+
+      /* ============================
+         RENDER
+      ============================ */
+
+      function render() {
+
+        objectsLayer.innerHTML =
+          objects
+            .map(shape)
+            .join('');
+
+        var nodes =
+          objectsLayer.querySelectorAll(
+            '.object'
+          );
+
+        for (
+          var i = 0;
+          i < nodes.length;
+          i++
+        ) {
+
+          nodes[i].addEventListener(
+            'pointerdown',
+            objectPointerDown
+          );
+
+        }
+
+        renderLayers();
+
+        renderSelection();
+
+      }
+
+
+      function renderLayers() {
+
+        var html = '';
+
+        for (
+          var i = objects.length - 1;
+          i >= 0;
+          i--
+        ) {
+
+          html +=
+            '<div class="layer">' +
+            '<span>' +
+            objectLabel(
+              objects[i]
+            ) +
+            '</span>' +
+            '<button data-remove="' +
+            objects[i].id +
+            '">✕</button>' +
+            '</div>';
+
+        }
+
+        if (!html) {
+
+          html =
+            '<div class="info">Plansza jest pusta.</div>';
+
+        }
+
+        document.getElementById(
+          'layerList'
+        ).innerHTML = html;
+
+        var buttons =
+          document.querySelectorAll(
+            '[data-remove]'
+          );
+
+        for (
+          var b = 0;
+          b < buttons.length;
+          b++
+        ) {
+
+          buttons[b].onclick =
+            function () {
+
+              removeId(
+                this.getAttribute(
+                  'data-remove'
+                )
+              );
+
+            };
+
+        }
+
+      }
+
+
+      function objectLabel(o) {
+
+        var names = {
+
+          point: 'Punkt',
+          segment: 'Odcinek',
+          line: 'Prosta',
+          ray: 'Półprosta',
+          vector: 'Wektor',
+          triangle: 'Trójkąt',
+          rectangle: 'Prostokąt',
+          square: 'Kwadrat',
+          polygon: 'Wielokąt',
+          circle: 'Okrąg',
+          disk: 'Koło',
+          ellipse: 'Elipsa',
+          angle: 'Kąt',
+          distance: 'Pomiar',
+          angleMeasure: 'Pomiar kąta',
+          text: 'Tekst',
+
+          pencil: 'Ołówek',
+          pen: 'Pióro',
+          marker: 'Marker',
+          highlighter: 'Zakreślacz',
+
+          cube: 'Sześcian',
+          cuboid: 'Prostopadłościan',
+          prism: 'Graniastosłup',
+          pyramid: 'Ostrosłup',
+          cylinder: 'Walec',
+          cone: 'Stożek',
+          sphere: 'Kula'
+
+        };
+
+        return names[o.type] || o.type;
+
+      }
+
+
+      function renderSelection() {
+
+        handlesLayer.innerHTML = '';
+
+        var info =
+          document.getElementById(
+            'selectionInfo'
+          );
+
+        if (!selected) {
+
+          info.textContent =
+            'Nie wybrano obiektu.';
+
+          return;
+
+        }
+
+        var o =
+          objects.find(
+            function (item) {
+              return item.id === selected;
+            }
+          );
+
+        if (!o) {
+
+          selected = null;
+
+          info.textContent =
+            'Nie wybrano obiektu.';
+
+          return;
+
+        }
+
+        info.innerHTML =
+          '<b>' +
+          objectLabel(o) +
+          '</b><br>ID: ' +
+          o.id.slice(-6);
+
+      }
+
+
+      /* ============================
+         NARZĘDZIA
+      ============================ */
+
+      function setTool(t) {
+
+        tool = t;
+
+        draft = [];
+
+        interaction = null;
+
+        liveObject = null;
+
+        livePath = null;
+
+        previewLayer.innerHTML = '';
+
+        var buttons =
+          document.querySelectorAll(
+            '.tool'
+          );
+
+        for (
+          var i = 0;
+          i < buttons.length;
+          i++
+        ) {
+
+          buttons[i].classList.toggle(
+            'active',
+            buttons[i].getAttribute(
+              'data-tool'
+            ) === t
+          );
+
+        }
+
+        document.getElementById(
+          'hint'
+        ).textContent =
+          hints[t] || '';
+
+        document.getElementById(
+          'toolStatus'
+        ).textContent =
+          'Narzędzie: ' + t;
+
+        svg.style.cursor =
+          t === 'pan'
+            ? 'grab'
+            : 'crosshair';
+
+      }
+
+
+      var toolButtons =
+        document.querySelectorAll(
+          '.tool'
+        );
+
+      for (
+        var tb = 0;
+        tb < toolButtons.length;
+        tb++
+      ) {
+
+        toolButtons[tb].addEventListener(
+          'click',
+          function () {
+
+            setTool(
+              this.getAttribute(
+                'data-tool'
+              )
+            );
+
+          }
+        );
+
+      }
+
+
+      /* ============================
+         OBIEKT POINTER DOWN
+      ============================ */
+
+      function objectPointerDown(e) {
+
+        if (isFreeTool(tool)) {
+
+          return;
+
+        }
+
+        var id =
+          this.getAttribute(
+            'data-id'
+          );
+
+        if (tool === 'eraser') {
+
+          e.preventDefault();
+
+          e.stopPropagation();
+
+          removeId(id);
+
+          return;
+
+        }
+
+        if (tool === 'area') {
+
+          e.preventDefault();
+
+          e.stopPropagation();
+
+          showArea(id);
+
+          return;
+
+        }
+
+        if (tool !== 'select') {
+
+          return;
+
+        }
+
+        e.preventDefault();
+
+        e.stopPropagation();
+
+        var o =
+          objects.find(
+            function (item) {
+              return item.id === id;
+            }
+          );
+
+        if (!o) {
+          return;
+        }
+
+        selected = id;
+
+        saveHistory();
+
+        var p =
+          boardPoint(e);
+
+        interaction = {
+
+          type: 'moveObject',
+
+          id: id,
+
+          pointerId: e.pointerId,
+
+          startX: p.x,
+
+          startY: p.y,
+
+          original:
+            JSON.stringify(
+              o.p
+            )
+
+        };
+
+        try {
+
+          svg.setPointerCapture(
+            e.pointerId
+          );
+
+        }
+        catch (err) { }
+
+        render();
+
+      }
+
+
+      /* ============================
+         POINTER DOWN BOARD
+      ============================ */
+
+      svg.addEventListener(
+        'pointerdown',
+        function (e) {
+
+          if (isFreeTool(tool)) {
+
+            startInk(e);
+
+            return;
+
+          }
+
+          var p =
+            boardPoint(e);
+
+          var snapped =
+            snapPoint(p);
+
+          if (tool === 'select') {
+
+            if (
+              e.target === svg ||
+              e.target.id === 'bg' ||
+              e.target.id === 'gridLayer'
+            ) {
+
+              selected = null;
+
+              render();
+
+            }
+
+            return;
+
+          }
+
+          if (tool === 'pan') {
+
+            e.preventDefault();
+
+            interaction = {
+
+              type: 'pan',
+
+              pointerId: e.pointerId,
+
+              clientX: e.clientX,
+
+              clientY: e.clientY,
+
+              originalView:
+                JSON.stringify(view)
+
+            };
+
+            svg.style.cursor =
+              'grabbing';
+
+            try {
+
+              svg.setPointerCapture(
+                e.pointerId
+              );
+
+            }
+            catch (err) { }
+
+            return;
+
+          }
+
+          if (
+            tool === 'text' ||
+            tool === 'label'
+          ) {
+
+            var txt =
+              prompt(
+                tool === 'label'
+                  ? 'Nazwa punktu / figury:'
+                  : 'Wpisz tekst:'
+              );
+
+            if (txt) {
+
+              addObject({
+
+                type: 'text',
+
+                p: [
+                  snapped
+                ],
+
+                text: txt,
+
+                size:
+                  tool === 'label'
+                    ? 20
+                    : 26
+
+              });
+
+            }
+
+            return;
+
+          }
+
+          if (tool === 'point') {
+
+            addObject({
+
+              type: 'point',
+
+              p: [
+                snapped
+              ],
+
+              text:
+                pointName()
+
+            });
+
+            return;
+
+          }
+
+          if (isDragShape(tool)) {
+
+            e.preventDefault();
+
+            interaction = {
+
+              type: 'construct',
+
+              pointerId: e.pointerId,
+
+              objectType: tool,
+
+              start: snapped,
+
+              current: snapped
+
+            };
+
+            try {
+
+              svg.setPointerCapture(
+                e.pointerId
+              );
+
+            }
+            catch (err) { }
+
+            return;
+
+          }
+
+          draft.push(
+            snapped
+          );
+
+          finishClickTool();
+
+        }
+      );
+
+
+      /* ============================
+         POINTER MOVE
+      ============================ */
+
+      svg.addEventListener(
+        'pointermove',
+        function (e) {
+
+          var p =
+            boardPoint(e);
+
+          document.getElementById(
+            'coordStatus'
+          ).textContent =
+
+            'x: ' +
+            ((p.x - 600) / 25).toFixed(1) +
+
+            ', y: ' +
+            ((375 - p.y) / 25).toFixed(1);
+
+
+          if (
+            interaction &&
+            interaction.type === 'ink'
+          ) {
+
+            moveInk(e);
+
+            return;
+
+          }
+
+
+          if (
+            interaction &&
+            interaction.type === 'pan'
+          ) {
+
+            e.preventDefault();
+
+            var r =
+              svg.getBoundingClientRect();
+
+            var v =
+              JSON.parse(
+                interaction.originalView
+              );
+
+            var dx =
+              (
+                e.clientX -
+                interaction.clientX
+              ) *
+              v.w /
+              r.width;
+
+            var dy =
+              (
+                e.clientY -
+                interaction.clientY
+              ) *
+              v.h /
+              r.height;
+
+            view.x =
+              v.x - dx;
+
+            view.y =
+              v.y - dy;
+
+            applyView();
+
+            return;
+
+          }
+
+
+          if (
+            interaction &&
+            interaction.type === 'moveObject'
+          ) {
+
+            e.preventDefault();
+
+            var obj =
+              objects.find(
+                function (item) {
+                  return item.id === interaction.id;
+                }
+              );
+
+            if (!obj) {
+              return;
+            }
+
+            var orig =
+              JSON.parse(
+                interaction.original
+              );
+
+            var dx2 =
+              p.x -
+              interaction.startX;
+
+            var dy2 =
+              p.y -
+              interaction.startY;
+
+            obj.p =
+              orig.map(
+                function (a) {
+
+                  return {
+
+                    x:
+                      a.x + dx2,
+
+                    y:
+                      a.y + dy2
+
+                  };
+
+                }
+              );
+
+            objectsLayer.innerHTML =
+              objects
+                .map(shape)
+                .join('');
+
+            return;
+
+          }
+
+
+          if (
+            interaction &&
+            interaction.type === 'construct'
+          ) {
+
+            e.preventDefault();
+
+            var cp =
+              snapPoint(p);
+
+            interaction.current =
+              cp;
+
+            previewLayer.innerHTML =
+              shape({
+
+                id: 'preview',
+
+                type:
+                  interaction.objectType,
+
+                p: [
+                  interaction.start,
+                  cp
+                ],
+
+                s: style()
+
+              });
+
+            return;
+
+          }
+
+
+          if (draft.length) {
+
+            var q =
+              snapPoint(p);
+
+            previewLayer.innerHTML =
+              shape({
+
+                id: 'preview',
+
+                type:
+                  previewType(),
+
+                p:
+                  draft.concat(
+                    [q]
+                  ),
+
+                s: style()
+
+              });
+
+          }
+
+        }
+      );
+
+
+      /* ============================
+         POINTER UP
+      ============================ */
+
+      function pointerEnd(e) {
+
+        if (endInk()) {
+          return;
+        }
+
+        if (!interaction) {
+          return;
+        }
+
+        if (
+          interaction.type === 'construct'
+        ) {
+
+          var end =
+            snapPoint(
+              boardPoint(e)
+            );
+
+          var dist =
+            Math.hypot(
+              end.x -
+              interaction.start.x,
+
+              end.y -
+              interaction.start.y
+            );
+
+          var type =
+            interaction.objectType;
+
+          var start =
+            interaction.start;
+
+          previewLayer.innerHTML = '';
+
+          interaction = null;
+
+          if (dist > 4) {
+
+            addObject({
+
+              type: type,
+
+              p: [
+                start,
+                end
+              ]
+
+            });
+
+          }
+
+          return;
+
+        }
+
+
+        if (
+          interaction.type === 'moveObject'
+        ) {
+
+          interaction = null;
+
+          render();
+
+          return;
+
+        }
+
+
+        if (
+          interaction.type === 'pan'
+        ) {
+
+          svg.style.cursor =
+            'grab';
+
+          interaction = null;
+
+          return;
+
+        }
+
+      }
+
+
+      svg.addEventListener(
+        'pointerup',
+        pointerEnd
+      );
+
+      svg.addEventListener(
+        'pointercancel',
+        pointerEnd
+      );
+
+      window.addEventListener(
+        'pointerup',
+        function (e) {
+
+          if (
+            interaction &&
+            (
+              interaction.type === 'ink' ||
+              interaction.type === 'construct'
+            )
+          ) {
+
+            pointerEnd(e);
+
+          }
+
+        }
+      );
+
+
+      /* ============================
+         NARZĘDZIA KLIKANE
+      ============================ */
+
+      function previewType() {
+
+        if (
+          tool === 'parallel' ||
+          tool === 'perpendicular'
+        ) {
+
+          return 'line';
+
+        }
+
+        if (tool === 'midpoint') {
+
+          return 'segment';
+
+        }
+
+        return tool;
+
+      }
+
+
+      function finishClickTool() {
+
+        var required = {
+
+          segment: 2,
+          line: 2,
+          ray: 2,
+          vector: 2,
+          midpoint: 2,
+
+          triangle: 3,
+
+          angle: 3,
+          angleMeasure: 3,
+
+          distance: 2,
+
+          parallel: 3,
+          perpendicular: 3
+
+        }[tool];
+
+
+        if (tool === 'polygon') {
+
+          return;
+
+        }
+
+
+        if (
+          !required ||
+          draft.length < required
+        ) {
+
+          return;
+
+        }
+
+
+        var p =
+          draft.slice();
+
+
+        if (tool === 'midpoint') {
+
+          var middle = {
+
+            x:
+              (p[0].x + p[1].x) / 2,
+
+            y:
+              (p[0].y + p[1].y) / 2
+
+          };
+
+          addObject({
+
+            type: 'point',
+
+            p: [
+              middle
+            ],
+
+            text:
+              pointName()
+
+          });
+
+        }
+
+
+        else if (
+          tool === 'parallel' ||
+          tool === 'perpendicular'
+        ) {
+
+          var a =
+            p[0];
+
+          var b =
+            p[1];
+
+          var c =
+            p[2];
+
+          var dx =
+            b.x - a.x;
+
+          var dy =
+            b.y - a.y;
+
+          if (
+            tool === 'perpendicular'
+          ) {
+
+            var temp =
+              dx;
+
+            dx =
+              -dy;
+
+            dy =
+              temp;
+
+          }
+
+          addObject({
+
+            type: 'line',
+
+            p: [
+
+              c,
+
+              {
+                x: c.x + dx,
+                y: c.y + dy
+              }
+
+            ]
+
+          });
+
+        }
+
+
+        else {
+
+          addObject({
+
+            type: tool,
+
+            p: p
+
+          });
+
+        }
+
+
+        draft = [];
+
+        previewLayer.innerHTML = '';
+
+      }
+
+
+      svg.addEventListener(
+        'dblclick',
+        function (e) {
+
+          if (
+            tool === 'polygon' &&
+            draft.length >= 3
+          ) {
+
+            e.preventDefault();
+
+            addObject({
+
+              type: 'polygon',
+
+              p:
+                draft.slice()
+
+            });
+
+            draft = [];
+
+            previewLayer.innerHTML = '';
+
+          }
+
+        }
+      );
+
+
+      /* ============================
+         POLE
+      ============================ */
+
+      function showArea(id) {
+
+        var o =
+          objects.find(
+            function (item) {
+              return item.id === id;
+            }
+          );
+
+        if (!o) {
+          return;
+        }
+
+        var area = 0;
+
+        if (
+          o.type === 'triangle' ||
+          o.type === 'polygon'
+        ) {
+
+          area =
+            polygonArea(o.p);
+
+        }
+
+        else if (
+          o.type === 'circle' ||
+          o.type === 'disk'
+        ) {
+
+          var r =
+            Math.hypot(
+              o.p[1].x - o.p[0].x,
+              o.p[1].y - o.p[0].y
+            ) / 25;
+
+          area =
+            Math.PI * r * r;
+
+        }
+
+        else if (
+          o.type === 'rectangle' ||
+          o.type === 'square'
+        ) {
+
+          var dx =
+            Math.abs(
+              o.p[1].x - o.p[0].x
+            ) / 25;
+
+          var dy =
+            Math.abs(
+              o.p[1].y - o.p[0].y
+            ) / 25;
+
+          if (o.type === 'square') {
+
+            dx =
+              dy =
+              Math.max(dx, dy);
+
+          }
+
+          area =
+            dx * dy;
+
+        }
+
+        document.getElementById(
+          'hint'
+        ).textContent =
+          area
+            ? 'Pole = ' +
+            area.toFixed(2) +
+            ' j²'
+            : 'Wybierz zamkniętą figurę.';
+
+      }
+
+
+      /* ============================
+         KLAWIATURA
+      ============================ */
+
+      document.addEventListener(
+        'keydown',
+        function (e) {
+
+          if (e.key === 'Escape') {
+
+            interaction = null;
+
+            liveObject = null;
+
+            livePath = null;
+
+            draft = [];
+
+            previewLayer.innerHTML = '';
+
+          }
+
+
+          if (
+            (
+              e.key === 'Delete' ||
+              e.key === 'Backspace'
+            ) &&
+            selected
+          ) {
+
+            removeId(
+              selected
+            );
+
+          }
+
+
+          if (
+            (
+              e.ctrlKey ||
+              e.metaKey
+            ) &&
+            e.key.toLowerCase() === 'z'
+          ) {
+
+            e.preventDefault();
+
+            if (e.shiftKey) {
+
+              redo();
+
+            }
+            else {
+
+              undo();
+
+            }
+
+          }
+
+
+          if (
+            (
+              e.ctrlKey ||
+              e.metaKey
+            ) &&
+            e.key.toLowerCase() === 'y'
+          ) {
+
+            e.preventDefault();
+
+            redo();
+
+          }
+
+        }
+      );
+
+
+      /* ============================
+         PRZYCISKI
+      ============================ */
+
+      document.getElementById(
+        'undo'
+      ).onclick = undo;
+
+
+      document.getElementById(
+        'redo'
+      ).onclick = redo;
+
+
+      document.getElementById(
+        'deleteSelected'
+      ).onclick =
+        function () {
+
+          if (selected) {
+
+            removeId(
+              selected
+            );
+
+          }
+
+        };
+
+
+      document.getElementById(
+        'newBoard'
+      ).onclick =
+        function () {
+
+          if (
+            objects.length &&
+            !confirm(
+              'Wyczyścić całą planszę?'
+            )
+          ) {
+
+            return;
+
+          }
+
+          saveHistory();
+
+          objects = [];
+
+          selected = null;
+
+          letters = 0;
+
+          draft = [];
+
+          render();
+
+        };
+
+
+      document.getElementById(
+        'showGrid'
+      ).onchange =
+        function () {
+
+          document.getElementById(
+            'gridLayer'
+          ).style.display =
+            this.checked
+              ? ''
+              : 'none';
+
+        };
+
+
+      document.getElementById(
+        'showAxes'
+      ).onchange =
+        function () {
+
+          document.getElementById(
+            'axesLayer'
+          ).style.display =
+            this.checked
+              ? ''
+              : 'none';
+
+        };
+
+
+      document.getElementById(
+        'showLabels'
+      ).onchange =
+        render;
+
+
+      /* ============================
+         STYLE
+      ============================ */
+
+      function styleSelected() {
+
+        if (!selected) {
+          return;
+        }
+
+        var o =
+          objects.find(
+            function (item) {
+              return item.id === selected;
+            }
+          );
+
+        if (!o) {
+          return;
+        }
+
+        saveHistory();
+
+        o.s =
+          style();
+
+        render();
+
+      }
+
+
+      document.getElementById(
+        'stroke'
+      ).onchange =
+        styleSelected;
+
+
+      document.getElementById(
+        'fill'
+      ).onchange =
+        styleSelected;
+
+
+      document.getElementById(
+        'opacity'
+      ).onchange =
+        styleSelected;
+
+
+      document.getElementById(
+        'dash'
+      ).onchange =
+        styleSelected;
+
+
+      document.getElementById(
+        'width'
+      ).oninput =
+        function () {
+
+          document.getElementById(
+            'widthValue'
+          ).textContent =
+            this.value;
+
+        };
+
+
+      document.getElementById(
+        'width'
+      ).onchange =
+        styleSelected;
+
+
+      var swatches =
+        document.querySelectorAll(
+          '.swatch'
+        );
+
+      for (
+        var sw = 0;
+        sw < swatches.length;
+        sw++
+      ) {
+
+        swatches[sw].onclick =
+          function () {
+
+            document.getElementById(
+              'stroke'
+            ).value =
+              this.getAttribute(
+                'data-color'
+              );
+
+            styleSelected();
+
+          };
+
+      }
+
+
+      /* ============================
+         ZOOM
+      ============================ */
+
+      function applyView() {
+
+        svg.setAttribute(
+          'viewBox',
+          [
+            view.x,
+            view.y,
+            view.w,
+            view.h
+          ].join(' ')
+        );
+
+      }
+
+
+      function zoom(f) {
+
+        var cx =
+          view.x +
+          view.w / 2;
+
+        var cy =
+          view.y +
+          view.h / 2;
+
+        view.w *= f;
+
+        view.h *= f;
+
+        view.x =
+          cx -
+          view.w / 2;
+
+        view.y =
+          cy -
+          view.h / 2;
+
+        applyView();
+
+      }
+
+
+      document.getElementById(
+        'zoomIn'
+      ).onclick =
+        function () {
+
+          zoom(.8);
+
+        };
+
+
+      document.getElementById(
+        'zoomOut'
+      ).onclick =
+        function () {
+
+          zoom(1.25);
+
+        };
+
+
+      document.getElementById(
+        'zoomReset'
+      ).onclick =
+        function () {
+
+          view = {
+            x: 0,
+            y: 0,
+            w: 1200,
+            h: 750
+          };
+
+          applyView();
+
+        };
+
+
+      svg.addEventListener(
+        'wheel',
+        function (e) {
+
+          e.preventDefault();
+
+          zoom(
+            e.deltaY > 0
+              ? 1.1
+              : .9
+          );
+
+        },
+        {
+          passive: false
+        }
+      );
+
+
+      /* ============================
+         ZAPIS / ODCZYT
+      ============================ */
+
+      function download(
+        name,
+        data,
+        mime
+      ) {
+
+        var blob =
+          new Blob(
+            [data],
+            {
+              type: mime
+            }
+          );
+
+        var url =
+          URL.createObjectURL(
+            blob
+          );
+
+        var a =
+          document.createElement(
+            'a'
+          );
+
+        a.href =
+          url;
+
+        a.download =
+          name;
+
+        document.body.appendChild(
+          a
+        );
+
+        a.click();
+
+        a.remove();
+
+        setTimeout(
+          function () {
+
+            URL.revokeObjectURL(
+              url
+            );
+
+          },
+          1000
+        );
+
+      }
+
+
+      document.getElementById(
+        'saveProject'
+      ).onclick =
+        function () {
+
+          download(
+
+            'geoboard-projekt.json',
+
+            JSON.stringify(
+              {
+                version: 4,
+                objects: objects,
+                letters: letters
+              },
+              null,
+              2
+            ),
+
+            'application/json'
+
+          );
+
+        };
+
+
+      document.getElementById(
+        'openProject'
+      ).onclick =
+        function () {
+
+          document.getElementById(
+            'fileInput'
+          ).click();
+
+        };
+
+
+      document.getElementById(
+        'fileInput'
+      ).onchange =
+        function () {
+
+          var file =
+            this.files[0];
+
+          if (!file) {
+            return;
+          }
+
+          var reader =
+            new FileReader();
+
+          reader.onload =
+            function () {
+
+              try {
+
+                var data =
+                  JSON.parse(
+                    reader.result
+                  );
+
+                saveHistory();
+
+                objects =
+                  data.objects || [];
+
+                letters =
+                  data.letters || 0;
+
+                selected =
+                  null;
+
+                render();
+
+              }
+              catch (err) {
+
+                alert(
+                  'Nieprawidłowy plik projektu.'
+                );
+
+              }
+
+            };
+
+          reader.readAsText(
+            file
+          );
+
+          this.value = '';
+
+        };
+
+
+      /* ============================
+         EXPORT SVG
+      ============================ */
+
+      function cleanSvg() {
+
+        var clone =
+          svg.cloneNode(true);
+
+        var preview =
+          clone.querySelector(
+            '#previewLayer'
+          );
+
+        var handles =
+          clone.querySelector(
+            '#handlesLayer'
+          );
+
+        if (preview) {
+          preview.innerHTML = '';
+        }
+
+        if (handles) {
+          handles.innerHTML = '';
+        }
+
+        clone.setAttribute(
+          'width',
+          '1200'
+        );
+
+        clone.setAttribute(
+          'height',
+          '750'
+        );
+
+        clone.setAttribute(
+          'viewBox',
+          '0 0 1200 750'
+        );
+
+        return new XMLSerializer()
+          .serializeToString(
+            clone
+          );
+
+      }
+
+
+      document.getElementById(
+        'exportSvg'
+      ).onclick =
+        function () {
+
+          download(
+
+            'geometria.svg',
+
+            cleanSvg(),
+
+            'image/svg+xml'
+
+          );
+
+        };
+
+
+      /* ============================
+         EXPORT PNG
+      ============================ */
+
+      document.getElementById(
+        'exportPng'
+      ).onclick =
+        function () {
+
+          var text =
+            cleanSvg();
+
+          var blob =
+            new Blob(
+              [text],
+              {
+                type:
+                  'image/svg+xml;charset=utf-8'
+              }
+            );
+
+          var url =
+            URL.createObjectURL(
+              blob
+            );
+
+          var img =
+            new Image();
+
+          img.onload =
+            function () {
+
+              var canvas =
+                document.createElement(
+                  'canvas'
+                );
+
+              canvas.width =
+                1600;
+
+              canvas.height =
+                1000;
+
+              var ctx =
+                canvas.getContext(
+                  '2d'
+                );
+
+              ctx.fillStyle =
+                '#ffffff';
+
+              ctx.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+              );
+
+              ctx.drawImage(
+                img,
+                0,
+                0,
+                canvas.width,
+                canvas.height
+              );
+
+              canvas.toBlob(
+                function (png) {
+
+                  var pngUrl =
+                    URL.createObjectURL(
+                      png
+                    );
+
+                  var a =
+                    document.createElement(
+                      'a'
+                    );
+
+                  a.href =
+                    pngUrl;
+
+                  a.download =
+                    'geometria.png';
+
+                  document.body.appendChild(
+                    a
+                  );
+
+                  a.click();
+
+                  a.remove();
+
+                  setTimeout(
+                    function () {
+
+                      URL.revokeObjectURL(
+                        pngUrl
+                      );
+
+                    },
+                    1000
+                  );
+
+                },
+                'image/png'
+              );
+
+              URL.revokeObjectURL(
+                url
+              );
+
+            };
+
+          img.src =
+            url;
+
+        };
+
+
+      /* ============================
+         HELP
+      ============================ */
+
+      document.getElementById(
+        'help'
+      ).onclick =
+        function () {
+
+          document.getElementById(
+            'helpModal'
+          ).classList.add(
+            'show'
+          );
+
+        };
+
+
+      document.getElementById(
+        'closeHelp'
+      ).onclick =
+        function () {
+
+          document.getElementById(
+            'helpModal'
+          ).classList.remove(
+            'show'
+          );
+
+        };
+
+
+      /* ============================
+         START
+      ============================ */
+
+      render();
+
+      setTool(
+        'select'
+      );
+
+    })();
+  </script>
+
+</body>
+
+</html>
