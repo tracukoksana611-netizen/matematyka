@@ -1,0 +1,5925 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="description" content="Interaktywny kurs: Przekształcanie wyrażeń algebraicznych">
+
+  <title>Algebra Lab — wyrażenia algebraiczne</title>
+
+  <style>
+    /* =====================================================
+       1. ZMIENNE I USTAWIENIA GLOBALNE
+    ===================================================== */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --font:
+        Inter,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+      --bg: #f2f5fa;
+      --surface: #ffffff;
+      --surface-soft: #f7f9fd;
+      --surface-hover: #eef2f8;
+      --surface-strong: #e3e8f1;
+
+      --text: #172033;
+      --text-soft: #626d82;
+      --text-muted: #9199a8;
+
+      --border: #dfe5ee;
+      --border-strong: #cbd3e0;
+
+      --primary: #6957e5;
+      --primary-dark: #4e3cc3;
+      --primary-soft: rgba(105, 87, 229, 0.12);
+
+      --cyan: #10a7a0;
+      --cyan-soft: rgba(16, 167, 160, 0.12);
+
+      --green: #249566;
+      --green-soft: rgba(36, 149, 102, 0.12);
+
+      --orange: #e68b2f;
+      --orange-soft: rgba(230, 139, 47, 0.14);
+
+      --red: #d65263;
+      --red-soft: rgba(214, 82, 99, 0.12);
+
+      --blue: #3978e8;
+      --blue-soft: rgba(57, 120, 232, 0.12);
+
+      --yellow: #c99516;
+      --yellow-soft: rgba(201, 149, 22, 0.14);
+
+      --shadow-sm:
+        0 7px 18px rgba(28, 38, 61, 0.06);
+
+      --shadow-md:
+        0 18px 42px rgba(28, 38, 61, 0.1);
+
+      --shadow-lg:
+        0 34px 80px rgba(28, 38, 61, 0.18);
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 30px;
+      --radius-pill: 999px;
+
+      --sidebar-width: 288px;
+      --topbar-height: 82px;
+
+      --transition:
+        180ms cubic-bezier(.2, .8, .2, 1);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #10141c;
+      --surface: #181d27;
+      --surface-soft: #1f2531;
+      --surface-hover: #272e3b;
+      --surface-strong: #323a49;
+
+      --text: #f4f6fb;
+      --text-soft: #b5bdca;
+      --text-muted: #838c9d;
+
+      --border: #2d3543;
+      --border-strong: #40495a;
+
+      --primary: #9484ff;
+      --primary-dark: #7966ed;
+      --primary-soft: rgba(148, 132, 255, 0.16);
+
+      --cyan: #35c9c0;
+      --cyan-soft: rgba(53, 201, 192, 0.14);
+
+      --green: #4fd18f;
+      --green-soft: rgba(79, 209, 143, 0.14);
+
+      --orange: #ffad62;
+      --orange-soft: rgba(255, 173, 98, 0.14);
+
+      --red: #ff7889;
+      --red-soft: rgba(255, 120, 137, 0.14);
+
+      --blue: #67a0ff;
+      --blue-soft: rgba(103, 160, 255, 0.14);
+
+      --yellow: #ffd15d;
+      --yellow-soft: rgba(255, 209, 93, 0.14);
+
+      --shadow-sm:
+        0 7px 18px rgba(0, 0, 0, 0.2);
+
+      --shadow-md:
+        0 18px 42px rgba(0, 0, 0, 0.3);
+
+      --shadow-lg:
+        0 34px 80px rgba(0, 0, 0, 0.48);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    html.reduced-motion *,
+    html.reduced-motion *::before,
+    html.reduced-motion *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+
+      color: var(--text);
+
+      background:
+        radial-gradient(circle at top left,
+          var(--primary-soft),
+          transparent 27%),
+        radial-gradient(circle at top right,
+          var(--cyan-soft),
+          transparent 24%),
+        var(--bg);
+
+      font-family: var(--font);
+      font-size: 16px;
+      line-height: 1.55;
+
+      transition:
+        color var(--transition),
+        background var(--transition);
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid var(--primary-soft);
+      outline-offset: 3px;
+    }
+
+    kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-width: 30px;
+      min-height: 24px;
+      padding: 2px 7px;
+
+      border: 1px solid var(--border-strong);
+      border-radius: 7px;
+
+      color: var(--text-soft);
+      background: var(--surface-soft);
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .visually-hidden {
+      position: absolute;
+
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+
+      overflow: hidden;
+
+      clip: rect(0 0 0 0);
+
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* =====================================================
+       2. UKŁAD APLIKACJI
+    ===================================================== */
+
+    .app {
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: fixed;
+      z-index: 100;
+
+      inset: 0 auto 0 0;
+
+      display: flex;
+      flex-direction: column;
+
+      width: var(--sidebar-width);
+      padding: 18px 15px;
+
+      border-right: 1px solid var(--border);
+
+      background: var(--surface);
+
+      transition:
+        transform var(--transition),
+        border-color var(--transition),
+        background var(--transition);
+    }
+
+    .workspace {
+      min-height: 100vh;
+      margin-left: var(--sidebar-width);
+    }
+
+    .topbar {
+      position: sticky;
+      z-index: 70;
+      top: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      min-height: var(--topbar-height);
+      padding: 13px 30px;
+
+      border-bottom: 1px solid var(--border);
+
+      background:
+        color-mix(in srgb,
+          var(--surface) 88%,
+          transparent);
+
+      backdrop-filter: blur(18px);
+    }
+
+    .main-content {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 28px 30px 70px;
+    }
+
+    .view {
+      display: none;
+      animation: viewEnter 300ms ease both;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @keyframes viewEnter {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =====================================================
+       3. PANEL BOCZNY
+    ===================================================== */
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      min-height: 48px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+
+      min-width: 0;
+      padding: 0;
+
+      border: 0;
+      background: transparent;
+
+      text-align: left;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+
+      flex: 0 0 auto;
+
+      width: 46px;
+      height: 46px;
+      margin-right: 11px;
+
+      border-radius: 14px;
+
+      color: #ffffff;
+
+      background:
+        linear-gradient(135deg,
+          var(--primary),
+          var(--cyan));
+
+      box-shadow:
+        0 10px 25px var(--primary-soft);
+
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .brand-content {
+      min-width: 0;
+    }
+
+    .brand-title,
+    .brand-subtitle {
+      display: block;
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 850;
+    }
+
+    .brand-subtitle {
+      margin-top: 1px;
+
+      color: var(--text-muted);
+
+      font-size: 10px;
+    }
+
+    .sidebar-close {
+      display: none;
+    }
+
+    .profile-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+
+      gap: 10px;
+
+      margin: 20px 0;
+      padding: 12px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+
+      background: var(--surface-soft);
+    }
+
+    .profile-avatar {
+      display: grid;
+      place-items: center;
+
+      width: 42px;
+      height: 42px;
+
+      border-radius: 50%;
+
+      color: #ffffff;
+
+      background:
+        linear-gradient(135deg,
+          var(--blue),
+          var(--primary));
+
+      font-weight: 850;
+    }
+
+    .profile-content {
+      min-width: 0;
+    }
+
+    .profile-name,
+    .profile-level {
+      display: block;
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .profile-level {
+      margin-top: 2px;
+
+      color: var(--text-muted);
+
+      font-size: 10px;
+    }
+
+    .navigation {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 3px;
+    }
+
+    .nav-label {
+      margin: 19px 10px 7px;
+
+      color: var(--text-muted);
+
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      align-items: center;
+
+      width: 100%;
+      min-height: 45px;
+      margin: 3px 0;
+      padding: 8px 11px;
+
+      border: 0;
+      border-radius: 12px;
+
+      color: var(--text-soft);
+      background: transparent;
+
+      text-align: left;
+
+      transition:
+        color var(--transition),
+        background var(--transition),
+        transform var(--transition);
+    }
+
+    .nav-item:hover {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      background: var(--primary-soft);
+
+      font-weight: 800;
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+
+    .nav-badge {
+      min-width: 31px;
+      padding: 3px 7px;
+
+      border-radius: var(--radius-pill);
+
+      color: var(--text-soft);
+      background: var(--surface-strong);
+
+      font-size: 10px;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .nav-item.active .nav-badge {
+      color: var(--primary);
+      background: var(--surface);
+    }
+
+    .sidebar-footer {
+      padding-top: 12px;
+    }
+
+    .weekly-card {
+      padding: 13px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+
+      background: var(--surface-soft);
+    }
+
+    .weekly-header {
+      display: flex;
+      justify-content: space-between;
+
+      margin-bottom: 8px;
+
+      font-size: 11px;
+    }
+
+    .weekly-card small {
+      display: block;
+      margin-top: 8px;
+
+      color: var(--text-muted);
+
+      font-size: 10px;
+      line-height: 1.4;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      z-index: 90;
+      inset: 0;
+
+      visibility: hidden;
+      opacity: 0;
+
+      background: rgba(6, 9, 16, 0.54);
+
+      transition:
+        opacity var(--transition),
+        visibility var(--transition);
+    }
+
+    /* =====================================================
+       4. GÓRNY PASEK
+    ===================================================== */
+
+    .topbar-left,
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .topbar-left {
+      gap: 12px;
+    }
+
+    .topbar-actions {
+      gap: 8px;
+    }
+
+    .page-eyebrow {
+      margin: 0 0 2px;
+
+      color: var(--primary);
+
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      margin: 0;
+
+      font-size: clamp(20px, 2vw, 27px);
+      line-height: 1.2;
+    }
+
+    .menu-button {
+      display: none;
+    }
+
+    .icon-button {
+      position: relative;
+
+      display: inline-grid;
+      place-items: center;
+
+      width: 42px;
+      height: 42px;
+      padding: 0;
+
+      border: 1px solid var(--border);
+      border-radius: 12px;
+
+      color: var(--text-soft);
+      background: var(--surface);
+
+      transition:
+        color var(--transition),
+        background var(--transition),
+        transform var(--transition);
+    }
+
+    .icon-button:hover {
+      color: var(--text);
+      background: var(--surface-hover);
+      transform: translateY(-1px);
+    }
+
+    .search-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      min-width: 220px;
+      min-height: 42px;
+      padding: 0 8px 0 14px;
+
+      border: 1px solid var(--border);
+      border-radius: 12px;
+
+      color: var(--text-muted);
+      background: var(--surface);
+    }
+
+    .search-trigger:hover {
+      color: var(--text);
+      background: var(--surface-hover);
+    }
+
+    /* =====================================================
+       5. KOMPONENTY
+    ===================================================== */
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 43px;
+      padding: 10px 17px;
+
+      border: 1px solid transparent;
+      border-radius: 12px;
+
+      font-weight: 800;
+
+      transition:
+        transform var(--transition),
+        filter var(--transition),
+        background var(--transition),
+        border-color var(--transition);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button-primary {
+      color: #ffffff;
+
+      background:
+        linear-gradient(135deg,
+          var(--primary),
+          var(--primary-dark));
+
+      box-shadow:
+        0 10px 24px var(--primary-soft);
+    }
+
+    .button-secondary {
+      color: var(--text);
+
+      border-color: var(--border);
+      background: var(--surface);
+    }
+
+    .button-secondary:hover {
+      background: var(--surface-hover);
+    }
+
+    .button-danger {
+      color: #ffffff;
+      background: var(--red);
+    }
+
+    .button-full {
+      width: 100%;
+    }
+
+    .text-button {
+      padding: 6px 2px;
+
+      border: 0;
+
+      color: var(--primary);
+      background: transparent;
+
+      font-weight: 800;
+    }
+
+    .text-button:hover {
+      text-decoration: underline;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+
+      min-height: 27px;
+      padding: 4px 10px;
+
+      border-radius: var(--radius-pill);
+
+      color: var(--primary);
+      background: var(--primary-soft);
+
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .status-pill.orange {
+      color: var(--orange);
+      background: var(--orange-soft);
+    }
+
+    .status-pill.green {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+
+      border-radius: var(--radius-pill);
+
+      background: var(--surface-strong);
+    }
+
+    .progress-track.large {
+      height: 11px;
+    }
+
+    .progress-value {
+      height: 100%;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(90deg,
+          var(--primary),
+          var(--cyan));
+
+      transition: width 350ms ease;
+    }
+
+    .panel {
+      padding: 22px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 15px;
+
+      margin-bottom: 19px;
+    }
+
+    .panel-header h3 {
+      margin: 3px 0 0;
+
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .panel-eyebrow {
+      color: var(--text-muted);
+
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+
+      gap: 14px;
+
+      margin: 20px 0;
+    }
+
+    .metric-card {
+      display: flex;
+      align-items: center;
+
+      gap: 13px;
+
+      min-height: 112px;
+      padding: 17px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .metric-icon {
+      display: grid;
+      place-items: center;
+
+      flex: 0 0 auto;
+
+      width: 48px;
+      height: 48px;
+
+      border-radius: 15px;
+
+      font-size: 21px;
+      font-weight: 850;
+    }
+
+    .metric-icon.purple {
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .metric-icon.green {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .metric-icon.orange {
+      color: var(--orange);
+      background: var(--orange-soft);
+    }
+
+    .metric-icon.blue {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .metric-label,
+    .metric-card small {
+      display: block;
+
+      color: var(--text-muted);
+
+      font-size: 10px;
+    }
+
+    .metric-value {
+      display: block;
+      margin: 2px 0;
+
+      font-size: 25px;
+      line-height: 1.2;
+    }
+
+    /* =====================================================
+       6. DASHBOARD
+    ===================================================== */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.2fr) minmax(300px, .8fr);
+
+      align-items: center;
+
+      min-height: 350px;
+      padding: clamp(28px, 4vw, 50px);
+
+      border-radius: var(--radius-xl);
+
+      color: #ffffff;
+
+      background:
+        radial-gradient(circle at 78% 24%,
+          rgba(255, 255, 255, .14),
+          transparent 27%),
+        linear-gradient(125deg,
+          #241d54,
+          #5543b8 56%,
+          #0d7c79);
+
+      box-shadow:
+        0 26px 60px rgba(55, 43, 126, .25);
+    }
+
+    .hero::after {
+      position: absolute;
+
+      right: -100px;
+      bottom: -140px;
+
+      width: 360px;
+      height: 360px;
+
+      border: 1px solid rgba(255, 255, 255, .14);
+      border-radius: 50%;
+
+      content: "";
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero .status-pill {
+      color: #ffffff;
+      background: rgba(255, 255, 255, .14);
+    }
+
+    .hero h2 {
+      max-width: 820px;
+      margin: 16px 0 14px;
+
+      font-size: clamp(31px, 4.5vw, 55px);
+      line-height: 1.05;
+      letter-spacing: -.04em;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: 0;
+
+      color: rgba(255, 255, 255, .78);
+
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 10px;
+
+      margin-top: 26px;
+    }
+
+    .hero .button-primary {
+      color: var(--primary-dark);
+      background: #ffffff;
+    }
+
+    .hero .button-secondary {
+      color: #ffffff;
+
+      border-color: rgba(255, 255, 255, .22);
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-visual svg {
+      display: block;
+      width: 100%;
+      max-height: 290px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.5fr) minmax(290px, .7fr);
+
+      gap: 18px;
+
+      margin-bottom: 18px;
+    }
+
+    .current-module {
+      display: grid;
+      grid-template-columns:
+        minmax(220px, .8fr) minmax(0, 1.2fr);
+
+      align-items: center;
+
+      gap: 24px;
+    }
+
+    .algebra-visual {
+      display: grid;
+      place-items: center;
+
+      min-height: 300px;
+
+      border-radius: 20px;
+
+      background:
+        radial-gradient(circle at center,
+          var(--primary-soft),
+          transparent 66%);
+    }
+
+    .algebra-machine {
+      width: min(320px, 100%);
+      padding: 20px;
+
+      border: 1px solid var(--border);
+      border-radius: 20px;
+
+      background: var(--surface);
+      box-shadow: var(--shadow-md);
+
+      text-align: center;
+    }
+
+    .machine-expression {
+      padding: 14px;
+
+      border-radius: 13px;
+
+      color: var(--primary);
+      background: var(--primary-soft);
+
+      font-family: Georgia, serif;
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .machine-arrow {
+      margin: 10px 0;
+
+      color: var(--cyan);
+
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .machine-result {
+      padding: 14px;
+
+      border-radius: 13px;
+
+      color: var(--green);
+      background: var(--green-soft);
+
+      font-family: Georgia, serif;
+      font-size: 27px;
+      font-weight: 850;
+    }
+
+    .current-meta {
+      display: flex;
+      justify-content: space-between;
+
+      margin-bottom: 8px;
+
+      color: var(--text-soft);
+
+      font-size: 11px;
+    }
+
+    .lesson-list {
+      margin: 18px 0;
+      padding: 0;
+
+      list-style: none;
+    }
+
+    .lesson-list li {
+      display: flex;
+      align-items: center;
+
+      gap: 10px;
+
+      margin: 7px 0;
+      padding: 7px;
+
+      border-radius: 10px;
+
+      color: var(--text-soft);
+      background: transparent;
+    }
+
+    .lesson-marker {
+      display: grid;
+      place-items: center;
+
+      width: 28px;
+      height: 28px;
+
+      border: 1px solid var(--border-strong);
+      border-radius: 50%;
+
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    .lesson-list li.done .lesson-marker {
+      color: #ffffff;
+      border-color: var(--green);
+      background: var(--green);
+    }
+
+    .timer-card {
+      text-align: center;
+    }
+
+    .timer-display {
+      margin: 18px 0 5px;
+
+      font-size: clamp(43px, 6vw, 65px);
+      font-weight: 900;
+      letter-spacing: -.04em;
+    }
+
+    .timer-description {
+      margin: 0 auto 18px;
+
+      color: var(--text-muted);
+
+      font-size: 12px;
+    }
+
+    .timer-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+
+      padding: 4px;
+
+      border-radius: 12px;
+
+      background: var(--surface-soft);
+    }
+
+    .timer-option {
+      min-height: 35px;
+      padding: 6px;
+
+      border: 0;
+      border-radius: 9px;
+
+      color: var(--text-muted);
+      background: transparent;
+
+      font-size: 11px;
+    }
+
+    .timer-option.active {
+      color: var(--primary);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+
+      font-weight: 850;
+    }
+
+    .timer-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      gap: 9px;
+
+      margin-top: 17px;
+    }
+
+    .module-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+
+      gap: 13px;
+    }
+
+    .module-preview {
+      position: relative;
+      overflow: hidden;
+
+      min-height: 190px;
+      padding: 17px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+
+      background: var(--surface-soft);
+
+      transition:
+        transform var(--transition),
+        border-color var(--transition),
+        background var(--transition);
+    }
+
+    .module-preview:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      background: var(--surface-hover);
+    }
+
+    .module-number {
+      display: inline-grid;
+      place-items: center;
+
+      width: 35px;
+      height: 35px;
+
+      border-radius: 11px;
+
+      color: var(--primary);
+      background: var(--primary-soft);
+
+      font-weight: 850;
+    }
+
+    .module-preview h4 {
+      margin: 25px 0 7px;
+
+      font-size: 16px;
+    }
+
+    .module-preview p {
+      margin: 0;
+
+      color: var(--text-muted);
+
+      font-size: 11px;
+    }
+
+    .module-preview-progress {
+      position: absolute;
+
+      right: 15px;
+      bottom: 14px;
+      left: 15px;
+    }
+
+    /* =====================================================
+       7. KURS
+    ===================================================== */
+
+    .view-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+
+      gap: 20px;
+
+      margin-bottom: 24px;
+    }
+
+    .view-eyebrow {
+      color: var(--primary);
+
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .view-heading h2 {
+      margin: 5px 0 7px;
+
+      font-size: clamp(29px, 4vw, 45px);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+    }
+
+    .view-heading p {
+      max-width: 720px;
+      margin: 0;
+
+      color: var(--text-soft);
+    }
+
+    .view-actions {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 8px;
+    }
+
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      gap: 17px;
+    }
+
+    .course-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+
+      gap: 17px;
+
+      min-height: 225px;
+      padding: 22px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+
+      transition:
+        transform var(--transition),
+        border-color var(--transition),
+        box-shadow var(--transition);
+    }
+
+    .course-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .course-number {
+      display: grid;
+      place-items: center;
+
+      width: 54px;
+      height: 54px;
+
+      border-radius: 17px;
+
+      color: var(--primary);
+      background: var(--primary-soft);
+
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .course-content {
+      min-width: 0;
+    }
+
+    .course-content h3 {
+      margin: 2px 0 8px;
+
+      font-size: 20px;
+    }
+
+    .course-content p {
+      margin: 0 0 15px;
+
+      color: var(--text-soft);
+
+      font-size: 12px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 7px;
+
+      margin-bottom: 16px;
+    }
+
+    .chip {
+      padding: 5px 8px;
+
+      border-radius: var(--radius-pill);
+
+      color: var(--text-muted);
+      background: var(--surface-soft);
+
+      font-size: 10px;
+      font-weight: 750;
+    }
+
+    .course-footer {
+      display: flex;
+      align-items: center;
+
+      gap: 12px;
+    }
+
+    .course-progress {
+      flex: 1;
+    }
+
+    .course-percent {
+      color: var(--text-muted);
+
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    /* =====================================================
+       8. TRENING
+    ===================================================== */
+
+    .training-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+
+      gap: 16px;
+
+      margin-bottom: 18px;
+    }
+
+    .training-card {
+      min-height: 245px;
+      padding: 22px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .training-label {
+      color: var(--primary);
+
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .training-card h3 {
+      margin: 26px 0 8px;
+
+      font-size: 21px;
+    }
+
+    .training-card p {
+      min-height: 47px;
+      margin: 0;
+
+      color: var(--text-soft);
+
+      font-size: 12px;
+    }
+
+    .training-meta {
+      margin: 22px 0 14px;
+
+      color: var(--text-muted);
+
+      font-size: 10px;
+    }
+
+    .trainer {
+      display: grid;
+      grid-template-columns:
+        minmax(280px, .8fr) minmax(0, 1.2fr);
+
+      align-items: center;
+
+      gap: 30px;
+    }
+
+    .trainer-visual {
+      display: grid;
+      place-items: center;
+
+      min-height: 300px;
+
+      border-radius: 20px;
+
+      background:
+        radial-gradient(circle at center,
+          var(--primary-soft),
+          transparent 68%);
+    }
+
+    .trainer-expression {
+      padding: 25px;
+
+      border: 1px solid var(--border);
+      border-radius: 18px;
+
+      color: var(--primary);
+      background: var(--surface);
+      box-shadow: var(--shadow-md);
+
+      font-family: Georgia, serif;
+      font-size: clamp(27px, 4vw, 42px);
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .trainer-question {
+      margin: 0 0 18px;
+
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .answer-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .answer-row input {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 13px;
+
+      border: 1px solid var(--border);
+      border-radius: 11px;
+
+      color: var(--text);
+      background: var(--surface-soft);
+    }
+
+    .feedback {
+      display: none;
+
+      margin-top: 13px;
+      padding: 13px 15px;
+
+      border-radius: 12px;
+
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback.correct {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .feedback.wrong {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .trainer-actions {
+      display: flex;
+      flex-wrap: wrap;
+
+      gap: 8px;
+
+      margin-top: 10px;
+    }
+
+    /* =====================================================
+       9. EGZAMIN I ANALITYKA
+    ===================================================== */
+
+    .exam-grid,
+    .analytics-grid {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.25fr) minmax(310px, .75fr);
+
+      gap: 18px;
+    }
+
+    .exam-main,
+    .exam-stats {
+      min-height: 350px;
+      padding: 29px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .exam-main {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .exam-main h3 {
+      margin: 28px 0 12px;
+
+      font-size: 29px;
+    }
+
+    .exam-list {
+      margin: 0 0 25px;
+      padding-left: 19px;
+
+      color: var(--text-soft);
+    }
+
+    .exam-list li {
+      margin: 7px 0;
+    }
+
+    .exam-main .button {
+      margin-top: auto;
+    }
+
+    .empty-state {
+      display: grid;
+      place-items: center;
+
+      min-height: 250px;
+
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .empty-icon {
+      display: grid;
+      place-items: center;
+
+      width: 62px;
+      height: 62px;
+      margin-bottom: 12px;
+
+      border-radius: 50%;
+
+      color: var(--primary);
+      background: var(--primary-soft);
+
+      font-size: 27px;
+    }
+
+    .empty-state strong {
+      color: var(--text);
+    }
+
+    .empty-state p {
+      max-width: 270px;
+      margin: 7px 0 0;
+
+      font-size: 11px;
+    }
+
+    .analytics-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .analytics-item {
+      padding: 13px;
+
+      border: 1px solid var(--border);
+      border-radius: 13px;
+
+      background: var(--surface-soft);
+    }
+
+    .analytics-header {
+      display: flex;
+      justify-content: space-between;
+
+      gap: 10px;
+
+      margin-bottom: 8px;
+
+      font-size: 11px;
+    }
+
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+
+      gap: 7px;
+    }
+
+    .activity-cell {
+      aspect-ratio: 1;
+
+      border: 1px solid var(--border);
+      border-radius: 6px;
+
+      background: var(--surface-soft);
+    }
+
+    .activity-cell[data-level="1"] {
+      background:
+        color-mix(in srgb,
+          var(--primary) 22%,
+          var(--surface));
+    }
+
+    .activity-cell[data-level="2"] {
+      background:
+        color-mix(in srgb,
+          var(--primary) 42%,
+          var(--surface));
+    }
+
+    .activity-cell[data-level="3"] {
+      background:
+        color-mix(in srgb,
+          var(--primary) 65%,
+          var(--surface));
+    }
+
+    .activity-cell[data-level="4"] {
+      background: var(--primary);
+    }
+
+    /* =====================================================
+       10. PANEL NAUCZYCIELA
+    ===================================================== */
+
+    .teacher-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+
+      gap: 15px;
+
+      margin-bottom: 18px;
+    }
+
+    .teacher-card {
+      padding: 20px;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .teacher-card span {
+      display: block;
+
+      color: var(--text-muted);
+
+      font-size: 10px;
+    }
+
+    .teacher-card strong {
+      display: block;
+      margin-top: 5px;
+
+      font-size: 30px;
+    }
+
+    .teacher-table-wrap {
+      overflow-x: auto;
+    }
+
+    .teacher-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .teacher-table th,
+    .teacher-table td {
+      padding: 12px;
+
+      border-bottom: 1px solid var(--border);
+
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .teacher-table th {
+      color: var(--text-muted);
+
+      font-size: 10px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .teacher-table td {
+      font-size: 12px;
+    }
+
+    /* =====================================================
+       11. MODALE
+    ===================================================== */
+
+    .modal {
+      position: fixed;
+      z-index: 300;
+      inset: 0;
+
+      display: grid;
+      place-items: center;
+
+      padding: 20px;
+
+      visibility: hidden;
+      opacity: 0;
+
+      transition:
+        opacity var(--transition),
+        visibility var(--transition);
+    }
+
+    .modal.open {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+
+      background: rgba(7, 10, 17, .63);
+
+      backdrop-filter: blur(7px);
+    }
+
+    .dialog,
+    .search-dialog {
+      position: relative;
+      z-index: 1;
+
+      width: min(680px, 100%);
+      max-height: min(780px, calc(100vh - 40px));
+      overflow: auto;
+
+      border: 1px solid var(--border);
+      border-radius: 22px;
+
+      background: var(--surface);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .dialog {
+      padding: 22px;
+    }
+
+    .dialog.large {
+      width: min(900px, 100%);
+    }
+
+    .dialog-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      gap: 15px;
+
+      margin-bottom: 21px;
+    }
+
+    .dialog-header h2 {
+      margin: 3px 0 0;
+    }
+
+    .dialog-eyebrow {
+      color: var(--primary);
+
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .dialog-footer {
+      display: flex;
+      justify-content: flex-end;
+
+      gap: 8px;
+
+      margin-top: 21px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+
+      gap: 14px;
+    }
+
+    .form-field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-field span {
+      color: var(--text-soft);
+
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      min-height: 45px;
+      padding: 0 12px;
+
+      border: 1px solid var(--border);
+      border-radius: 11px;
+
+      color: var(--text);
+      background: var(--surface-soft);
+    }
+
+    .settings-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 18px;
+
+      padding: 14px;
+
+      border: 1px solid var(--border);
+      border-radius: 13px;
+
+      background: var(--surface-soft);
+    }
+
+    .settings-row strong,
+    .settings-row small {
+      display: block;
+    }
+
+    .settings-row small {
+      margin-top: 3px;
+
+      color: var(--text-muted);
+    }
+
+    .danger-zone {
+      margin-top: 21px;
+      padding: 16px;
+
+      border: 1px solid color-mix(in srgb,
+          var(--red) 35%,
+          var(--border));
+
+      border-radius: 15px;
+
+      background: var(--red-soft);
+    }
+
+    .danger-zone h3 {
+      margin: 0 0 5px;
+
+      color: var(--red);
+    }
+
+    .danger-zone p {
+      margin: 0 0 13px;
+
+      color: var(--text-soft);
+
+      font-size: 11px;
+    }
+
+    .search-dialog {
+      align-self: start;
+      margin-top: 9vh;
+    }
+
+    .search-input-wrap {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+
+      gap: 11px;
+
+      padding: 14px;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .search-input-wrap input {
+      min-height: 42px;
+
+      border: 0;
+      outline: 0;
+
+      color: var(--text);
+      background: transparent;
+
+      font-size: 15px;
+    }
+
+    .search-results {
+      padding: 10px;
+    }
+
+    .search-result {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+
+      gap: 11px;
+
+      width: 100%;
+      padding: 12px;
+
+      border: 0;
+      border-radius: 12px;
+
+      color: var(--text);
+      background: transparent;
+
+      text-align: left;
+    }
+
+    .search-result:hover {
+      background: var(--surface-hover);
+    }
+
+    .search-result-icon {
+      display: grid;
+      place-items: center;
+
+      width: 36px;
+      height: 36px;
+
+      border-radius: 10px;
+
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .search-result strong,
+    .search-result small {
+      display: block;
+    }
+
+    .search-result small {
+      color: var(--text-muted);
+    }
+
+    /* =====================================================
+       12. TOAST
+    ===================================================== */
+
+    .toast-container {
+      position: fixed;
+      z-index: 500;
+
+      right: 20px;
+      bottom: 20px;
+
+      display: grid;
+
+      width: min(380px, calc(100% - 40px));
+
+      gap: 8px;
+    }
+
+    .toast {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+
+      gap: 10px;
+
+      padding: 13px 14px;
+
+      border: 1px solid var(--border);
+      border-radius: 14px;
+
+      background: var(--surface);
+      box-shadow: var(--shadow-md);
+
+      animation: toastEnter 240ms ease both;
+    }
+
+    .toast-icon {
+      display: grid;
+      place-items: center;
+
+      width: 34px;
+      height: 34px;
+
+      border-radius: 10px;
+
+      color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .toast-close {
+      border: 0;
+
+      color: var(--text-muted);
+      background: transparent;
+    }
+
+    @keyframes toastEnter {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =====================================================
+       13. RESPONSYWNOŚĆ
+    ===================================================== */
+
+    @media (max-width: 1180px) {
+      .metric-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .module-preview-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .training-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      body.sidebar-open .sidebar {
+        transform: translateX(0);
+      }
+
+      body.sidebar-open .sidebar-overlay {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .workspace {
+        margin-left: 0;
+      }
+
+      .menu-button,
+      .sidebar-close {
+        display: inline-grid;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        display: none;
+      }
+
+      .dashboard-grid,
+      .exam-grid,
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .course-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .teacher-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        padding: 11px 15px;
+      }
+
+      .main-content {
+        padding: 19px 14px 50px;
+      }
+
+      .search-trigger {
+        min-width: 42px;
+        width: 42px;
+        padding: 0;
+        justify-content: center;
+      }
+
+      .search-trigger span {
+        display: none;
+      }
+
+      .search-trigger kbd {
+        display: none;
+      }
+
+      .hero {
+        min-height: 400px;
+        padding: 27px 21px;
+      }
+
+      .hero h2 {
+        font-size: 35px;
+      }
+
+      .hero-actions {
+        display: grid;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .current-module,
+      .trainer {
+        grid-template-columns: 1fr;
+      }
+
+      .module-preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .view-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .view-actions {
+        width: 100%;
+      }
+
+      .view-actions .button {
+        flex: 1;
+      }
+
+      .course-card {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-field.full {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .page-eyebrow {
+        display: none;
+      }
+
+      .page-title {
+        max-width: 155px;
+        overflow: hidden;
+
+        font-size: 18px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .timer-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .dialog {
+        padding: 17px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <div id="sidebarOverlay" class="sidebar-overlay">
+    </div>
+
+    <!-- =================================================
+         PANEL BOCZNY
+    ================================================== -->
+
+    <aside id="sidebar" class="sidebar">
+
+      <div class="sidebar-header">
+
+        <button class="brand" data-route="dashboard">
+
+          <span class="brand-icon">
+            ƒ
+          </span>
+
+          <span class="brand-content">
+            <strong class="brand-title">
+              Algebra Lab
+            </strong>
+
+            <span class="brand-subtitle">
+              Wyrażenia algebraiczne
+            </span>
+          </span>
+
+        </button>
+
+        <button id="sidebarClose" class="icon-button sidebar-close" aria-label="Zamknij menu">
+          ×
+        </button>
+
+      </div>
+
+      <div class="profile-card">
+
+        <div id="profileAvatar" class="profile-avatar">
+          A
+        </div>
+
+        <div class="profile-content">
+
+          <strong id="profileName" class="profile-name">
+            Aleksandra
+          </strong>
+
+          <span id="profileLevel" class="profile-level">
+            Klasa 8 · Egzamin ósmoklasisty
+          </span>
+
+        </div>
+
+        <button id="editProfileButton" class="icon-button" aria-label="Edytuj profil">
+          ✎
+        </button>
+
+      </div>
+
+      <nav class="navigation">
+
+        <p class="nav-label">
+          Platforma
+        </p>
+
+        <button class="nav-item active" data-route="dashboard">
+
+          <span class="nav-icon">
+            ◫
+          </span>
+
+          <span>
+            Pulpit
+          </span>
+
+        </button>
+
+        <button class="nav-item" data-route="course">
+
+          <span class="nav-icon">
+            ◈
+          </span>
+
+          <span>
+            Kurs
+          </span>
+
+          <span id="courseBadge" class="nav-badge">
+            0%
+          </span>
+
+        </button>
+
+        <button class="nav-item" data-route="training">
+
+          <span class="nav-icon">
+            ◎
+          </span>
+
+          <span>
+            Trening
+          </span>
+
+        </button>
+
+        <button class="nav-item" data-route="exam">
+
+          <span class="nav-icon">
+            ◉
+          </span>
+
+          <span>
+            Egzamin
+          </span>
+
+        </button>
+
+        <button class="nav-item" data-route="analytics">
+
+          <span class="nav-icon">
+            ◔
+          </span>
+
+          <span>
+            Statystyki
+          </span>
+
+        </button>
+
+        <p class="nav-label">
+          Nauczyciel
+        </p>
+
+        <button class="nav-item" data-route="teacher">
+
+          <span class="nav-icon">
+            ◇
+          </span>
+
+          <span>
+            Panel nauczyciela
+          </span>
+
+        </button>
+
+      </nav>
+
+      <div class="sidebar-footer">
+
+        <div class="weekly-card">
+
+          <div class="weekly-header">
+
+            <span>
+              Cel tygodnia
+            </span>
+
+            <strong id="weeklyText">
+              0 / 5
+            </strong>
+
+          </div>
+
+          <div class="progress-track">
+
+            <div id="weeklyProgress" class="progress-value" style="width: 0%">
+            </div>
+
+          </div>
+
+          <small>
+            Regularna nauka daje lepsze wyniki niż jednorazowa długa sesja.
+          </small>
+
+        </div>
+
+        <button id="settingsButton" class="nav-item">
+
+          <span class="nav-icon">
+            ⚙
+          </span>
+
+          <span>
+            Ustawienia
+          </span>
+
+        </button>
+
+      </div>
+
+    </aside>
+
+    <!-- =================================================
+         OBSZAR ROBOCZY
+    ================================================== -->
+
+    <div class="workspace">
+
+      <header class="topbar">
+
+        <div class="topbar-left">
+
+          <button id="sidebarOpen" class="icon-button menu-button" aria-label="Otwórz menu">
+            ☰
+          </button>
+
+          <div>
+
+            <p id="pageEyebrow" class="page-eyebrow">
+              Algebra
+            </p>
+
+            <h1 id="pageTitle" class="page-title">
+              Pulpit ucznia
+            </h1>
+
+          </div>
+
+        </div>
+
+        <div class="topbar-actions">
+
+          <button id="searchButton" class="search-trigger">
+
+            <span>
+              Szukaj
+            </span>
+
+            <kbd>
+              Ctrl K
+            </kbd>
+
+          </button>
+
+          <button id="themeButton" class="icon-button" aria-label="Zmień motyw">
+            ☾
+          </button>
+
+        </div>
+
+      </header>
+
+      <main class="main-content">
+
+        <!-- =============================================
+             PULPIT
+        ============================================== -->
+
+        <section class="view active" data-view="dashboard">
+
+          <div class="hero">
+
+            <div class="hero-content">
+
+              <span class="status-pill">
+                Kurs interaktywny
+              </span>
+
+              <h2>
+                Przekształcanie wyrażeń algebraicznych
+              </h2>
+
+              <p>
+                Naucz się redukować wyrazy podobne, usuwać nawiasy,
+                mnożyć wyrażenia i rozwiązywać zadania egzaminacyjne
+                krok po kroku.
+              </p>
+
+              <div class="hero-actions">
+
+                <button id="continueButton" class="button button-primary">
+                  Kontynuuj naukę
+                </button>
+
+                <button class="button button-secondary" data-route="course">
+                  Zobacz moduły
+                </button>
+
+              </div>
+
+            </div>
+
+            <div class="hero-visual">
+
+              <svg viewBox="0 0 440 320" aria-label="Animacja przekształcenia wyrażenia">
+
+                <defs>
+
+                  <linearGradient id="algebraGradient" x1="0" y1="0" x2="1" y2="1">
+
+                    <stop offset="0%" stop-color="#a99fff">
+                    </stop>
+
+                    <stop offset="100%" stop-color="#4edbd2">
+                    </stop>
+
+                  </linearGradient>
+
+                </defs>
+
+                <circle cx="220" cy="160" r="138" fill="rgba(255,255,255,.07)">
+                </circle>
+
+                <rect x="52" y="74" width="336" height="78" rx="19" fill="rgba(255,255,255,.11)"
+                  stroke="rgba(255,255,255,.25)">
+                </rect>
+
+                <text x="220" y="124" text-anchor="middle" fill="white" font-size="31" font-family="Georgia">
+                  3x + 5x − 2x
+                </text>
+
+                <path d="M220 166 L220 220" stroke="url(#algebraGradient)" stroke-width="7" stroke-linecap="round">
+                </path>
+
+                <path d="M201 207 L220 227 L239 207" fill="none" stroke="#4edbd2" stroke-width="7"
+                  stroke-linecap="round" stroke-linejoin="round">
+                </path>
+
+                <rect x="115" y="232" width="210" height="62" rx="18" fill="rgba(255,255,255,.14)"
+                  stroke="rgba(255,255,255,.28)">
+                </rect>
+
+                <text x="220" y="273" text-anchor="middle" fill="white" font-size="34" font-family="Georgia">
+                  6x
+                </text>
+
+              </svg>
+
+            </div>
+
+          </div>
+
+          <div class="metric-grid">
+
+            <article class="metric-card">
+
+              <div class="metric-icon purple">
+                ◈
+              </div>
+
+              <div>
+
+                <span class="metric-label">
+                  Postęp kursu
+                </span>
+
+                <strong id="progressMetric" class="metric-value">
+                  0%
+                </strong>
+
+                <small>
+                  Wszystkie moduły
+                </small>
+
+              </div>
+
+            </article>
+
+            <article class="metric-card">
+
+              <div class="metric-icon green">
+                ✓
+              </div>
+
+              <div>
+
+                <span class="metric-label">
+                  Poprawne odpowiedzi
+                </span>
+
+                <strong id="correctMetric" class="metric-value">
+                  0
+                </strong>
+
+                <small>
+                  Zadania rozwiązane
+                </small>
+
+              </div>
+
+            </article>
+
+            <article class="metric-card">
+
+              <div class="metric-icon orange">
+                ⚡
+              </div>
+
+              <div>
+
+                <span class="metric-label">
+                  Najlepsza seria
+                </span>
+
+                <strong id="streakMetric" class="metric-value">
+                  0
+                </strong>
+
+                <small>
+                  Odpowiedzi z rzędu
+                </small>
+
+              </div>
+
+            </article>
+
+            <article class="metric-card">
+
+              <div class="metric-icon blue">
+                ★
+              </div>
+
+              <div>
+
+                <span class="metric-label">
+                  Punkty
+                </span>
+
+                <strong id="pointsMetric" class="metric-value">
+                  0
+                </strong>
+
+                <small>
+                  Zdobyte w kursie
+                </small>
+
+              </div>
+
+            </article>
+
+          </div>
+
+          <div class="dashboard-grid">
+
+            <section class="panel">
+
+              <div class="panel-header">
+
+                <div>
+
+                  <span class="panel-eyebrow">
+                    Aktualny moduł
+                  </span>
+
+                  <h3>
+                    Redukcja wyrazów podobnych
+                  </h3>
+
+                </div>
+
+                <button class="text-button" data-route="course">
+                  Wszystkie moduły
+                </button>
+
+              </div>
+
+              <div class="current-module">
+
+                <div class="algebra-visual">
+
+                  <div class="algebra-machine">
+
+                    <div class="machine-expression">
+                      7x − 3x + 2x
+                    </div>
+
+                    <div class="machine-arrow">
+                      ↓
+                    </div>
+
+                    <div class="machine-result">
+                      6x
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <div>
+
+                  <div class="current-meta">
+
+                    <span>
+                      Moduł 1 z 8
+                    </span>
+
+                    <strong id="currentProgressText">
+                      0%
+                    </strong>
+
+                  </div>
+
+                  <div class="progress-track large">
+
+                    <div id="currentProgress" class="progress-value" style="width: 0%">
+                    </div>
+
+                  </div>
+
+                  <ul class="lesson-list">
+
+                    <li>
+                      <span class="lesson-marker">
+                        1
+                      </span>
+
+                      <span>
+                        Współczynnik i część literowa
+                      </span>
+                    </li>
+
+                    <li>
+                      <span class="lesson-marker">
+                        2
+                      </span>
+
+                      <span>
+                        Rozpoznawanie wyrazów podobnych
+                      </span>
+                    </li>
+
+                    <li>
+                      <span class="lesson-marker">
+                        3
+                      </span>
+
+                      <span>
+                        Redukowanie współczynników
+                      </span>
+                    </li>
+
+                    <li>
+                      <span class="lesson-marker">
+                        4
+                      </span>
+
+                      <span>
+                        Trening interaktywny
+                      </span>
+                    </li>
+
+                  </ul>
+
+                  <button id="openModuleButton" class="button button-primary button-full">
+                    Otwórz moduł
+                  </button>
+
+                </div>
+
+              </div>
+
+            </section>
+
+            <aside class="panel timer-card">
+
+              <div class="panel-header">
+
+                <div>
+
+                  <span class="panel-eyebrow">
+                    Sesja skupienia
+                  </span>
+
+                  <h3>
+                    Timer nauki
+                  </h3>
+
+                </div>
+
+              </div>
+
+              <div id="timerDisplay" class="timer-display">
+                25:00
+              </div>
+
+              <p class="timer-description">
+                Pracuj bez rozpraszania uwagi przez wybrany czas.
+              </p>
+
+              <div class="timer-options">
+
+                <button class="timer-option active" data-minutes="25">
+                  25 min
+                </button>
+
+                <button class="timer-option" data-minutes="45">
+                  45 min
+                </button>
+
+                <button class="timer-option" data-minutes="60">
+                  60 min
+                </button>
+
+              </div>
+
+              <div class="timer-actions">
+
+                <button id="timerStart" class="button button-primary">
+                  Start
+                </button>
+
+                <button id="timerReset" class="button button-secondary">
+                  Reset
+                </button>
+
+              </div>
+
+            </aside>
+
+          </div>
+
+          <section class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <span class="panel-eyebrow">
+                  Mapa kursu
+                </span>
+
+                <h3>
+                  Najważniejsze moduły
+                </h3>
+
+              </div>
+
+              <button class="text-button" data-route="course">
+                Zobacz pełną mapę
+              </button>
+
+            </div>
+
+            <div id="modulePreviewGrid" class="module-preview-grid">
+            </div>
+
+          </section>
+
+        </section>
+
+        <!-- =============================================
+             KURS
+        ============================================== -->
+
+        <section class="view" data-view="course">
+
+          <div class="view-heading">
+
+            <div>
+
+              <span class="view-eyebrow">
+                Program kursu
+              </span>
+
+              <h2>
+                Przekształcanie wyrażeń algebraicznych
+              </h2>
+
+              <p>
+                Osiem modułów prowadzących od podstaw do zadań
+                na poziomie egzaminu ósmoklasisty.
+              </p>
+
+            </div>
+
+            <div class="view-actions">
+
+              <button id="resetCourse" class="button button-secondary">
+                Resetuj postęp
+              </button>
+
+              <button id="startCourse" class="button button-primary">
+                Rozpocznij kurs
+              </button>
+
+            </div>
+
+          </div>
+
+          <div id="courseGrid" class="course-grid">
+          </div>
+
+        </section>
+
+        <!-- =============================================
+             TRENING
+        ============================================== -->
+
+        <section class="view" data-view="training">
+
+          <div class="view-heading">
+
+            <div>
+
+              <span class="view-eyebrow">
+                Ćwiczenia
+              </span>
+
+              <h2>
+                Trening interaktywny
+              </h2>
+
+              <p>
+                Wybierz tryb pracy i otrzymuj natychmiastową informację zwrotną.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="training-grid">
+
+            <article class="training-card">
+
+              <span class="training-label">
+                Tryb 01
+              </span>
+
+              <h3>
+                Szybka seria
+              </h3>
+
+              <p>
+                Krótkie zadania na redukcję wyrazów podobnych.
+              </p>
+
+              <div class="training-meta">
+                10 zadań · około 8 minut
+              </div>
+
+              <button class="button button-primary" data-training="quick">
+                Rozpocznij
+              </button>
+
+            </article>
+
+            <article class="training-card">
+
+              <span class="training-label">
+                Tryb 02
+              </span>
+
+              <h3>
+                Nawiasy
+              </h3>
+
+              <p>
+                Usuwanie nawiasów i kontrola znaków.
+              </p>
+
+              <div class="training-meta">
+                12 zadań · około 15 minut
+              </div>
+
+              <button class="button button-primary" data-training="brackets">
+                Rozpocznij
+              </button>
+
+            </article>
+
+            <article class="training-card">
+
+              <span class="training-label">
+                Tryb 03
+              </span>
+
+              <h3>
+                Mieszany trening
+              </h3>
+
+              <p>
+                Zadania z kilku działów w losowej kolejności.
+              </p>
+
+              <div class="training-meta">
+                20 zadań · około 25 minut
+              </div>
+
+              <button class="button button-primary" data-training="mixed">
+                Rozpocznij
+              </button>
+
+            </article>
+
+          </div>
+
+          <section class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <span class="panel-eyebrow">
+                  Zadanie demonstracyjne
+                </span>
+
+                <h3>
+                  Redukcja wyrazów podobnych
+                </h3>
+
+              </div>
+
+            </div>
+
+            <div class="trainer">
+
+              <div class="trainer-visual">
+
+                <div id="trainerExpression" class="trainer-expression">
+                  5x + 3x − 2x
+                </div>
+
+              </div>
+
+              <div>
+
+                <p class="trainer-question">
+                  Uprość wyrażenie.
+                </p>
+
+                <div class="answer-row">
+
+                  <input id="trainerAnswer" type="text" placeholder="Np. 6x" autocomplete="off">
+
+                  <button id="checkTrainer" class="button button-primary">
+                    Sprawdź
+                  </button>
+
+                </div>
+
+                <div class="trainer-actions">
+
+                  <button id="trainerHint" class="button button-secondary">
+                    Podpowiedź
+                  </button>
+
+                  <button id="nextTrainer" class="button button-secondary">
+                    Nowe zadanie
+                  </button>
+
+                </div>
+
+                <div id="trainerFeedback" class="feedback">
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </section>
+
+        <!-- =============================================
+             EGZAMIN
+        ============================================== -->
+
+        <section class="view" data-view="exam">
+
+          <div class="view-heading">
+
+            <div>
+
+              <span class="view-eyebrow">
+                Tryb egzaminacyjny
+              </span>
+
+              <h2>
+                Egzamin ósmoklasisty
+              </h2>
+
+              <p>
+                Symulacja z limitem czasu, punktacją i analizą wyniku.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="exam-grid">
+
+            <article class="exam-main">
+
+              <span class="status-pill orange">
+                Wersja demonstracyjna
+              </span>
+
+              <h3>
+                Wyrażenia algebraiczne
+              </h3>
+
+              <ul class="exam-list">
+
+                <li>
+                  15 zadań
+                </li>
+
+                <li>
+                  30 minut
+                </li>
+
+                <li>
+                  Automatyczna punktacja
+                </li>
+
+                <li>
+                  Analiza błędów po zakończeniu
+                </li>
+
+              </ul>
+
+              <button id="startExam" class="button button-primary">
+                Rozpocznij symulację
+              </button>
+
+            </article>
+
+            <article class="exam-stats">
+
+              <h3>
+                Ostatni wynik
+              </h3>
+
+              <div class="empty-state">
+
+                <span class="empty-icon">
+                  ◉
+                </span>
+
+                <strong>
+                  Brak wyników
+                </strong>
+
+                <p>
+                  Ukończ pierwszą symulację, aby zobaczyć statystyki.
+                </p>
+
+              </div>
+
+            </article>
+
+          </div>
+
+        </section>
+
+        <!-- =============================================
+             STATYSTYKI
+        ============================================== -->
+
+        <section class="view" data-view="analytics">
+
+          <div class="view-heading">
+
+            <div>
+
+              <span class="view-eyebrow">
+                Analiza nauki
+              </span>
+
+              <h2>
+                Twoje statystyki
+              </h2>
+
+              <p>
+                Dane są zapisywane lokalnie w tej przeglądarce.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="analytics-grid">
+
+            <article class="panel">
+
+              <div class="panel-header">
+
+                <h3>
+                  Postęp w modułach
+                </h3>
+
+              </div>
+
+              <div id="analyticsList" class="analytics-list">
+              </div>
+
+            </article>
+
+            <article class="panel">
+
+              <div class="panel-header">
+
+                <h3>
+                  Aktywność
+                </h3>
+
+              </div>
+
+              <div id="activityGrid" class="activity-grid">
+              </div>
+
+            </article>
+
+          </div>
+
+        </section>
+
+        <!-- =============================================
+             PANEL NAUCZYCIELA
+        ============================================== -->
+
+        <section class="view" data-view="teacher">
+
+          <div class="view-heading">
+
+            <div>
+
+              <span class="view-eyebrow">
+                Widok nauczyciela
+              </span>
+
+              <h2>
+                Panel nauczyciela
+              </h2>
+
+              <p>
+                Podsumowanie aktywności i wyników ucznia.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="teacher-grid">
+
+            <article class="teacher-card">
+
+              <span>
+                Ukończone moduły
+              </span>
+
+              <strong id="teacherCompleted">
+                0 / 8
+              </strong>
+
+            </article>
+
+            <article class="teacher-card">
+
+              <span>
+                Skuteczność
+              </span>
+
+              <strong id="teacherAccuracy">
+                0%
+              </strong>
+
+            </article>
+
+            <article class="teacher-card">
+
+              <span>
+                Czas nauki
+              </span>
+
+              <strong id="teacherTime">
+                0 min
+              </strong>
+
+            </article>
+
+          </div>
+
+          <section class="panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <span class="panel-eyebrow">
+                  Raport
+                </span>
+
+                <h3>
+                  Wyniki według modułów
+                </h3>
+
+              </div>
+
+            </div>
+
+            <div class="teacher-table-wrap">
+
+              <table class="teacher-table">
+
+                <thead>
+
+                  <tr>
+                    <th>Moduł</th>
+                    <th>Postęp</th>
+                    <th>Status</th>
+                    <th>Poziom</th>
+                  </tr>
+
+                </thead>
+
+                <tbody id="teacherTableBody">
+                </tbody>
+
+              </table>
+
+            </div>
+
+          </section>
+
+        </section>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- =================================================
+       MODAL PROFILU
+  ================================================== -->
+
+  <div id="profileModal" class="modal" aria-hidden="true">
+
+    <div class="modal-backdrop" data-close-modal="profileModal">
+    </div>
+
+    <section class="dialog">
+
+      <div class="dialog-header">
+
+        <div>
+
+          <span class="dialog-eyebrow">
+            Profil ucznia
+          </span>
+
+          <h2>
+            Dane użytkownika
+          </h2>
+
+        </div>
+
+        <button class="icon-button" data-close-modal="profileModal">
+          ×
+        </button>
+
+      </div>
+
+      <div class="form-grid">
+
+        <label class="form-field">
+
+          <span>
+            Imię
+          </span>
+
+          <input id="profileNameInput" type="text" maxlength="40">
+
+        </label>
+
+        <label class="form-field">
+
+          <span>
+            Klasa
+          </span>
+
+          <select id="profileGradeInput">
+
+            <option value="7">
+              Klasa 7
+            </option>
+
+            <option value="8">
+              Klasa 8
+            </option>
+
+          </select>
+
+        </label>
+
+        <label class="form-field full">
+
+          <span>
+            Cel nauki
+          </span>
+
+          <select id="profileGoalInput">
+
+            <option value="school">
+              Utrwalenie materiału szkolnego
+            </option>
+
+            <option value="exam">
+              Przygotowanie do egzaminu ósmoklasisty
+            </option>
+
+            <option value="advanced">
+              Nauka na poziomie rozszerzonym
+            </option>
+
+          </select>
+
+        </label>
+
+      </div>
+
+      <div class="dialog-footer">
+
+        <button class="button button-secondary" data-close-modal="profileModal">
+          Anuluj
+        </button>
+
+        <button id="saveProfile" class="button button-primary">
+          Zapisz
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- =================================================
+       USTAWIENIA
+  ================================================== -->
+
+  <div id="settingsModal" class="modal" aria-hidden="true">
+
+    <div class="modal-backdrop" data-close-modal="settingsModal">
+    </div>
+
+    <section class="dialog">
+
+      <div class="dialog-header">
+
+        <div>
+
+          <span class="dialog-eyebrow">
+            Aplikacja
+          </span>
+
+          <h2>
+            Ustawienia
+          </h2>
+
+        </div>
+
+        <button class="icon-button" data-close-modal="settingsModal">
+          ×
+        </button>
+
+      </div>
+
+      <div class="settings-list">
+
+        <label class="settings-row">
+
+          <span>
+
+            <strong>
+              Ciemny motyw
+            </strong>
+
+            <small>
+              Zmniejsza jasność interfejsu.
+            </small>
+
+          </span>
+
+          <input id="darkThemeToggle" type="checkbox">
+
+        </label>
+
+        <label class="settings-row">
+
+          <span>
+
+            <strong>
+              Ogranicz animacje
+            </strong>
+
+            <small>
+              Wyłącza większość efektów przejścia.
+            </small>
+
+          </span>
+
+          <input id="motionToggle" type="checkbox">
+
+        </label>
+
+      </div>
+
+      <div class="danger-zone">
+
+        <h3>
+          Dane lokalne
+        </h3>
+
+        <p>
+          Ta operacja usunie profil, wyniki i postęp kursu.
+        </p>
+
+        <button id="clearData" class="button button-danger">
+          Usuń wszystkie dane
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- =================================================
+       WYSZUKIWANIE
+  ================================================== -->
+
+  <div id="searchModal" class="modal" aria-hidden="true">
+
+    <div class="modal-backdrop" data-close-modal="searchModal">
+    </div>
+
+    <section class="search-dialog">
+
+      <div class="search-input-wrap">
+
+        <span>
+          ⌕
+        </span>
+
+        <input id="searchInput" type="search" placeholder="Szukaj modułu lub zagadnienia" autocomplete="off">
+
+        <kbd>
+          Esc
+        </kbd>
+
+      </div>
+
+      <div id="searchResults" class="search-results">
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- =================================================
+       MODAL TREŚCI
+  ================================================== -->
+
+  <div id="contentModal" class="modal" aria-hidden="true">
+
+    <div class="modal-backdrop" data-close-modal="contentModal">
+    </div>
+
+    <section class="dialog large">
+
+      <div class="dialog-header">
+
+        <div>
+
+          <span id="contentEyebrow" class="dialog-eyebrow">
+            Moduł
+          </span>
+
+          <h2 id="contentTitle">
+            Tytuł
+          </h2>
+
+        </div>
+
+        <button class="icon-button" data-close-modal="contentModal">
+          ×
+        </button>
+
+      </div>
+
+      <div id="contentBody">
+      </div>
+
+    </section>
+
+  </div>
+
+  <div id="toastContainer" class="toast-container">
+  </div>
+
+  <script>
+    "use strict";
+
+    /* =====================================================
+       1. DANE KURSU
+    ===================================================== */
+
+    const STORAGE_KEY =
+      "algebraLabPlatformV1";
+
+    const ROUTES = {
+      dashboard: {
+        eyebrow: "Algebra",
+        title: "Pulpit ucznia"
+      },
+
+      course: {
+        eyebrow: "Program kursu",
+        title: "Moduły nauki"
+      },
+
+      training: {
+        eyebrow: "Ćwiczenia",
+        title: "Trening interaktywny"
+      },
+
+      exam: {
+        eyebrow: "Egzamin ósmoklasisty",
+        title: "Tryb egzaminacyjny"
+      },
+
+      analytics: {
+        eyebrow: "Analiza",
+        title: "Statystyki ucznia"
+      },
+
+      teacher: {
+        eyebrow: "Nauczyciel",
+        title: "Panel nauczyciela"
+      }
+    };
+
+    const MODULES = [
+      {
+        id: "like-terms",
+        index: 1,
+        title: "Redukcja wyrazów podobnych",
+        description:
+          "Współczynnik, część literowa i łączenie wyrazów podobnych.",
+        duration: 35,
+        tasks: 25,
+        level: "Podstawowy"
+      },
+
+      {
+        id: "addition-subtraction",
+        index: 2,
+        title: "Dodawanie i odejmowanie wyrażeń",
+        description:
+          "Łączenie wyrażeń algebraicznych i porządkowanie zapisu.",
+        duration: 40,
+        tasks: 22,
+        level: "Podstawowy"
+      },
+
+      {
+        id: "brackets",
+        index: 3,
+        title: "Opuszczanie nawiasów",
+        description:
+          "Zmiana znaków, nawias poprzedzony plusem i minusem.",
+        duration: 45,
+        tasks: 25,
+        level: "Średni"
+      },
+
+      {
+        id: "monomial-polynomial",
+        index: 4,
+        title: "Mnożenie jednomianu przez wielomian",
+        description:
+          "Rozdzielność mnożenia względem dodawania i odejmowania.",
+        duration: 50,
+        tasks: 28,
+        level: "Średni"
+      },
+
+      {
+        id: "common-factor",
+        index: 5,
+        title: "Wyłączanie wspólnego czynnika",
+        description:
+          "Rozpoznawanie wspólnego czynnika i rozkładanie wyrażeń.",
+        duration: 45,
+        tasks: 20,
+        level: "Średni"
+      },
+
+      {
+        id: "two-brackets",
+        index: 6,
+        title: "Mnożenie dwóch nawiasów",
+        description:
+          "Mnożenie każdego składnika przez każdy składnik.",
+        duration: 60,
+        tasks: 30,
+        level: "Zaawansowany"
+      },
+
+      {
+        id: "values",
+        index: 7,
+        title: "Obliczanie wartości wyrażeń",
+        description:
+          "Podstawianie liczb i zachowanie kolejności działań.",
+        duration: 40,
+        tasks: 24,
+        level: "Średni"
+      },
+
+      {
+        id: "word-problems",
+        index: 8,
+        title: "Zadania tekstowe i egzaminacyjne",
+        description:
+          "Modelowanie sytuacji za pomocą wyrażeń algebraicznych.",
+        duration: 70,
+        tasks: 35,
+        level: "Egzamin"
+      }
+    ];
+
+    const SEARCH_ITEMS = MODULES.map(module => ({
+      id: module.id,
+      title: module.title,
+      subtitle: module.description,
+      route: "course"
+    }));
+
+    const DEFAULT_STATE = {
+      route: "dashboard",
+      theme: "light",
+      reducedMotion: false,
+
+      profile: {
+        name: "Aleksandra",
+        grade: "8",
+        goal: "exam"
+      },
+
+      progress: {},
+
+      stats: {
+        points: 0,
+        correct: 0,
+        attempts: 0,
+        streak: 0,
+        bestStreak: 0,
+        studySeconds: 0,
+        weeklySessions: 0
+      },
+
+      activity: Array.from(
+        { length: 35 },
+        () => 0
+      )
+    };
+
+    let state = loadState();
+
+    let trainerTask = {
+      expression: "5x + 3x − 2x",
+      answer: "6x",
+      hint:
+        "Dodaj współczynniki: 5 + 3 − 2."
+    };
+
+    let timer = {
+      duration: 25 * 60,
+      remaining: 25 * 60,
+      interval: null,
+      running: false
+    };
+
+    /* =====================================================
+       2. ELEMENTY DOM
+    ===================================================== */
+
+    const dom = {
+      html:
+        document.documentElement,
+
+      body:
+        document.body,
+
+      pageEyebrow:
+        document.getElementById(
+          "pageEyebrow"
+        ),
+
+      pageTitle:
+        document.getElementById(
+          "pageTitle"
+        ),
+
+      sidebarOverlay:
+        document.getElementById(
+          "sidebarOverlay"
+        ),
+
+      sidebarOpen:
+        document.getElementById(
+          "sidebarOpen"
+        ),
+
+      sidebarClose:
+        document.getElementById(
+          "sidebarClose"
+        ),
+
+      profileName:
+        document.getElementById(
+          "profileName"
+        ),
+
+      profileLevel:
+        document.getElementById(
+          "profileLevel"
+        ),
+
+      profileAvatar:
+        document.getElementById(
+          "profileAvatar"
+        ),
+
+      profileModal:
+        document.getElementById(
+          "profileModal"
+        ),
+
+      profileNameInput:
+        document.getElementById(
+          "profileNameInput"
+        ),
+
+      profileGradeInput:
+        document.getElementById(
+          "profileGradeInput"
+        ),
+
+      profileGoalInput:
+        document.getElementById(
+          "profileGoalInput"
+        ),
+
+      settingsModal:
+        document.getElementById(
+          "settingsModal"
+        ),
+
+      searchModal:
+        document.getElementById(
+          "searchModal"
+        ),
+
+      searchInput:
+        document.getElementById(
+          "searchInput"
+        ),
+
+      searchResults:
+        document.getElementById(
+          "searchResults"
+        ),
+
+      contentModal:
+        document.getElementById(
+          "contentModal"
+        ),
+
+      contentEyebrow:
+        document.getElementById(
+          "contentEyebrow"
+        ),
+
+      contentTitle:
+        document.getElementById(
+          "contentTitle"
+        ),
+
+      contentBody:
+        document.getElementById(
+          "contentBody"
+        ),
+
+      modulePreviewGrid:
+        document.getElementById(
+          "modulePreviewGrid"
+        ),
+
+      courseGrid:
+        document.getElementById(
+          "courseGrid"
+        ),
+
+      analyticsList:
+        document.getElementById(
+          "analyticsList"
+        ),
+
+      activityGrid:
+        document.getElementById(
+          "activityGrid"
+        ),
+
+      courseBadge:
+        document.getElementById(
+          "courseBadge"
+        ),
+
+      progressMetric:
+        document.getElementById(
+          "progressMetric"
+        ),
+
+      correctMetric:
+        document.getElementById(
+          "correctMetric"
+        ),
+
+      streakMetric:
+        document.getElementById(
+          "streakMetric"
+        ),
+
+      pointsMetric:
+        document.getElementById(
+          "pointsMetric"
+        ),
+
+      weeklyText:
+        document.getElementById(
+          "weeklyText"
+        ),
+
+      weeklyProgress:
+        document.getElementById(
+          "weeklyProgress"
+        ),
+
+      currentProgress:
+        document.getElementById(
+          "currentProgress"
+        ),
+
+      currentProgressText:
+        document.getElementById(
+          "currentProgressText"
+        ),
+
+      trainerExpression:
+        document.getElementById(
+          "trainerExpression"
+        ),
+
+      trainerAnswer:
+        document.getElementById(
+          "trainerAnswer"
+        ),
+
+      trainerFeedback:
+        document.getElementById(
+          "trainerFeedback"
+        ),
+
+      timerDisplay:
+        document.getElementById(
+          "timerDisplay"
+        ),
+
+      timerStart:
+        document.getElementById(
+          "timerStart"
+        ),
+
+      teacherCompleted:
+        document.getElementById(
+          "teacherCompleted"
+        ),
+
+      teacherAccuracy:
+        document.getElementById(
+          "teacherAccuracy"
+        ),
+
+      teacherTime:
+        document.getElementById(
+          "teacherTime"
+        ),
+
+      teacherTableBody:
+        document.getElementById(
+          "teacherTableBody"
+        ),
+
+      toastContainer:
+        document.getElementById(
+          "toastContainer"
+        )
+    };
+
+    /* =====================================================
+       3. ZAPIS DANYCH
+    ===================================================== */
+
+    function loadState() {
+      const raw =
+        localStorage.getItem(
+          STORAGE_KEY
+        );
+
+      if (!raw) {
+        return structuredClone(
+          DEFAULT_STATE
+        );
+      }
+
+      try {
+        const parsed =
+          JSON.parse(raw);
+
+        return {
+          ...structuredClone(
+            DEFAULT_STATE
+          ),
+
+          ...parsed,
+
+          profile: {
+            ...DEFAULT_STATE.profile,
+            ...(parsed.profile || {})
+          },
+
+          stats: {
+            ...DEFAULT_STATE.stats,
+            ...(parsed.stats || {})
+          }
+        };
+      } catch (error) {
+        console.error(
+          "Błąd odczytu danych:",
+          error
+        );
+
+        return structuredClone(
+          DEFAULT_STATE
+        );
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(state)
+      );
+    }
+
+    function clearAllState() {
+      localStorage.removeItem(
+        STORAGE_KEY
+      );
+
+      location.reload();
+    }
+
+    /* =====================================================
+       4. FUNKCJE POMOCNICZE
+    ===================================================== */
+
+    function clamp(
+      value,
+      min,
+      max
+    ) {
+      return Math.min(
+        Math.max(
+          value,
+          min
+        ),
+        max
+      );
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function normalizeAnswer(value) {
+      return String(value)
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .replaceAll("−", "-")
+        .replaceAll("*", "");
+    }
+
+    function getInitials(name) {
+      const words =
+        String(name)
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean);
+
+      if (!words.length) {
+        return "U";
+      }
+
+      return words
+        .slice(0, 2)
+        .map(word =>
+          word[0].toUpperCase()
+        )
+        .join("");
+    }
+
+    function getGoalLabel(goal) {
+      const labels = {
+        school:
+          "Materiał szkolny",
+
+        exam:
+          "Egzamin ósmoklasisty",
+
+        advanced:
+          "Poziom rozszerzony"
+      };
+
+      return (
+        labels[goal]
+        || labels.exam
+      );
+    }
+
+    function getModuleProgress(id) {
+      return clamp(
+        Number(
+          state.progress[id]
+        ) || 0,
+        0,
+        100
+      );
+    }
+
+    function getOverallProgress() {
+      const sum =
+        MODULES.reduce(
+          (total, module) =>
+            total
+            + getModuleProgress(
+              module.id
+            ),
+          0
+        );
+
+      return Math.round(
+        sum / MODULES.length
+      );
+    }
+
+    function getAccuracy() {
+      if (
+        !state.stats.attempts
+      ) {
+        return 0;
+      }
+
+      return Math.round(
+        state.stats.correct
+        / state.stats.attempts
+        * 100
+      );
+    }
+
+    function formatTime(seconds) {
+      const minutes =
+        Math.floor(
+          seconds / 60
+        );
+
+      if (minutes < 60) {
+        return `${minutes} min`;
+      }
+
+      const hours =
+        Math.floor(
+          minutes / 60
+        );
+
+      const rest =
+        minutes % 60;
+
+      return rest
+        ? `${hours} h ${rest} min`
+        : `${hours} h`;
+    }
+
+    function addActivity(level = 1) {
+      state.activity.shift();
+
+      state.activity.push(
+        clamp(level, 0, 4)
+      );
+
+      saveState();
+    }
+
+    /* =====================================================
+       5. ROUTING
+    ===================================================== */
+
+    function navigate(route) {
+      if (!ROUTES[route]) {
+        route = "dashboard";
+      }
+
+      state.route = route;
+      saveState();
+
+      document
+        .querySelectorAll(
+          ".view"
+        )
+        .forEach(view => {
+          view.classList.toggle(
+            "active",
+            view.dataset.view
+            === route
+          );
+        });
+
+      document
+        .querySelectorAll(
+          ".nav-item[data-route]"
+        )
+        .forEach(button => {
+          button.classList.toggle(
+            "active",
+            button.dataset.route
+            === route
+          );
+        });
+
+      dom.pageEyebrow.textContent =
+        ROUTES[route].eyebrow;
+
+      dom.pageTitle.textContent =
+        ROUTES[route].title;
+
+      closeSidebar();
+      closeModal(
+        dom.searchModal
+      );
+
+      window.scrollTo({
+        top: 0,
+        behavior:
+          state.reducedMotion
+            ? "auto"
+            : "smooth"
+      });
+    }
+
+    /* =====================================================
+       6. PANEL BOCZNY I MODALE
+    ===================================================== */
+
+    function openSidebar() {
+      document.body.classList.add(
+        "sidebar-open"
+      );
+    }
+
+    function closeSidebar() {
+      document.body.classList.remove(
+        "sidebar-open"
+      );
+    }
+
+    function openModal(modal) {
+      if (!modal) {
+        return;
+      }
+
+      modal.classList.add("open");
+
+      modal.setAttribute(
+        "aria-hidden",
+        "false"
+      );
+
+      document.body.classList.add(
+        "modal-open"
+      );
+    }
+
+    function closeModal(modal) {
+      if (!modal) {
+        return;
+      }
+
+      modal.classList.remove("open");
+
+      modal.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+      if (
+        !document.querySelector(
+          ".modal.open"
+        )
+      ) {
+        document.body.classList.remove(
+          "modal-open"
+        );
+      }
+    }
+
+    function closeAllModals() {
+      document
+        .querySelectorAll(
+          ".modal.open"
+        )
+        .forEach(closeModal);
+    }
+
+    /* =====================================================
+       7. MOTYW I PROFIL
+    ===================================================== */
+
+    function applyTheme() {
+      dom.html.dataset.theme =
+        state.theme;
+
+      document
+        .getElementById(
+          "themeButton"
+        )
+        .textContent =
+        state.theme === "dark"
+          ? "☀"
+          : "☾";
+
+      document
+        .getElementById(
+          "darkThemeToggle"
+        )
+        .checked =
+        state.theme === "dark";
+    }
+
+    function toggleTheme() {
+      state.theme =
+        state.theme === "dark"
+          ? "light"
+          : "dark";
+
+      saveState();
+      applyTheme();
+
+      showToast(
+        state.theme === "dark"
+          ? "Włączono ciemny motyw"
+          : "Włączono jasny motyw"
+      );
+    }
+
+    function applyMotion() {
+      dom.html.classList.toggle(
+        "reduced-motion",
+        state.reducedMotion
+      );
+
+      document
+        .getElementById(
+          "motionToggle"
+        )
+        .checked =
+        state.reducedMotion;
+    }
+
+    function renderProfile() {
+      dom.profileName.textContent =
+        state.profile.name;
+
+      dom.profileAvatar.textContent =
+        getInitials(
+          state.profile.name
+        );
+
+      dom.profileLevel.textContent =
+        `Klasa ${state.profile.grade} · ${getGoalLabel(
+          state.profile.goal
+        )
+        }`;
+    }
+
+    function openProfileEditor() {
+      dom.profileNameInput.value =
+        state.profile.name;
+
+      dom.profileGradeInput.value =
+        state.profile.grade;
+
+      dom.profileGoalInput.value =
+        state.profile.goal;
+
+      openModal(
+        dom.profileModal
+      );
+    }
+
+    function saveProfile() {
+      state.profile.name =
+        dom.profileNameInput
+          .value
+          .trim()
+        || "Uczeń";
+
+      state.profile.grade =
+        dom.profileGradeInput.value;
+
+      state.profile.goal =
+        dom.profileGoalInput.value;
+
+      saveState();
+      renderProfile();
+
+      closeModal(
+        dom.profileModal
+      );
+
+      showToast(
+        "Profil został zapisany"
+      );
+    }
+
+    /* =====================================================
+       8. RENDEROWANIE MODUŁÓW
+    ===================================================== */
+
+    function renderModulePreviews() {
+      dom.modulePreviewGrid.innerHTML =
+        MODULES
+          .slice(0, 4)
+          .map(module => {
+            const progress =
+              getModuleProgress(
+                module.id
+              );
+
+            return `
+              <article
+                class="module-preview"
+                data-open-module="${module.id}">
+
+                <span class="module-number">
+                  ${module.index}
+                </span>
+
+                <h4>
+                  ${escapeHtml(module.title)}
+                </h4>
+
+                <p>
+                  ${escapeHtml(
+              module.description
+            )}
+                </p>
+
+                <div class="module-preview-progress">
+
+                  <div class="progress-track">
+
+                    <div
+                      class="progress-value"
+                      style="width: ${progress}%">
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </article>
+            `;
+          })
+          .join("");
+    }
+
+    function renderCourse() {
+      dom.courseGrid.innerHTML =
+        MODULES
+          .map(module => {
+            const progress =
+              getModuleProgress(
+                module.id
+              );
+
+            return `
+              <article class="course-card">
+
+                <div class="course-number">
+                  ${String(
+              module.index
+            ).padStart(2, "0")}
+                </div>
+
+                <div class="course-content">
+
+                  <h3>
+                    ${escapeHtml(
+              module.title
+            )}
+                  </h3>
+
+                  <p>
+                    ${escapeHtml(
+              module.description
+            )}
+                  </p>
+
+                  <div class="chip-row">
+
+                    <span class="chip">
+                      ${module.duration} min
+                    </span>
+
+                    <span class="chip">
+                      ${module.tasks} zadań
+                    </span>
+
+                    <span class="chip">
+                      ${module.level}
+                    </span>
+
+                  </div>
+
+                  <div class="course-footer">
+
+                    <div class="course-progress">
+
+                      <div class="progress-track">
+
+                        <div
+                          class="progress-value"
+                          style="width: ${progress}%">
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                    <span class="course-percent">
+                      ${progress}%
+                    </span>
+
+                    <button
+                      class="button button-secondary"
+                      data-open-module="${module.id}">
+                      Otwórz
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </article>
+            `;
+          })
+          .join("");
+    }
+
+    function openCourseModule(id) {
+      const module =
+        MODULES.find(
+          item =>
+            item.id === id
+        );
+
+      if (!module) {
+        return;
+      }
+
+      dom.contentEyebrow.textContent =
+        `Moduł ${module.index}`;
+
+      dom.contentTitle.textContent =
+        module.title;
+
+      dom.contentBody.innerHTML = `
+        <p>
+          ${escapeHtml(
+        module.description
+      )}
+        </p>
+
+        <div class="chip-row">
+
+          <span class="chip">
+            ${module.duration} min
+          </span>
+
+          <span class="chip">
+            ${module.tasks} zadań
+          </span>
+
+          <span class="chip">
+            ${module.level}
+          </span>
+
+        </div>
+
+        <h3>
+          Struktura modułu
+        </h3>
+
+        <ol>
+          <li>
+            Teoria i przykłady krok po kroku.
+          </li>
+
+          <li>
+            Interaktywna wizualizacja.
+          </li>
+
+          <li>
+            Zadania z podpowiedziami.
+          </li>
+
+          <li>
+            Automatyczne sprawdzanie.
+          </li>
+
+          <li>
+            Test końcowy modułu.
+          </li>
+        </ol>
+
+        <p>
+          Pełna treść tego modułu zostanie dodana
+          w kolejnym etapie projektu.
+        </p>
+
+        <div class="dialog-footer">
+
+          <button
+            class="button button-secondary"
+            data-close-modal="contentModal">
+            Zamknij
+          </button>
+
+          <button
+            class="button button-primary"
+            data-add-progress="${module.id}">
+            Dodaj 25% postępu
+          </button>
+
+        </div>
+      `;
+
+      openModal(
+        dom.contentModal
+      );
+    }
+
+    function addModuleProgress(id) {
+      const current =
+        getModuleProgress(id);
+
+      state.progress[id] =
+        clamp(
+          Math.max(
+            current,
+            25
+          ),
+          0,
+          100
+        );
+
+      saveState();
+      renderAll();
+
+      closeModal(
+        dom.contentModal
+      );
+
+      showToast(
+        "Postęp modułu został zapisany"
+      );
+    }
+
+    /* =====================================================
+       9. TRENER
+    ===================================================== */
+
+    const TRAINER_TASKS = [
+      {
+        expression:
+          "5x + 3x − 2x",
+
+        answer:
+          "6x",
+
+        hint:
+          "Dodaj współczynniki: 5 + 3 − 2."
+      },
+
+      {
+        expression:
+          "7a − 4a + 2a",
+
+        answer:
+          "5a",
+
+        hint:
+          "Oblicz: 7 − 4 + 2."
+      },
+
+      {
+        expression:
+          "3y + 8y − 6y",
+
+        answer:
+          "5y",
+
+        hint:
+          "Wszystkie wyrazy mają tę samą część literową y."
+      },
+
+      {
+        expression:
+          "9m − 2m − 3m",
+
+        answer:
+          "4m",
+
+        hint:
+          "Oblicz współczynnik: 9 − 2 − 3."
+      },
+
+      {
+        expression:
+          "4x + 2y − x + 3y",
+
+        answer:
+          "3x+5y",
+
+        hint:
+          "Redukuj osobno wyrazy z x i osobno wyrazy z y."
+      }
+    ];
+
+    function randomTrainerTask() {
+      const index =
+        Math.floor(
+          Math.random()
+          * TRAINER_TASKS.length
+        );
+
+      trainerTask =
+        TRAINER_TASKS[index];
+
+      dom.trainerExpression.textContent =
+        trainerTask.expression;
+
+      dom.trainerAnswer.value = "";
+
+      dom.trainerFeedback.className =
+        "feedback";
+
+      dom.trainerFeedback.textContent =
+        "";
+    }
+
+    function checkTrainerAnswer() {
+      const user =
+        normalizeAnswer(
+          dom.trainerAnswer.value
+        );
+
+      const correct =
+        normalizeAnswer(
+          trainerTask.answer
+        );
+
+      state.stats.attempts += 1;
+
+      if (user === correct) {
+        state.stats.correct += 1;
+        state.stats.streak += 1;
+        state.stats.bestStreak =
+          Math.max(
+            state.stats.bestStreak,
+            state.stats.streak
+          );
+
+        state.stats.points += 10;
+
+        dom.trainerFeedback.className =
+          "feedback show correct";
+
+        dom.trainerFeedback.textContent =
+          `Dobrze. Wynik: ${trainerTask.answer}.`;
+
+        addActivity(3);
+
+        showToast(
+          "Poprawna odpowiedź: +10 punktów"
+        );
+      } else {
+        state.stats.streak = 0;
+
+        dom.trainerFeedback.className =
+          "feedback show wrong";
+
+        dom.trainerFeedback.textContent =
+          "Odpowiedź jest niepoprawna. Sprawdź współczynniki i znaki.";
+
+        addActivity(1);
+      }
+
+      saveState();
+      renderMetrics();
+      renderTeacherPanel();
+    }
+
+    function showTrainerHint() {
+      dom.trainerFeedback.className =
+        "feedback show";
+
+      dom.trainerFeedback.style.color =
+        "var(--yellow)";
+
+      dom.trainerFeedback.style.background =
+        "var(--yellow-soft)";
+
+      dom.trainerFeedback.textContent =
+        trainerTask.hint;
+    }
+
+    /* =====================================================
+       10. TIMER
+    ===================================================== */
+
+    function renderTimer() {
+      const minutes =
+        Math.floor(
+          timer.remaining / 60
+        );
+
+      const seconds =
+        timer.remaining % 60;
+
+      dom.timerDisplay.textContent =
+        `${String(minutes).padStart(2, "0")}:` +
+        `${String(seconds).padStart(2, "0")}`;
+
+      dom.timerStart.textContent =
+        timer.running
+          ? "Pauza"
+          : timer.remaining
+            < timer.duration
+            ? "Kontynuuj"
+            : "Start";
+    }
+
+    function selectTimer(minutes) {
+      stopTimer();
+
+      timer.duration =
+        minutes * 60;
+
+      timer.remaining =
+        timer.duration;
+
+      document
+        .querySelectorAll(
+          ".timer-option"
+        )
+        .forEach(button => {
+          button.classList.toggle(
+            "active",
+            Number(
+              button.dataset.minutes
+            ) === minutes
+          );
+        });
+
+      renderTimer();
+    }
+
+    function startTimer() {
+      if (timer.running) {
+        stopTimer();
+        return;
+      }
+
+      timer.running = true;
+
+      timer.interval =
+        setInterval(() => {
+          timer.remaining -= 1;
+          state.stats.studySeconds += 1;
+
+          if (
+            timer.remaining <= 0
+          ) {
+            completeTimer();
+            return;
+          }
+
+          if (
+            state.stats.studySeconds
+            % 10 === 0
+          ) {
+            saveState();
+            renderMetrics();
+          }
+
+          renderTimer();
+        }, 1000);
+
+      renderTimer();
+    }
+
+    function stopTimer() {
+      if (timer.interval) {
+        clearInterval(
+          timer.interval
+        );
+      }
+
+      timer.interval = null;
+      timer.running = false;
+
+      renderTimer();
+    }
+
+    function resetTimer() {
+      stopTimer();
+
+      timer.remaining =
+        timer.duration;
+
+      renderTimer();
+    }
+
+    function completeTimer() {
+      stopTimer();
+
+      timer.remaining =
+        timer.duration;
+
+      state.stats.weeklySessions += 1;
+
+      addActivity(4);
+      saveState();
+
+      renderAll();
+      renderTimer();
+
+      showToast(
+        "Sesja nauki zakończona"
+      );
+    }
+
+    /* =====================================================
+       11. WYSZUKIWANIE
+    ===================================================== */
+
+    function renderSearchResults(items) {
+      if (!items.length) {
+        dom.searchResults.innerHTML = `
+          <div class="empty-state">
+
+            <span class="empty-icon">
+              ⌕
+            </span>
+
+            <strong>
+              Brak wyników
+            </strong>
+
+            <p>
+              Spróbuj wpisać inne słowo.
+            </p>
+
+          </div>
+        `;
+
+        return;
+      }
+
+      dom.searchResults.innerHTML =
+        items
+          .map(item => `
+            <button
+              class="search-result"
+              data-search-module="${item.id}">
+
+              <span class="search-result-icon">
+                ƒ
+              </span>
+
+              <span>
+
+                <strong>
+                  ${escapeHtml(
+            item.title
+          )}
+                </strong>
+
+                <small>
+                  ${escapeHtml(
+            item.subtitle
+          )}
+                </small>
+
+              </span>
+
+              <span>
+                ↵
+              </span>
+
+            </button>
+          `)
+          .join("");
+    }
+
+    function searchItems(query) {
+      const normalized =
+        query
+          .trim()
+          .toLowerCase();
+
+      if (!normalized) {
+        return SEARCH_ITEMS;
+      }
+
+      return SEARCH_ITEMS.filter(
+        item =>
+          `${item.title} ${item.subtitle}`
+            .toLowerCase()
+            .includes(normalized)
+      );
+    }
+
+    function openSearch() {
+      dom.searchInput.value = "";
+
+      renderSearchResults(
+        SEARCH_ITEMS
+      );
+
+      openModal(
+        dom.searchModal
+      );
+
+      setTimeout(
+        () =>
+          dom.searchInput.focus(),
+        60
+      );
+    }
+
+    /* =====================================================
+       12. METRYKI I ANALITYKA
+    ===================================================== */
+
+    function renderMetrics() {
+      const overall =
+        getOverallProgress();
+
+      dom.progressMetric.textContent =
+        `${overall}%`;
+
+      dom.courseBadge.textContent =
+        `${overall}%`;
+
+      dom.correctMetric.textContent =
+        state.stats.correct;
+
+      dom.streakMetric.textContent =
+        state.stats.bestStreak;
+
+      dom.pointsMetric.textContent =
+        state.stats.points;
+
+      const sessions =
+        clamp(
+          state.stats.weeklySessions,
+          0,
+          5
+        );
+
+      dom.weeklyText.textContent =
+        `${sessions} / 5`;
+
+      dom.weeklyProgress.style.width =
+        `${sessions / 5 * 100}%`;
+
+      const firstProgress =
+        getModuleProgress(
+          "like-terms"
+        );
+
+      dom.currentProgress.style.width =
+        `${firstProgress}%`;
+
+      dom.currentProgressText.textContent =
+        `${firstProgress}%`;
+    }
+
+    function renderAnalytics() {
+      dom.analyticsList.innerHTML =
+        MODULES
+          .map(module => {
+            const progress =
+              getModuleProgress(
+                module.id
+              );
+
+            return `
+              <div class="analytics-item">
+
+                <div class="analytics-header">
+
+                  <span>
+                    ${escapeHtml(
+              module.title
+            )}
+                  </span>
+
+                  <strong>
+                    ${progress}%
+                  </strong>
+
+                </div>
+
+                <div class="progress-track">
+
+                  <div
+                    class="progress-value"
+                    style="width: ${progress}%">
+                  </div>
+
+                </div>
+
+              </div>
+            `;
+          })
+          .join("");
+
+      dom.activityGrid.innerHTML =
+        state.activity
+          .map(level => `
+            <div
+              class="activity-cell"
+              data-level="${level}">
+            </div>
+          `)
+          .join("");
+    }
+
+    function renderTeacherPanel() {
+      const completed =
+        MODULES.filter(
+          module =>
+            getModuleProgress(
+              module.id
+            ) >= 100
+        ).length;
+
+      dom.teacherCompleted.textContent =
+        `${completed} / ${MODULES.length}`;
+
+      dom.teacherAccuracy.textContent =
+        `${getAccuracy()}%`;
+
+      dom.teacherTime.textContent =
+        formatTime(
+          state.stats.studySeconds
+        );
+
+      dom.teacherTableBody.innerHTML =
+        MODULES
+          .map(module => {
+            const progress =
+              getModuleProgress(
+                module.id
+              );
+
+            let status =
+              "Nie rozpoczęto";
+
+            if (
+              progress > 0
+              && progress < 100
+            ) {
+              status =
+                "W trakcie";
+            }
+
+            if (progress >= 100) {
+              status =
+                "Ukończono";
+            }
+
+            return `
+              <tr>
+
+                <td>
+                  ${escapeHtml(
+              module.title
+            )}
+                </td>
+
+                <td>
+                  ${progress}%
+                </td>
+
+                <td>
+                  ${status}
+                </td>
+
+                <td>
+                  ${module.level}
+                </td>
+
+              </tr>
+            `;
+          })
+          .join("");
+    }
+
+    /* =====================================================
+       13. TOAST
+    ===================================================== */
+
+    function showToast(message) {
+      const toast =
+        document.createElement(
+          "div"
+        );
+
+      toast.className =
+        "toast";
+
+      toast.innerHTML = `
+        <span class="toast-icon">
+          ✓
+        </span>
+
+        <span>
+          ${escapeHtml(message)}
+        </span>
+
+        <button class="toast-close">
+          ×
+        </button>
+      `;
+
+      dom.toastContainer.append(
+        toast
+      );
+
+      const remove = () =>
+        toast.remove();
+
+      toast
+        .querySelector(
+          ".toast-close"
+        )
+        .addEventListener(
+          "click",
+          remove
+        );
+
+      setTimeout(
+        remove,
+        4000
+      );
+    }
+
+    /* =====================================================
+       14. OGÓLNE RENDEROWANIE
+    ===================================================== */
+
+    function renderAll() {
+      renderProfile();
+      renderModulePreviews();
+      renderCourse();
+      renderMetrics();
+      renderAnalytics();
+      renderTeacherPanel();
+      applyTheme();
+      applyMotion();
+    }
+
+    /* =====================================================
+       15. ZDARZENIA
+    ===================================================== */
+
+    document.addEventListener(
+      "click",
+      event => {
+        const routeButton =
+          event.target.closest(
+            "[data-route]"
+          );
+
+        if (routeButton) {
+          navigate(
+            routeButton.dataset.route
+          );
+
+          return;
+        }
+
+        const closeButton =
+          event.target.closest(
+            "[data-close-modal]"
+          );
+
+        if (closeButton) {
+          closeModal(
+            document.getElementById(
+              closeButton
+                .dataset
+                .closeModal
+            )
+          );
+
+          return;
+        }
+
+        const moduleButton =
+          event.target.closest(
+            "[data-open-module]"
+          );
+
+        if (moduleButton) {
+          openCourseModule(
+            moduleButton
+              .dataset
+              .openModule
+          );
+
+          return;
+        }
+
+        const progressButton =
+          event.target.closest(
+            "[data-add-progress]"
+          );
+
+        if (progressButton) {
+          addModuleProgress(
+            progressButton
+              .dataset
+              .addProgress
+          );
+
+          return;
+        }
+
+        const searchResult =
+          event.target.closest(
+            "[data-search-module]"
+          );
+
+        if (searchResult) {
+          closeModal(
+            dom.searchModal
+          );
+
+          navigate("course");
+
+          setTimeout(
+            () =>
+              openCourseModule(
+                searchResult
+                  .dataset
+                  .searchModule
+              ),
+            150
+          );
+
+          return;
+        }
+
+        const trainingButton =
+          event.target.closest(
+            "[data-training]"
+          );
+
+        if (trainingButton) {
+          navigate("training");
+
+          randomTrainerTask();
+
+          showToast(
+            "Rozpoczęto nowy trening"
+          );
+        }
+      }
+    );
+
+    document
+      .getElementById(
+        "sidebarOpen"
+      )
+      .addEventListener(
+        "click",
+        openSidebar
+      );
+
+    document
+      .getElementById(
+        "sidebarClose"
+      )
+      .addEventListener(
+        "click",
+        closeSidebar
+      );
+
+    dom.sidebarOverlay
+      .addEventListener(
+        "click",
+        closeSidebar
+      );
+
+    document
+      .getElementById(
+        "themeButton"
+      )
+      .addEventListener(
+        "click",
+        toggleTheme
+      );
+
+    document
+      .getElementById(
+        "editProfileButton"
+      )
+      .addEventListener(
+        "click",
+        openProfileEditor
+      );
+
+    document
+      .getElementById(
+        "saveProfile"
+      )
+      .addEventListener(
+        "click",
+        saveProfile
+      );
+
+    document
+      .getElementById(
+        "settingsButton"
+      )
+      .addEventListener(
+        "click",
+        () =>
+          openModal(
+            dom.settingsModal
+          )
+      );
+
+    document
+      .getElementById(
+        "darkThemeToggle"
+      )
+      .addEventListener(
+        "change",
+        event => {
+          state.theme =
+            event.target.checked
+              ? "dark"
+              : "light";
+
+          saveState();
+          applyTheme();
+        }
+      );
+
+    document
+      .getElementById(
+        "motionToggle"
+      )
+      .addEventListener(
+        "change",
+        event => {
+          state.reducedMotion =
+            event.target.checked;
+
+          saveState();
+          applyMotion();
+        }
+      );
+
+    document
+      .getElementById(
+        "clearData"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          if (
+            confirm(
+              "Czy na pewno usunąć wszystkie dane?"
+            )
+          ) {
+            clearAllState();
+          }
+        }
+      );
+
+    document
+      .getElementById(
+        "searchButton"
+      )
+      .addEventListener(
+        "click",
+        openSearch
+      );
+
+    dom.searchInput
+      .addEventListener(
+        "input",
+        event => {
+          renderSearchResults(
+            searchItems(
+              event.target.value
+            )
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "continueButton"
+      )
+      .addEventListener(
+        "click",
+        () =>
+          openCourseModule(
+            "like-terms"
+          )
+      );
+
+    document
+      .getElementById(
+        "openModuleButton"
+      )
+      .addEventListener(
+        "click",
+        () =>
+          openCourseModule(
+            "like-terms"
+          )
+      );
+
+    document
+      .getElementById(
+        "startCourse"
+      )
+      .addEventListener(
+        "click",
+        () =>
+          openCourseModule(
+            "like-terms"
+          )
+      );
+
+    document
+      .getElementById(
+        "resetCourse"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          if (
+            !confirm(
+              "Czy zresetować postęp wszystkich modułów?"
+            )
+          ) {
+            return;
+          }
+
+          state.progress = {};
+
+          saveState();
+          renderAll();
+
+          showToast(
+            "Postęp kursu został zresetowany"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "checkTrainer"
+      )
+      .addEventListener(
+        "click",
+        checkTrainerAnswer
+      );
+
+    dom.trainerAnswer
+      .addEventListener(
+        "keydown",
+        event => {
+          if (
+            event.key === "Enter"
+          ) {
+            checkTrainerAnswer();
+          }
+        }
+      );
+
+    document
+      .getElementById(
+        "trainerHint"
+      )
+      .addEventListener(
+        "click",
+        showTrainerHint
+      );
+
+    document
+      .getElementById(
+        "nextTrainer"
+      )
+      .addEventListener(
+        "click",
+        randomTrainerTask
+      );
+
+    document
+      .querySelectorAll(
+        ".timer-option"
+      )
+      .forEach(button => {
+        button.addEventListener(
+          "click",
+          () =>
+            selectTimer(
+              Number(
+                button.dataset.minutes
+              )
+            )
+        );
+      });
+
+    dom.timerStart
+      .addEventListener(
+        "click",
+        startTimer
+      );
+
+    document
+      .getElementById(
+        "timerReset"
+      )
+      .addEventListener(
+        "click",
+        resetTimer
+      );
+
+    document
+      .getElementById(
+        "startExam"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          dom.contentEyebrow.textContent =
+            "Egzamin";
+
+          dom.contentTitle.textContent =
+            "Tryb egzaminacyjny";
+
+          dom.contentBody.innerHTML = `
+            <p>
+              Pełny test egzaminacyjny zostanie dodany
+              w ostatnim etapie projektu.
+            </p>
+
+            <ul>
+              <li>
+                15 zadań;
+              </li>
+
+              <li>
+                automatyczna punktacja;
+              </li>
+
+              <li>
+                timer;
+              </li>
+
+              <li>
+                raport błędów;
+              </li>
+
+              <li>
+                zapis wyniku.
+              </li>
+            </ul>
+
+            <div class="dialog-footer">
+
+              <button
+                class="button button-primary"
+                data-close-modal="contentModal">
+                Zamknij
+              </button>
+
+            </div>
+          `;
+
+          openModal(
+            dom.contentModal
+          );
+        }
+      );
+
+    document.addEventListener(
+      "keydown",
+      event => {
+        const command =
+          event.ctrlKey
+          || event.metaKey;
+
+        if (
+          command
+          && event.key.toLowerCase()
+          === "k"
+        ) {
+          event.preventDefault();
+          openSearch();
+        }
+
+        if (
+          command
+          && event.key.toLowerCase()
+          === "d"
+        ) {
+          event.preventDefault();
+          toggleTheme();
+        }
+
+        if (
+          event.key === "Escape"
+        ) {
+          closeAllModals();
+          closeSidebar();
+        }
+      }
+    );
+
+    window.addEventListener(
+      "beforeunload",
+      saveState
+    );
+
+    /* =====================================================
+       16. START APLIKACJI
+    ===================================================== */
+
+    function initialize() {
+      renderAll();
+      renderTimer();
+      randomTrainerTask();
+
+      navigate(
+        state.route
+        || "dashboard"
+      );
+
+      setInterval(() => {
+        if (!document.hidden) {
+          state.stats.studySeconds += 5;
+
+          saveState();
+          renderMetrics();
+          renderTeacherPanel();
+        }
+      }, 5000);
+    }
+
+    initialize();
+  </script>
+</body>
+
+</html>
