@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="pl">
+
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Kraina Osi Liczbowej — interaktywny moduł</title>
+        <style>
+                :root {
+                        --ink: #183153;
+                        --blue: #2878ff;
+                        --sky: #eaf6ff;
+                        --gold: #ffd45a;
+                        --pink: #ff82b2;
+                        --mint: #7de0c3;
+                        --card: #fff;
+                        --ok: #168a61;
+                        --bad: #c43d58
+                }
+
+                * {
+                        box-sizing: border-box
+                }
+
+                body {
+                        margin: 0;
+                        font-family: Trebuchet MS, Arial, sans-serif;
+                        color: var(--ink);
+                        background: linear-gradient(#fff9e9, #eaf8ff 40%, #fff0f7)
+                }
+
+                header {
+                        padding: 28px 18px;
+                        text-align: center;
+                        background: radial-gradient(circle at 15% 10%, #fff 0 4%, transparent 5%), linear-gradient(135deg, #6ac7ff, #8b7dff 55%, #ff93c5);
+                        color: white
+                }
+
+                h1 {
+                        font-size: clamp(30px, 6vw, 58px);
+                        margin: 0;
+                        text-shadow: 0 3px 0 #3154a3
+                }
+
+                .sub {
+                        font-size: 18px;
+                        font-weight: 700
+                }
+
+                nav {
+                        position: sticky;
+                        top: 0;
+                        z-index: 5;
+                        display: flex;
+                        gap: 8px;
+                        overflow: auto;
+                        padding: 10px;
+                        background: #ffffffee;
+                        box-shadow: 0 3px 16px #2343
+                }
+
+                nav button,
+                .btn {
+                        border: 0;
+                        border-radius: 999px;
+                        padding: 11px 16px;
+                        font-weight: 800;
+                        cursor: pointer;
+                        background: #eef4ff;
+                        color: #25406b
+                }
+
+                .btn.primary {
+                        background: var(--blue);
+                        color: #fff
+                }
+
+                .btn.gold {
+                        background: var(--gold)
+                }
+
+                main {
+                        max-width: 1050px;
+                        margin: auto;
+                        padding: 18px
+                }
+
+                .card {
+                        background: var(--card);
+                        border-radius: 24px;
+                        padding: 20px;
+                        margin: 16px 0;
+                        box-shadow: 0 10px 30px #4c6b9620;
+                        border: 2px solid #ffffff
+                }
+
+                h2 {
+                        margin-top: 0;
+                        color: #2458a7
+                }
+
+                .call {
+                        padding: 14px;
+                        border-radius: 18px;
+                        background: #fff8d8;
+                        border-left: 7px solid var(--gold);
+                        margin: 10px 0
+                }
+
+                .grid {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                        gap: 14px
+                }
+
+                .theory {
+                        background: linear-gradient(135deg, #fff, #effaff)
+                }
+
+                .math {
+                        font-family: Georgia, serif;
+                        font-size: 1.15em;
+                        background: #f5f1ff;
+                        padding: 3px 8px;
+                        border-radius: 8px
+                }
+
+                .axis {
+                        width: 100%;
+                        height: 120px;
+                        background: linear-gradient(#fff, #f6fbff);
+                        border-radius: 18px
+                }
+
+                .task {
+                        padding: 16px;
+                        border: 2px solid #dcecff;
+                        border-radius: 18px;
+                        margin: 12px 0;
+                        background: #fff
+                }
+
+                .task h3 {
+                        margin: 0 0 8px
+                }
+
+                input,
+                select {
+                        font: inherit;
+                        padding: 10px;
+                        border: 2px solid #bcd3ef;
+                        border-radius: 12px;
+                        max-width: 100%
+                }
+
+                .fb {
+                        font-weight: 800;
+                        margin-left: 8px
+                }
+
+                .ok {
+                        color: var(--ok)
+                }
+
+                .bad {
+                        color: var(--bad)
+                }
+
+                .lab {
+                        background: linear-gradient(135deg, #e9fff8, #edf4ff)
+                }
+
+                .labrow {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                        align-items: center
+                }
+
+                .big {
+                        font-size: 22px
+                }
+
+                .gamebox {
+                        min-height: 130px;
+                        border-radius: 18px;
+                        padding: 18px;
+                        background: linear-gradient(135deg, #281f66, #145eb4);
+                        color: #fff
+                }
+
+                .stars {
+                        font-size: 26px
+                }
+
+                footer {
+                        text-align: center;
+                        padding: 30px
+                }
+
+                .hidePrint {}
+
+                @media(max-width:600px) {
+                        main {
+                                padding: 10px
+                        }
+
+                        .card {
+                                padding: 14px;
+                                border-radius: 18px
+                        }
+
+                        .task {
+                                padding: 12px
+                        }
+
+                        nav {
+                                padding: 7px
+                        }
+                }
+
+                @media print {
+
+                        nav,
+                        .hidePrint,
+                        button {
+                                display: none !important
+                        }
+
+                        body {
+                                background: #fff
+                        }
+
+                        .card {
+                                box-shadow: none;
+                                break-inside: avoid
+                        }
+
+                        header {
+                                color: #183153;
+                                background: #fff;
+                                border-bottom: 2px solid #ccc
+                        }
+                }
+        </style>
+</head>
+
+<body>
+        <header>
+                <h1>✨ Kraina Osi Liczbowej ✨</h1>
+                <div class="sub">Wyprawa po współrzędnych, nierównościach, zbiorach i liczbach</div>
+        </header>
+        <nav>
+                <button onclick="go('teoria')">📖 Teoria</button><button onclick="go('lab')">🔬
+                        Laboratorium</button><button onclick="go('trening')">🏹 Trening</button><button
+                        onclick="go('gra')">🎮 Gra</button><button onclick="go('test')">🏆 Test</button><button
+                        onclick="go('dom')">🏠 Domowe</button><button onclick="printNew()">🖨 Drukuj</button>
+        </nav>
+        <main>
+                <section id="teoria" class="card theory">
+                        <h2>📖 Teoria — mapa królestwa liczb</h2>
+                        <div class="call"><b>Oś liczbowa</b> to prosta z wybranym punktem 0, kierunkiem dodatnim i
+                                jednostką. Każdemu punktowi odpowiada liczba — jego <b>współrzędna</b>.</div>
+                        <svg class="axis" viewBox="0 0 800 120">
+                                <defs>
+                                        <marker id="a" markerWidth="10" markerHeight="10" refX="7" refY="3"
+                                                orient="auto">
+                                                <path d="M0,0 L0,6 L8,3 z" fill="#183153" />
+                                        </marker>
+                                </defs>
+                                <line x1="45" y1="55" x2="755" y2="55" stroke="#183153" stroke-width="4"
+                                        marker-end="url(#a)" />
+                                <g id="ticks"></g>
+                        </svg>
+                        <div class="grid">
+                                <div class="call"><b>Współrzędna.</b> Jeśli punkt A leży przy 6, zapisujemy <span
+                                                class="math">A = 6</span>. Odległość między sąsiednimi kreskami musi być
+                                        stała.</div>
+                                <div class="call"><b>Liczby na osi.</b> Możemy zaznaczać liczby naturalne, całkowite,
+                                        wymierne (np. 1/4, 3/2) i niewymierne (np. √2).</div>
+                                <div class="call"><b>Puste kółko ○</b> oznacza: liczba graniczna <b>nie należy</b> do
+                                        zbioru. Przykład: <span class="math">x &lt; 5</span>.</div>
+                                <div class="call"><b>Pełne kółko ●</b> oznacza: liczba graniczna <b>należy</b> do
+                                        zbioru. Przykład: <span class="math">x ≤ 5</span>.</div>
+                        </div>
+                        <h3>Jak czytać nierówność?</h3>
+                        <p><span class="math">x &lt; 5</span> — wszystkie liczby na lewo od 5, bez 5. &nbsp; <span
+                                        class="math">x ≤ 5</span> — na lewo od 5 i także 5.<br>
+                                <span class="math">x &gt; 3</span> — na prawo od 3, bez 3. &nbsp; <span class="math">x ≥
+                                        −4</span> — na prawo od −4 i także −4.
+                        </p>
+                        <div class="call">💡 <b>Największa liczba?</b> W zbiorze <span class="math">x &lt; 3</span> nie
+                                ma największej liczby: do każdej liczby mniejszej od 3 można znaleźć jeszcze większą,
+                                nadal mniejszą od 3.</div>
+                </section>
+
+                <section id="lab" class="card lab">
+                        <h2>🔬 Laboratorium osi</h2>
+                        <p>Przesuwaj punkt i zmieniaj znak. Obserwuj zapis oraz zaznaczony zbiór.</p>
+                        <div class="labrow"><label>Granica: <input id="bound" type="range" min="-10" max="10" value="3"
+                                                oninput="drawLab()"></label><b id="bv">3</b>
+                                <select id="op" onchange="drawLab()">
+                                        <option>&lt;</option>
+                                        <option>≤</option>
+                                        <option>&gt;</option>
+                                        <option>≥</option>
+                                </select>
+                        </div>
+                        <canvas id="labc" width="900" height="180"
+                                style="width:100%;background:#fff;border-radius:18px;margin-top:12px"></canvas>
+                        <div class="big">Warunek: <b id="formula">x &lt; 3</b></div>
+                </section>
+
+                <section id="trening" class="card">
+                        <h2>🏹 Trening — zadania w kolumnie</h2>
+                        <div id="tasks"></div>
+                </section>
+
+                <section id="gra" class="card">
+                        <h2>🎮 Gra: Strażnik Bramy</h2>
+                        <div class="gamebox">
+                                <div class="stars" id="stars">⭐ 0</div>
+                                <h3 id="gq"></h3>
+                                <div id="gopts"></div>
+                                <p id="gfb"></p>
+                        </div>
+                </section>
+
+                <section id="test" class="card">
+                        <h2>🏆 Test końcowy</h2>
+                        <p>10 pytań. Zdobądź koronę Mistrza Osi!</p>
+                        <div id="quiz"></div><button class="btn primary" onclick="scoreQuiz()">Sprawdź test</button>
+                        <h3 id="score"></h3>
+                </section>
+
+                <section id="dom" class="card">
+                        <h2>🏠 Zadanie domowe</h2>
+                        <div class="task"><b>1.</b> Narysuj oś i zaznacz zbiory: a) x ≥ −15, b) x &lt; −15, c) x &gt;
+                                −2,75, d) x &gt; 1,25, e) x ≤ −8,5, f) x &lt; −5, g) x &gt; −12, h) x ≥ −2,8, i) x &lt;
+                                −7.</div>
+                        <div class="task"><b>2.</b> Zaznacz liczbę i liczbę do niej przeciwną, a następnie odległość od
+                                0: 5, −3, 7, 0.</div>
+                        <div class="task"><b>3.</b> Oblicz wartości bezwzględne: |−7|, |4|, |−5|, |0|.</div>
+                        <div class="task"><b>4.</b> Zaznacz na jednej osi liczby spełniające x &lt; 8 i x ≥ 4. Wypisz
+                                wszystkie liczby całkowite spełniające oba warunki.</div>
+                        <div class="task"><b>5.</b> Dla par 248 i 252; 3 2/7 i 4 1/7; −0,03 i 0,03; −200 i 1400 oblicz
+                                średnią arytmetyczną i zaznacz ją na osi.</div>
+                        <div class="task"><b>6.</b> Wyjaśnij, dlaczego dla x &lt; 3 nie istnieje największa liczba
+                                rzeczywista spełniająca warunek.</div>
+                </section>
+                <section class="card hidePrint">
+                        <h2>🖨 Karta do druku</h2>
+                        <p>Przycisk otwiera czystą wersję modułu w nowej karcie i uruchamia okno drukowania.</p><button
+                                class="btn gold" onclick="printNew()">Otwórz i drukuj w nowej karcie</button>
+                </section>
+        </main>
+        <footer>🌟 Ucz się, eksperymentuj, sprawdzaj — każda liczba ma swoje miejsce!</footer>
+        <script>
+                const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s); function go(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }) }
+                (function () { let g = $('#ticks'); for (let i = -3; i <= 7; i++) { let x = 90 + (i + 3) * 60; g.innerHTML += `<line x1="${x}" y1="43" x2="${x}" y2="67" stroke="#183153" stroke-width="3"/><text x="${x}" y="92" text-anchor="middle" font-size="18">${i}</text>` } })();
+                function drawLab() { let c = $('#labc'), x = c.getContext('2d'), b = +$('#bound').value, op = $('#op').value, w = c.width, h = c.height; $('#bv').textContent = b; $('#formula').textContent = 'x ' + op + ' ' + b; x.clearRect(0, 0, w, h); x.lineWidth = 4; x.strokeStyle = '#183153'; x.beginPath(); x.moveTo(45, 90); x.lineTo(w - 35, 90); x.stroke(); let px = v => 70 + (v + 10) * (w - 140) / 20; for (let i = -10; i <= 10; i++) { let p = px(i); x.lineWidth = 2; x.beginPath(); x.moveTo(p, 78); x.lineTo(p, 102); x.stroke(); if (i % 2 == 0) { x.font = '18px Arial'; x.fillStyle = '#183153'; x.textAlign = 'center'; x.fillText(i, p, 128) } } let p = px(b); x.strokeStyle = '#2878ff'; x.lineWidth = 12; x.beginPath(); if (op.includes('<')) { x.moveTo(48, 70); x.lineTo(p, 70) } else { x.moveTo(p, 70); x.lineTo(w - 45, 70) } x.stroke(); x.fillStyle = op === '≤' || op === '≥' ? '#2878ff' : 'white'; x.strokeStyle = '#2878ff'; x.lineWidth = 5; x.beginPath(); x.arc(p, 70, 10, 0, Math.PI * 2); x.fill(); x.stroke() } drawLab();
+                const data = [
+                        ['Odczytaj współrzędną: między 300 i 400 są 4 równe odstępy. Punkt A leży na trzeciej kresce po 300.', '375'],
+                        ['Między 300 i 400 jest 5 równych odstępów. Punkt B leży na trzeciej kresce po 300.', '360'],
+                        ['Zapisz warunek: wszystkie liczby mniejsze od 7, bez 7.', 'x<7'],
+                        ['Zapisz warunek: wszystkie liczby większe lub równe 7.', 'x>=7'],
+                        ['Zapisz warunek: wszystkie liczby mniejsze lub równe 0.', 'x<=0'],
+                        ['Jak zapisać zbiór na lewo od −3 z pełnym kółkiem w −3?', 'x<=-3'],
+                        ['Jak zapisać zbiór na lewo od −1 z pustym kółkiem w −1?', 'x<-1'],
+                        ['Jak zapisać zbiór na prawo od 1 z pełnym kółkiem w 1?', 'x>=1'],
+                        ['Podaj największą liczbę naturalną spełniającą x<3.', '2'],
+                        ['Ile liczb całkowitych spełnia jednocześnie x<8 oraz x>=4?', '4'],
+                        ['Podaj te liczby całkowite dla x<8 oraz x>=4.', '4,5,6,7'],
+                        ['Wartość bezwzględna liczby −7 to…', '7'],
+                        ['Liczba przeciwna do −3 to…', '3'],
+                        ['Średnia arytmetyczna liczb 248 i 252 to…', '250'],
+                        ['Przybliżona wartość √2 do dwóch miejsc po przecinku to…', '1,41']
+                ];
+                function norm(s) { return s.toLowerCase().replace(/\s/g, '').replace('≤', '<=').replace('≥', '>=').replace(/\./g, ',') }
+                $('#tasks').innerHTML = data.map((t, i) => `<div class="task"><h3>${i + 1}. ${t[0]}</h3><input id="t${i}" placeholder="Twoja odpowiedź"><button class="btn" onclick="check(${i})">Sprawdź</button><span class="fb" id="f${i}"></span></div>`).join('');
+                function check(i) { let ok = norm($('#t' + i).value) == norm(data[i][1]), f = $('#f' + i); f.textContent = ok ? '✨ Świetnie!' : 'Spróbuj jeszcze raz.'; f.className = 'fb ' + (ok ? 'ok' : 'bad') }
+                let stars = 0, gi = 0; const game = [['Który zapis zawiera liczbę 5?', ['x<5', 'x≤5', 'x>5'], 1], ['Puste kółko przy 3 i zaznaczenie w prawo oznacza…', ['x>3', 'x≥3', 'x<3'], 0], ['Pełne kółko przy −4 i zaznaczenie w prawo oznacza…', ['x>-4', 'x≥-4', 'x≤-4'], 1], ['Czy zbiór x<3 ma największą liczbę rzeczywistą?', ['Tak', 'Nie'], 1]];
+                function gameDraw() { let q = game[gi % game.length]; $('#gq').textContent = q[0]; $('#gopts').innerHTML = q[1].map((o, i) => `<button class="btn gold" onclick="gameAns(${i})">${o}</button> `).join('') }
+                function gameAns(i) { let q = game[gi % game.length]; if (i == q[2]) { stars++; $('#gfb').textContent = '✨ Brama otwarta!' } else $('#gfb').textContent = '🧭 Jeszcze raz pomyśl o kierunku i kółku.'; gi++; $('#stars').textContent = '⭐ ' + stars; setTimeout(gameDraw, 650) } gameDraw();
+                const quiz = [
+                        ['Który warunek opisuje liczby na lewo od 5 bez liczby 5?', ['x<5', 'x≤5', 'x>5'], 0],
+                        ['Który warunek opisuje liczby od 5 w lewo razem z 5?', ['x<5', 'x≤5', 'x≥5'], 1],
+                        ['Pełne kółko oznacza…', ['granica należy do zbioru', 'granica nie należy', 'brak osi'], 0],
+                        ['Puste kółko oznacza…', ['granica należy', 'granica nie należy', 'liczbę 0'], 1],
+                        ['Największa liczba naturalna dla x<8 to…', ['8', '7', '9'], 1],
+                        ['Najmniejsza liczba całkowita dla x≥−3 to…', ['−4', '−3', '0'], 1],
+                        ['Ile liczb całkowitych spełnia 4≤x<8?', ['3', '4', '5'], 1],
+                        ['|−5| = …', ['−5', '0', '5'], 2],
+                        ['Liczba przeciwna do 7 to…', ['−7', '7', '0'], 0],
+                        ['Czy √2 można zaznaczyć dokładnie na osi?', ['Tak', 'Nie'], 0]];
+                $('#quiz').innerHTML = quiz.map((q, i) => `<div class="task"><b>${i + 1}. ${q[0]}</b><br>${q[1].map((o, j) => `<label><input type="radio" name="q${i}" value="${j}"> ${o}</label><br>`).join('')}</div>`).join('');
+                function scoreQuiz() { let s = 0; quiz.forEach((q, i) => { let e = document.querySelector(`input[name=q${i}]:checked`); if (e && +e.value === q[2]) s++ }); $('#score').textContent = `Wynik: ${s}/10 ` + (s >= 9 ? '👑 Mistrz Osi!' : s >= 7 ? '🌟 Świetna robota!' : '🚀 Trenuj dalej — jesteś na dobrej drodze!') }
+                function printNew() { let w = window.open('', '_blank'); if (!w) { alert('Przeglądarka zablokowała nową kartę. Zezwól na wyskakujące okna.'); return } let clone = document.documentElement.cloneNode(true); clone.querySelectorAll('script,nav,.hidePrint').forEach(e => e.remove()); w.document.open(); w.document.write('<!doctype html>' + clone.outerHTML); w.document.close(); w.focus(); setTimeout(() => w.print(), 500) }
+        </script>
+</body>
+
+</html>
