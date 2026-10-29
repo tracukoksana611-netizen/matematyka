@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Czy statystyka mówi prawdę? — Interaktywny moduł</title>
+
+<script>
+window.MathJax = {
+  tex:{inlineMath:[['\\(','\\)'],['$','$']]},
+  svg:{fontCache:'global'}
+};
+</script>
+
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+:root{
+  --navy:#24355f;
+  --blue:#45b7ff;
+  --blue2:#dff3ff;
+  --green:#78d36b;
+  --yellow:#ffd85a;
+  --orange:#ff9e52;
+  --pink:#ff8fbc;
+  --violet:#9c83ff;
+  --red:#ff6b6b;
+  --cream:#fffaf0;
+  --paper:#ffffff;
+  --ink:#25304a;
+  --muted:#667085;
+  --line:#dce6ef;
+  --shadow:0 12px 35px rgba(43,67,110,.14);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-size:20px;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 6%,#fff2ba 0 5%,transparent 5.2%),
+    radial-gradient(circle at 94% 8%,#d8f5ff 0 6%,transparent 6.2%),
+    linear-gradient(180deg,#effaff 0,#fff8ec 42%,#f8f3ff 100%);
+  font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+  line-height:1.55;
+}
+body:before{
+  content:"";
+  position:fixed; inset:0; pointer-events:none; opacity:.24;
+  background-image:radial-gradient(#fff 1.6px,transparent 1.7px);
+  background-size:28px 28px;
+}
+.wrap{width:min(1160px,94%);margin:auto;position:relative}
+.hero{
+  margin:26px auto 18px;
+  padding:34px;
+  border-radius:34px;
+  color:#fff;
+  background:linear-gradient(135deg,#263a76,#7359ca 55%,#3fb6f4);
+  box-shadow:0 18px 50px rgba(46,48,126,.3);
+  overflow:hidden;
+  position:relative;
+}
+.hero:after{
+  content:"✦  ✧  ★  ✦  ✧";
+  position:absolute;right:24px;top:16px;
+  font-size:28px;color:#ffe68a;opacity:.9;
+  letter-spacing:8px;
+}
+.hero h1{font-size:clamp(34px,5vw,62px);line-height:1.02;margin:0 0 12px}
+.hero p{max-width:760px;font-size:22px;margin:7px 0}
+.hero-badges{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.badge{
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.35);
+  padding:7px 12px;border-radius:99px;font-weight:700;
+}
+.toolbar{
+  position:sticky;top:8px;z-index:20;
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(12px);
+  padding:10px;border-radius:18px;
+  box-shadow:var(--shadow);margin:12px 0 20px;
+}
+button,select{
+  font:inherit;border:0;border-radius:12px;padding:10px 14px;
+}
+button{cursor:pointer;font-weight:800;transition:.18s transform,.18s filter}
+button:hover{transform:translateY(-1px);filter:brightness(1.02)}
+.btn{background:var(--navy);color:#fff}
+.btn.blue{background:#238cca}.btn.green{background:#4baa55}
+.btn.pink{background:#b84e85}.btn.orange{background:#e57c26}
+select{background:#eef6ff;color:var(--ink);font-weight:800}
+.tabs{
+ display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:20px 0;
+}
+.tab{
+ padding:15px;border:2px solid transparent;border-radius:18px;
+ background:white;color:var(--ink);box-shadow:0 7px 18px rgba(29,43,76,.08);
+}
+.tab.active{border-color:var(--blue);background:#e9f8ff}
+.panel{display:none}.panel.active{display:block}
+.card{
+  background:rgba(255,255,255,.96);
+  border:1px solid #e6edf4;
+  border-radius:24px;padding:24px;margin:18px 0;
+  box-shadow:var(--shadow);
+}
+.card h2,.card h3{margin-top:0}
+.theory{border-left:7px solid var(--blue)}
+.remember{border-left:7px solid var(--green);background:#f4fff1}
+.warning{border-left:7px solid var(--orange);background:#fff9ed}
+.game{border-left:7px solid var(--violet)}
+.task{border-top:6px solid #8fdcff}
+.task.lv2{border-color:#ffd463}.task.lv3{border-color:#ff95a4}
+.task-number{
+ display:inline-flex;width:38px;height:38px;border-radius:50%;
+ align-items:center;justify-content:center;background:#24355f;color:white;
+ font-weight:900;margin-right:8px
+}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+@media(max-width:820px){.columns,.grid3{grid-template-columns:1fr}.tabs{grid-template-columns:1fr}}
+.chartbox{background:#fbfdff;border:1px solid #dbe7f1;border-radius:18px;padding:14px;overflow:auto}
+.chart-title{text-align:center;font-weight:900;margin-bottom:7px}
+svg{max-width:100%;height:auto}
+.axis{stroke:#7f8b9b;stroke-width:1.5}
+.grid{stroke:#dbe4ed;stroke-width:1}
+.line{fill:none;stroke:#16a4e5;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.dot{fill:#109fe2}
+.bar{fill:#8fd9fa}
+.answer{
+  display:none;padding:13px 16px;border-radius:14px;background:#eefaf0;
+  border-left:5px solid #5cb760;margin-top:12px;
+}
+.answer.bad{background:#fff0f0;border-color:#e45f5f}
+.reveal{background:#e7f6ff;color:#165982}
+.option{
+ display:block;width:100%;text-align:left;margin:7px 0;padding:11px 13px;
+ background:#f3f6fb;color:#25304a;border:2px solid transparent
+}
+.option.correct{background:#e7f8e4;border-color:#67b95f}
+.option.wrong{background:#ffe8e8;border-color:#e87373}
+.progress{
+ height:14px;background:#edf1f5;border-radius:99px;overflow:hidden;margin:10px 0
+}
+.progress>span{height:100%;display:block;width:0;background:linear-gradient(90deg,#42b9ff,#6fd66b);transition:.3s}
+.score{font-size:22px;font-weight:900;color:#344e91}
+.tip{
+ padding:13px;border-radius:14px;background:#fff4bf;border-left:5px solid #f1bd24;
+}
+.exercise-list{display:flex;flex-direction:column;gap:16px}
+.kicker{text-transform:uppercase;letter-spacing:.11em;font-weight:900;color:#5276a6;font-size:15px}
+details{
+ border:1px solid #dbe5ed;border-radius:15px;padding:10px 13px;background:#fbfdff;margin:10px 0
+}
+summary{cursor:pointer;font-weight:900}
+.math{
+ padding:12px;background:#f6f4ff;border-radius:14px;text-align:center;font-size:22px
+}
+.mascot{
+ display:flex;gap:14px;align-items:center;background:linear-gradient(90deg,#edfaff,#fff6df);
+ border-radius:20px;padding:14px 18px;margin:15px 0;
+}
+.mascot .face{font-size:46px}
+.footer{padding:34px 0 60px;text-align:center;color:#637083}
+.print-only{display:none}
+@media print{
+ body{background:white}
+ .toolbar,.tabs,.no-print,button{display:none!important}
+ .panel{display:block!important}
+ .card{break-inside:avoid;box-shadow:none}
+ .print-only{display:block}
+}
+</style>
+
+</head>
+
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker" style="color:#cdeeff">Matematyka • statystyka • klasa 8</div>
+  <h1>🕵️ Czy statystyka mówi prawdę?</h1>
+  <p>
+    Interaktywna wyprawa po wykresach, skali, grupowaniu danych i pułapkach
+    wnioskowania. Twoim zadaniem jest zostać <b>Detektywem Danych</b>
+    i nauczyć się odróżniać rzetelną informację od sprytnej manipulacji.
+  </p>
+  <div class="hero-badges">
+    <span class="badge">📈 wykresy</span>
+    <span class="badge">🎮 gry</span>
+    <span class="badge">🧠 krytyczne myślenie</span>
+    <span class="badge">✅ autosprawdzanie</span>
+    <span class="badge">🏠 praca domowa</span>
+  </div>
+</header>
+
+<nav class="toolbar no-print">
+  <b>Przejdź do:</b>
+  <select id="jump" onchange="jumpTo(this.value)">
+    <option value="">Wybierz sekcję…</option>
+    <option value="teoria">📚 Teoria</option>
+    <option value="level1">🌱 Poziom 1</option>
+    <option value="level2">🚀 Poziom 2</option>
+    <option value="level3">🏆 Poziom 3</option>
+    <option value="trening">🎮 Trening</option>
+    <option value="test">🧪 Test</option>
+    <option value="dom">🏠 Praca domowa</option>
+  </select>
+  <button class="btn blue" onclick="showTab(0)">🌱 Poziom 1</button>
+  <button class="btn orange" onclick="showTab(1)">🚀 Poziom 2</button>
+  <button class="btn pink" onclick="showTab(2)">🏆 Poziom 3</button>
+  <button class="btn green" onclick="openPrint()">🖨️ Drukuj w nowej karcie</button>
+</nav>
+
+<section id="teoria" class="card theory">
+  <div class="kicker">Teoria krok po kroku</div>
+  <h2>📚 1. Wykres pokazuje dane, ale sposób pokazania ma znaczenie</h2>
+
+  <div class="mascot">
+    <div class="face">🦊</div>
+    <div>
+      <b>Zasada Detektywa Danych:</b>
+      zanim uwierzysz wrażeniu, które robi wykres, sprawdź liczby,
+      opisy osi, skalę i sposób wyboru danych.
+    </div>
+  </div>
+
+  <p>
+    Te same dane można narysować na kilka sposobów. Wartości się wtedy
+    <b>nie zmieniają</b>, ale zmienia się nasze wrażenie.
+  </p>
+
+  <div class="math">
+    Fabryka doniczek:
+    \(81,\;92,\;105,\;118\) tys. zł w latach 2013–2016.
+  </div>
+
+  <div id="factoryCharts" class="grid3"></div>
+
+  <div class="tip">
+    <b>Najważniejsze:</b> różnica \(118-81=37\) tys. zł pozostaje taka sama
+    na każdym wykresie. Zmiana skali osi pionowej nie zmienia danych.
+  </div>
+
+  <hr>
+
+  <h3>🔍 2. Pięć pytań, które trzeba zadać każdemu wykresowi</h3>
+  <ol>
+    <li><b>Co opisują osie?</b> Sprawdź nazwy i jednostki.</li>
+    <li><b>Od jakiej wartości zaczyna się skala?</b> Nie zawsze od zera.</li>
+    <li><b>Czy odstępy na osi oznaczają równe przyrosty?</b></li>
+    <li><b>Czy pokazano wszystkie istotne dane?</b></li>
+    <li><b>Czy porównywane grupy są zbudowane w ten sam sposób?</b></li>
+  </ol>
+</section>
+
+<section class="card warning">
+  <h2>🎯 3. Najczęstsze pułapki</h2>
+  <div class="columns">
+    <div>
+      <h3>📏 Pułapka skali</h3>
+      <p>
+        Gdy oś pionowa zaczyna się wysoko, niewielka różnica może wyglądać
+        jak ogromny skok.
+      </p>
+    </div>
+    <div>
+      <h3>✂️ Pułapka wyboru danych</h3>
+      <p>
+        Jeśli wybierzemy tylko niektóre dni, możemy „udowodnić” wzrost albo spadek,
+        mimo że pełny wykres pokazuje wahania.
+      </p>
+    </div>
+    <div>
+      <h3>📦 Pułapka grupowania</h3>
+      <p>
+        Liczby obserwacji w grupach można porównywać także dla różnych przedziałów. Nie wolno jednak na tej podstawie porównywać ryzyka; trzeba uwzględnić liczebność grup i kontekst.
+      </p>
+    </div>
+    <div>
+      <h3>🔗 Korelacja ≠ przyczyna</h3>
+      <p>
+        To, że dwa zjawiska występują razem, nie dowodzi, że jedno powoduje drugie.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="tabs no-print">
+  <button class="tab active" onclick="showTab(0)">
+    🌱 <b>Poziom 1</b><br>Skala i odczytywanie
+  </button>
+  <button class="tab" onclick="showTab(1)">
+    🚀 <b>Poziom 2</b><br>Wybór i grupowanie
+  </button>
+  <button class="tab" onclick="showTab(2)">
+    🏆 <b>Poziom 3</b><br>Wnioskowanie
+  </button>
+</div>
+
+<!-- POZIOM 1 -->
+
+<section id="level1" class="panel active">
+
+<div class="card task">
+  <h2><span class="task-number">1</span> Konkurs grzybiarzy 🍄</h2>
+  <p>
+    Na diagramie przedstawiono wyniki konkursu zbierania grzybów.
+    Czy prawdą jest, że Jurek zebrał dwukrotnie więcej grzybów niż Wojtek,
+    a Asia dwukrotnie więcej niż Kasia?
+  </p>
+  <div id="mushrooms" class="chartbox"></div>
+
+<button class="reveal" onclick="toggleAnswer('a1')">Pokaż wyjaśnienie</button>
+
+  <div class="answer" id="a1">
+    <b>Nie.</b> Jurek: 45, Wojtek: 30, Asia: 25, Kasia: 20.
+    <br>Stosunki:
+    \(45:30=1{,}5\), a \(25:20=1{,}25\).
+    Wrażenie „dwa razy więcej” powstaje dlatego, że oś pionowa zaczyna się od 15.
+  </div>
+</div>
+
+<div class="card task">
+  <h2><span class="task-number">2</span> Cena benzyny ⛽</h2>
+  <p>Dwa wykresy pokazują cenę benzyny w różnych dniach tego samego tygodnia.</p>
+  <div id="petrol" class="columns"></div>
+
+  <p><b>a)</b> Jakie wrażenie daje wykres I, a jakie wykres II?</p>
+  <p><b>b)</b> Co zobaczymy, gdy połączymy dane ze wszystkich dni tygodnia?</p>
+
+<button class="reveal" onclick="toggleAnswer('a2')">Sprawdź</button>
+
+  <div class="answer" id="a2">
+    <b>Wykres I:</b> cena stale rośnie.
+    <br><b>Wykres II:</b> cena maleje, a potem pozostaje bez zmian.
+    <br><b>Po połączeniu:</b> cena w ciągu tygodnia <b>wahała się</b>.
+    To przykład, jak wybór części danych może zmienić interpretację.
+  </div>
+</div>
+
+<div class="card task">
+  <h2><span class="task-number">3</span> Zyski firm X, Y i Z 💼</h2>
+  <div id="companies" class="chartbox" aria-label="Zyski w tysiącach złotych"></div>
+  <p>Zyski podano w tysiącach złotych.</p>
+  <p><b>a)</b> O ile złotych większy jest zysk firmy X od zysku firmy Y?</p>
+  <p><b>b)</b> Ile razy większy jest zysk firmy Z od zysku firmy Y?</p>
+  <button class="reveal" onclick="toggleAnswer('a3')">Odpowiedź</button>
+  <div class="answer" id="a3">
+    a) \(250-150=100\) tys. zł, czyli <b>100 000 zł</b>.<br>
+    b) \(300:150=2\). Zysk firmy Z jest <b>2 razy większy</b>.
+  </div>
+</div>
+
+<div class="card task">
+  <h2><span class="task-number">4</span> Sprzedaż etui 📱</h2>
+  <div id="casesChart" class="chartbox"></div>
+  <p>Oceń zdania:</p>
+  <div class="exercise-list">
+    <div>I. W lutym sprzedaż była dwa razy mniejsza niż w styczniu.</div>
+    <div>II. Od lutego do maja sprzedaż systematycznie rosła.</div>
+    <div>III. Od lutego do maja sprzedaż wzrosła kilkukrotnie.</div>
+    <div>IV. Od lutego do maja sprzedaż wzrosła o około 45%.</div>
+  </div>
+  <button class="reveal" onclick="toggleAnswer('a4')">Sprawdź P/F</button>
+  <div class="answer" id="a4"><b>I – F, II – P, III – F, IV – P.</b></div>
+</div>
+
+</section>
+
+<!-- POZIOM 2 -->
+
+<section id="level2" class="panel">
+
+<div class="card task lv2">
+  <h2><span class="task-number">5</span> Rzeka Matemka 🌊</h2>
+  <p>
+    Od 1 do 21 września raz dziennie mierzono poziom wody.
+    Pełny wykres pokazuje liczne wzrosty i spadki.
+  </p>
+  <div id="riverFull" class="chartbox"></div>
+
+  <div class="columns">
+    <div>
+      <h3>Wybrane dni: 4, 9, 14, 19</h3>
+      <div id="riverUp" class="chartbox"></div>
+    </div>
+    <div>
+      <h3>Wybrane dni: 1, 5, 10, 15, 20</h3>
+      <div id="riverDown" class="chartbox"></div>
+    </div>
+  </div>
+
+  <p><b>Pytanie:</b> dlaczego oba uproszczone wykresy mogą wprowadzać w błąd?</p>
+  <button class="reveal" onclick="toggleAnswer('a5')">Wyjaśnienie</button>
+  <div class="answer" id="a5">
+    Ponieważ pokazują tylko wybrane pomiary.
+    Pierwszy zestaw sugeruje systematyczny wzrost, drugi – spadek,
+    podczas gdy pełny wykres pokazuje częste wahania.
+    <b>Dobór punktów nie może zastępować obrazu całych danych.</b>
+  </div>
+</div>
+
+<div class="card task lv2">
+  <h2><span class="task-number">6</span> Sport w kolejnych miesiącach 🏃</h2>
+  <table style="width:100%;border-collapse:collapse;text-align:center">
+    <tr style="background:#dff4ff"><th>Miesiąc</th><th>% uczniów</th></tr>
+    <tr><td>styczeń</td><td>30</td></tr>
+    <tr><td>luty</td><td>50</td></tr>
+    <tr><td>marzec</td><td>15</td></tr>
+    <tr><td>kwiecień</td><td>20</td></tr>
+    <tr><td>maj</td><td>60</td></tr>
+  </table>
+
+  <div id="sportCharts" class="grid3" style="margin-top:18px"></div>
+
+  <ol>
+    <li>Suma wartości to 175%. Czy to możliwe?</li>
+    <li>Czy te dane można przedstawić na diagramie kołowym?</li>
+    <li>Który diagram najlepiej pokazuje dane?</li>
+    <li>Który może być najtrudniejszy do poprawnego odczytania?</li>
+  </ol>
+
+<button class="reveal" onclick="toggleAnswer('a6')">Odpowiedzi</button>
+
+  <div class="answer" id="a6">
+    <b>1.</b> Tak. Ten sam uczeń mógł odpowiedzieć „tak” w wielu miesiącach.<br>
+    <b>2.</b> Nie. Kategorie nie są rozłącznymi częściami jednej całości,
+    więc suma nie musi wynosić 100%.<br>
+    <b>3.</b> Najczytelniejszy jest klasyczny diagram słupkowy.<br>
+    <b>4.</b> Na pokazanych diagramach I i II odczyt jest równie łatwy — różni je tylko kolor. Diagram III dobrze pokazuje zmiany w czasie; żaden z tych trzech wykresów nie zniekształca danych.
+  </div>
+</div>
+
+<div class="card task lv2">
+  <h2><span class="task-number">7</span> Dwa baseny 🏊</h2>
+  <div id="pools" class="columns"></div>
+  <p>Oceń prawdziwość:</p>
+  <p>I. W „Wodniku” we wtorek było więcej osób niż w poniedziałek, a w „Rusałce” odwrotnie.</p>
+  <p>II. W niedzielę w „Rusałce” było więcej osób niż w „Wodniku”.</p>
+  <p>III. W piątek na obu basenach była prawie taka sama liczba osób.</p>
+  <button class="reveal" onclick="toggleAnswer('a7')">Odpowiedź</button>
+  <div class="answer" id="a7"><b>I – P, II – F, III – F.</b> Uważaj na różne skale obu wykresów.</div>
+</div>
+
+<div class="card task lv2">
+  <h2><span class="task-number">8</span> Konkurs — grupowanie wyników 🧩</h2>
+  <p>
+    W konkursie uczestniczyło 305 uczniów. Wynik mieścił się od 0 do 34 punktów.
+  </p>
+  <details>
+    <summary>Pokaż pełną tabelę</summary>
+    <div style="overflow:auto">
+      <table id="contestTable" style="min-width:880px;width:100%;border-collapse:collapse;text-align:center"></table>
+    </div>
+  </details>
+  <p>
+    Sporządź diagram z danych pogrupowanych:
+    <br><b>a)</b> w pięć przedziałów równej długości,
+    <br><b>b)</b> w siedem przedziałów równej długości.
+  </p>
+  <button class="btn blue" onclick="groupContest(5)">Pokaż 5 przedziałów</button>
+  <button class="btn orange" onclick="groupContest(7)">Pokaż 7 przedziałów</button>
+  <div id="groupContestChart" class="chartbox" style="margin-top:14px"></div>
+</div>
+
+</section>
+
+<!-- POZIOM 3 -->
+
+<section id="level3" class="panel">
+
+<div class="card task lv3">
+  <h2><span class="task-number">9</span> Wypadki drogowe 🚗</h2>
+  <div id="accidents" class="chartbox"></div>
+  <p>
+    Wykres może sugerować, że kierowcy w wieku 25–59 lat jeżdżą najgorzej.
+    Dlaczego taki wniosek jest nieuprawniony?
+  </p>
+  <button class="reveal" onclick="toggleAnswer('a9')">Wyjaśnienie</button>
+  <div class="answer" id="a9">
+    Przedziały wiekowe mają <b>różne długości</b>.
+    Grupa 25–59 obejmuje znacznie więcej roczników niż 18–24.
+    Samą liczbę wypadków należałoby odnieść np. do liczby kierowców
+    w każdej grupie. Dopiero wtedy porównanie byłoby sensowne.
+  </div>
+</div>
+
+<div class="card task lv3">
+  <h2><span class="task-number">10</span> Węgry i Belize 🌍</h2>
+  <p>
+    „Na Węgrzech jest 97 tys. dorosłych analfabetów, a w Belize 62 tys.
+    Skoro 62 tys. &lt; 97 tys., to dostęp do edukacji w Belize jest lepszy”.
+  </p>
+  <p><b>Czy rozumowanie jest poprawne?</b></p>
+  <button class="reveal" onclick="toggleAnswer('a10')">Sprawdź</button>
+  <div class="answer" id="a10">
+    <b>Nie.</b> Porównano liczby bezwzględne dla państw o bardzo różnej liczbie mieszkańców.
+    Potrzebny jest udział analfabetów w populacji, np.
+    \[
+      \text{odsetek}=
+      \frac{\text{liczba analfabetów}}{\text{liczba dorosłych mieszkańców}}\cdot100\%.
+    \]
+  </div>
+</div>
+
+<div class="card task lv3">
+  <h2><span class="task-number">11</span> Korelacja czy przyczyna? 🔗</h2>
+  <p><b>a)</b> Każdy sprawca wypadku kiedyś mył ręce. Czy mycie rąk powoduje wypadki?</p>
+  <p><b>b)</b> Wielu zwycięzców gier liczbowych jadło ziemniaki. Czy ziemniaki pomagają wygrać?</p>
+  <p><b>c)</b> Osoby zmarłe zażywały średnio więcej lekarstw. Czy lekarstwa były przyczyną śmierci?</p>
+  <p><b>d)</b> Wielu uczniów chodzących pieszo do szkoły uprawia sport. Czy chodzenie pieszo powoduje zainteresowanie sportem?</p>
+  <p><b>e)</b> W dni większej sprzedaży lodów jest więcej interwencji ratowników. Czy lody zwiększają ryzyko utonięcia?</p>
+
+<button class="reveal" onclick="toggleAnswer('a11')">Analiza</button>
+
+  <div class="answer" id="a11">
+    We wszystkich przykładach trzeba uważać na <b>pozorny związek</b>.
+    <br>a) brak związku przyczynowego;
+    <br>b) ziemniaki są po prostu popularnym jedzeniem;
+    <br>c) wspólnym czynnikiem może być choroba;
+    <br>d) możliwe, że aktywne osoby częściej wybierają spacer;
+    <br>e) ciepła pogoda zwiększa jednocześnie sprzedaż lodów i liczbę plażowiczów.
+  </div>
+</div>
+
+<div class="card task lv3">
+  <h2><span class="task-number">12</span> Olimpiada Matematyczna Juniorów 🏅</h2>
+  <table style="width:100%;border-collapse:collapse">
+    <tr style="background:#efe8ff"><th>Imię</th><th>Klasa</th><th>Punkty</th></tr>
+    <tr><td>Ania</td><td>8a</td><td>13</td></tr>
+    <tr><td>Wojtek</td><td>8a</td><td>10</td></tr>
+    <tr><td>Basia</td><td>8b</td><td>12</td></tr>
+    <tr><td>Marcin</td><td>8b</td><td>12</td></tr>
+    <tr><td>Jacek</td><td>8b</td><td>8</td></tr>
+    <tr><td>Anzelm</td><td>8c</td><td>13</td></tr>
+    <tr><td>Kamila</td><td>8c</td><td>13</td></tr>
+    <tr><td>Czarek</td><td>8c</td><td>5</td></tr>
+    <tr><td>Krysia</td><td>8c</td><td>3</td></tr>
+    <tr><td>Jurek</td><td>8c</td><td>6</td></tr>
+  </table>
+
+  <p>
+    Znajdź argument pozwalający twierdzić, że najlepiej wypadła:
+    <b>8a</b>, <b>8b</b> albo <b>8c</b>.
+  </p>
+  <button class="reveal" onclick="toggleAnswer('a12')">Przykładowe argumenty</button>
+  <div class="answer" id="a12">
+    <b>8a:</b> najwyższa średnia: \(23:2=11{,}5\) pkt (8b: \(32:3\approx10{,}67\), 8c: \(40:5=8\)).<br>
+    <b>8b:</b> najwyższa mediana: \(12\) pkt (8a: \(11{,}5\), 8c: \(6\)).<br>
+    <b>8c:</b> największa suma punktów: \(40\) (8a: \(23\), 8b: \(32\)) oraz najwięcej wyników maksymalnych: dwa wyniki po \(13\) pkt.<br><br>
+    To pokazuje, że określenie „najlepsza klasa” trzeba wcześniej
+    <b>precyzyjnie zdefiniować</b>.
+  </div>
+</div>
+
+</section>
+
+<!-- TRENING -->
+
+<section id="trening" class="card game">
+  <div class="kicker">Gra</div>
+  <h2>🎮 Detektyw Manipulacji</h2>
+  <p>
+    Wybierz rodzaj problemu. Za każdą dobrą odpowiedź zdobywasz gwiazdkę.
+  </p>
+  <div class="progress"><span id="gameProgress"></span></div>
+  <div class="score">⭐ Punkty: <span id="gameScore">0</span>/6</div>
+  <div id="gameQuestion"></div>
+  <div id="gameOptions"></div>
+  <div id="gameFeedback" class="answer" style="display:block;background:#f7f9fc;border-color:#ccd7e5">
+    Kliknij odpowiedź.
+  </div>
+  <button class="btn blue" onclick="nextGame()">Następne pytanie ➜</button>
+</section>
+
+<!-- TEST -->
+
+<section id="test" class="card">
+  <div class="kicker">Sprawdź się</div>
+  <h2>🧪 Test końcowy</h2>
+  <p>10 pytań. Zaznacz odpowiedzi, a potem kliknij „Sprawdź test”.</p>
+  <div id="quiz"></div>
+  <button class="btn green" onclick="gradeQuiz()">✅ Sprawdź test</button>
+  <div id="quizResult" class="answer" style="margin-top:15px"></div>
+</section>
+
+<!-- PRACA DOMOWA -->
+
+<section id="dom" class="card remember">
+  <div class="kicker">Po lekcji</div>
+  <h2>🏠 Praca domowa — „Łowca wykresów”</h2>
+  <ol>
+    <li>
+      Znajdź w internecie, reklamie, gazecie lub mediach społecznościowych
+      <b>jeden wykres</b>.
+    </li>
+    <li>
+      Zapisz, czego dotyczy i jakie ma osie.
+    </li>
+    <li>
+      Odpowiedz:
+      <ul>
+        <li>Czy skala zaczyna się od zera?</li>
+        <li>Czy pokazano pełne dane?</li>
+        <li>Czy grupy są porównywalne?</li>
+        <li>Jakie pierwsze wrażenie wywołuje wykres?</li>
+        <li>Czy to wrażenie zgadza się z liczbami?</li>
+      </ul>
+    </li>
+    <li>
+      Narysuj własną, bardziej rzetelną wersję.
+    </li>
+  </ol>
+
+  <hr>
+
+  <h3>⭐ Zadanie mistrzowskie</h3>
+  <p>
+    Wymyśl dwa wykresy przedstawiające <b>te same dane</b>,
+    ale wywołujące inne pierwsze wrażenie.
+    Pod spodem wyjaśnij, dlaczego oba są matematycznie zgodne z danymi.
+  </p>
+</section>
+
+<section class="card">
+  <h2>🧠 Miniściąga Detektywa Danych</h2>
+  <div class="grid3">
+    <div class="tip"><b>1.</b> Czytaj opisy osi.</div>
+    <div class="tip"><b>2.</b> Sprawdzaj początek skali.</div>
+    <div class="tip"><b>3.</b> Patrz na jednostki.</div>
+    <div class="tip"><b>4.</b> Szukaj pominiętych danych.</div>
+    <div class="tip"><b>5.</b> Porównuj równe przedziały.</div>
+    <div class="tip"><b>6.</b> Nie myl korelacji z przyczyną.</div>
+  </div>
+</section>
+
+<footer class="footer">
+  ✨ Koniec wyprawy. Dobry wykres nie tylko wygląda — przede wszystkim uczciwie opowiada historię danych.
+</footer>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+
+function jumpTo(id){
+  if(!id)return;
+  if(id==="level1")showTab(0);
+  if(id==="level2")showTab(1);
+  if(id==="level3")showTab(2);
+  setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:"smooth"}),80);
+}
+
+function showTab(i){
+  document.querySelectorAll(".panel").forEach((p,n)=>p.classList.toggle("active",n===i));
+  document.querySelectorAll(".tab").forEach((p,n)=>p.classList.toggle("active",n===i));
+}
+
+function toggleAnswer(id){
+  const e=document.getElementById(id);
+  e.style.display=e.style.display==="block"?"none":"block";
+  if(window.MathJax?.startup?.promise) MathJax.startup.promise.then(()=>MathJax.typesetPromise([e])).catch(()=>{});
+}
+
+function svgEl(tag,attrs={}){
+  const e=document.createElementNS(NS,tag);
+  Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
+  return e;
+}
+
+function lineChart(target, labels, data, opts={}){
+  const el=typeof target==="string"?document.getElementById(target):target;
+  el.innerHTML="";
+  const w=540,h=280,m={l:54,r:18,t:24,b:48};
+  const min=opts.min ?? 0;
+  const max=opts.max ?? Math.max(...data)*1.1;
+  const svg=svgEl("svg",{viewBox:`0 0 ${w} ${h}`,role:"img"});
+  const xs=opts.xValues||data.map((_,i)=>i);
+  const xMin=xs[0],xMax=xs[xs.length-1];
+  const px=i=>m.l+(xs[i]-xMin)*(w-m.l-m.r)/(xMax-xMin||1);
+  const py=v=>h-m.b-(v-min)/(max-min)*(h-m.t-m.b);
+
+  for(let k=0;k<=5;k++){
+    let y=m.t+k*(h-m.t-m.b)/5;
+    svg.append(svgEl("line",{x1:m.l,y1:y,x2:w-m.r,y2:y,class:"grid"}));
+    let val=max-k*(max-min)/5;
+    let t=svgEl("text",{x:m.l-8,y:y+5,"text-anchor":"end","font-size":"14",fill:"#667085"});
+    t.textContent=(opts.decimals?val.toFixed(opts.decimals):Math.round(val)).toString().replace(".",",");
+    svg.append(t);
+  }
+  svg.append(svgEl("line",{x1:m.l,y1:m.t,x2:m.l,y2:h-m.b,class:"axis"}));
+  svg.append(svgEl("line",{x1:m.l,y1:h-m.b,x2:w-m.r,y2:h-m.b,class:"axis"}));
+
+  labels.forEach((lab,i)=>{
+    const t=svgEl("text",{x:px(i),y:h-19,"text-anchor":"middle","font-size":"14",fill:"#5a6677"});
+    t.textContent=lab;svg.append(t);
+  });
+
+  const points=data.map((v,i)=>`${px(i)},${py(v)}`).join(" ");
+  svg.append(svgEl("polyline",{points,class:"line"}));
+  data.forEach((v,i)=>{
+    svg.append(svgEl("circle",{cx:px(i),cy:py(v),r:4.5,class:"dot"}));
+  });
+  el.append(svg);
+}
+
+function barChart(target,labels,data,opts={}){
+ const el=typeof target==="string"?document.getElementById(target):target;
+ el.innerHTML="";
+ const w=540,h=285,m={l:56,r:16,t:20,b:54};
+ const min=opts.min ?? 0;
+ const max=opts.max ?? Math.max(...data)*1.12;
+ const svg=svgEl("svg",{viewBox:`0 0 ${w} ${h}`});
+ const py=v=>h-m.b-(v-min)/(max-min)*(h-m.t-m.b);
+ for(let k=0;k<=5;k++){
+   let y=m.t+k*(h-m.t-m.b)/5;
+   svg.append(svgEl("line",{x1:m.l,y1:y,x2:w-m.r,y2:y,class:"grid"}));
+   let val=max-k*(max-min)/5;
+   let t=svgEl("text",{x:m.l-8,y:y+5,"text-anchor":"end","font-size":"14",fill:"#667085"});
+   t.textContent=Math.round(val);svg.append(t);
+ }
+ svg.append(svgEl("line",{x1:m.l,y1:m.t,x2:m.l,y2:h-m.b,class:"axis"}));
+ svg.append(svgEl("line",{x1:m.l,y1:h-m.b,x2:w-m.r,y2:h-m.b,class:"axis"}));
+ const gap=(w-m.l-m.r)/labels.length;
+ const bw=gap*.55;
+ data.forEach((v,i)=>{
+   const x=m.l+i*gap+(gap-bw)/2;
+   const y=py(v);
+   svg.append(svgEl("rect",{x,y,width:bw,height:(h-m.b-y),rx:4,fill:opts.color||"#94dcf8"}));
+   let t=svgEl("text",{x:x+bw/2,y:h-22,"text-anchor":"middle","font-size":"14",fill:"#586477"});
+   t.textContent=labels[i];svg.append(t);
+ });
+ el.append(svg);
+}
+
+function makeCardChart(parent,title,labels,data,opts={}){
+ const box=document.createElement("div");box.className="chartbox";
+ const ttl=document.createElement("div");ttl.className="chart-title";ttl.textContent=title;
+ const chart=document.createElement("div");
+ box.append(ttl,chart);parent.append(box);
+ if(opts.type==="bar")barChart(chart,labels,data,opts);else lineChart(chart,labels,data,opts);
+}
+
+const fc=document.getElementById("factoryCharts");
+makeCardChart(fc,"Skala 80–240 (tys. zł)",["2013","2014","2015","2016"],[81,92,105,118],{min:80,max:240});
+makeCardChart(fc,"Skala 0–140 (tys. zł)",["2013","2014","2015","2016"],[81,92,105,118],{min:0,max:140});
+makeCardChart(fc,"Skala 80–120 (tys. zł)",["2013","2014","2015","2016"],[81,92,105,118],{min:80,max:120});
+
+barChart("mushrooms",["Jurek","Wojtek","Asia","Kasia"],[45,30,25,20],{min:15,max:50,color:"#d9e55b"});
+
+const petrol=document.getElementById("petrol");
+makeCardChart(petrol,"Wykres I",["pn.","śr.","pt.","nd."],[4.30,4.40,4.50,4.60],{min:4.1,max:4.7,decimals:2});
+makeCardChart(petrol,"Wykres II",["wt.","czw.","sob."],[4.60,4.50,4.50],{min:4.45,max:4.65,decimals:2});
+
+barChart("companies",["Firma X","Firma Y","Firma Z"],[250,150,300],{min:100,max:300,color:"#ffb457"});
+lineChart("casesChart",["I","II","III","IV","V"],[240,220,260,280,320],{min:200,max:360});
+
+const river=[3.88,3.78,3.69,3.51,3.61,3.78,3.81,3.92,3.62,3.59,3.51,3.54,3.57,3.65,3.47,3.40,3.41,3.60,3.70,3.45,3.40];
+lineChart("riverFull",river.map((_,i)=>i+1),river,{min:3.1,max:4.0,decimals:2});
+lineChart("riverUp",["4","9","14","19"],[river[3],river[8],river[13],river[18]],{min:3.40,max:3.75,decimals:2});
+lineChart("riverDown",["1","5","10","15","20"],[river[0],river[4],river[9],river[14],river[19]],{min:3.2,max:3.9,decimals:2,xValues:[1,5,10,15,20]});
+
+const sport=document.getElementById("sportCharts");
+makeCardChart(sport,"Diagram I",["sty","lut","mar","kwi","maj"],[30,50,15,20,60],{type:"bar",min:0,max:70});
+makeCardChart(sport,"Diagram II",["sty","lut","mar","kwi","maj"],[30,50,15,20,60],{type:"bar",min:0,max:70,color:"#dce54d"});
+makeCardChart(sport,"Diagram III",["sty","lut","mar","kwi","maj"],[30,50,15,20,60],{min:0,max:70});
+
+const pools=document.getElementById("pools");
+makeCardChart(pools,'Basen „Wodnik”',["pn.","wt.","śr.","czw.","pt.","sob.","nd."],[110,160,158,145,185,310,255],{min:0,max:350});
+makeCardChart(pools,'Basen „Rusałka”',["pn.","wt.","śr.","czw.","pt.","sob.","nd."],[80,35,40,88,92,155,160],{min:0,max:180});
+
+barChart("accidents",["18–24","25–59","60+"],[6200,16800,3900],{min:0,max:20000,color:"#9fd8f2"});
+
+const points=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34];
+const counts=[0,0,2,1,0,6,7,3,4,7,9,13,15,19,21,20,18,21,16,14,14,13,11,7,9,10,10,8,8,5,6,2,3,2,1];
+
+function buildContestTable(){
+ const t=document.getElementById("contestTable");
+ let r1="<tr style='background:#dff4ff'><th>Liczba punktów</th>";
+ points.forEach(x=>r1+=`<td>${x}</td>`);r1+="</tr>";
+ let r2="<tr><th>Liczba osób</th>";
+ counts.forEach(x=>r2+=`<td>${x}</td>`);r2+="</tr>";
+ t.innerHTML=r1+r2;
+}
+buildContestTable();
+
+function groupContest(n){
+ const size=35/n;
+ let labels=[],vals=[];
+ for(let i=0;i<n;i++){
+   let a=Math.round(i*size), b=Math.round((i+1)*size)-1;
+   if(i===n-1)b=34;
+   labels.push(`${a}–${b}`);
+   let s=0;
+   for(let p=a;p<=b;p++)s+=counts[p]||0;
+   vals.push(s);
+ }
+ barChart("groupContestChart",labels,vals,{min:0,max:Math.max(...vals)*1.15,color:n===5?"#ff9fa8":"#e0df4f"});
+}
+
+/* gra */
+const game=[
+ {q:"Oś wykresu zaczyna się od 95 zamiast od 0. Co trzeba zrobić?",o:["Uznać wykres za fałszywy","Sprawdzić skalę i rzeczywiste różnice","Zignorować liczby"],a:1,e:"Sama oś nie musi zaczynać się od zera, ale może silnie zmieniać wrażenie."},
+ {q:"Pokazano tylko 4 wybrane dni z 21. Jaki jest główny problem?",o:["Kolor linii","Możliwe wybiórcze przedstawienie danych","Za mało tekstu"],a:1,e:"Pominięcie części obserwacji może ukryć wahania."},
+ {q:"Czy sama liczba wypadków w grupach 18–24 i 25–59 wystarczy, aby porównać ryzyko wypadku jednego kierowcy?",o:["Tak","Nie","Tylko gdy są kolorowe"],a:1,e:"Trzeba odnieść liczbę wypadków do liczby kierowców i uwzględnić np. przejechany dystans. Same sumy nie określają ryzyka."},
+ {q:"Sprzedaż lodów i interwencje ratowników rosną tego samego dnia. Co z tego wynika?",o:["Lody powodują utonięcia","Możliwy jest trzeci czynnik, np. pogoda","Ratownicy kupują lody"],a:1,e:"Korelacja nie dowodzi przyczynowości."},
+ {q:"Suma miesięcznych odsetków aktywnych uczniów to 175%. Czy to musi być błąd?",o:["Tak","Nie, te same osoby mogą wystąpić w kilku miesiącach","Tak, bo każdy procent musi być ≤50"],a:1,e:"Kategorie miesięczne nie są rozłączne."},
+ {q:"Dwa wykresy pokazują te same dane, ale mają różne skale. Co pozostaje niezmienne?",o:["Rzeczywiste wartości","Kąt linii","Pierwsze wrażenie"],a:0,e:"Dane liczbowe się nie zmieniają."}
+];
+let gi=0,gs=0,answered=false;
+const gameResults=Array(game.length).fill(null);
+function drawGame(){
+ answered=false;
+ document.getElementById("gameQuestion").innerHTML=`<h3>${gi+1}. ${game[gi].q}</h3>`;
+ const box=document.getElementById("gameOptions");box.innerHTML="";
+ game[gi].o.forEach((x,i)=>{
+  const b=document.createElement("button");b.className="option";b.textContent=x;
+  b.onclick=()=>gameAnswer(i,b);box.append(b);
+ });
+ document.getElementById("gameFeedback").textContent="Kliknij odpowiedź.";
+}
+function gameAnswer(i,b){
+ if(answered)return;answered=true;
+ gameResults[gi]=(i===game[gi].a);
+ document.querySelectorAll("#gameOptions .option").forEach((x,n)=>{
+  if(n===game[gi].a)x.classList.add("correct");
+  if(n===i && i!==game[gi].a)x.classList.add("wrong");
+ });
+ if(i===game[gi].a)gs++;
+ document.getElementById("gameScore").textContent=gs;
+ document.getElementById("gameProgress").style.width=((gi+1)/game.length*100)+"%";
+ document.getElementById("gameFeedback").innerHTML=(i===game[gi].a?"✅ <b>Dobrze!</b> ":"❌ <b>Jeszcze raz przeanalizuj.</b> ")+game[gi].e;
+}
+function nextGame(){
+ if(!answered){document.getElementById("gameFeedback").textContent="Najpierw wybierz odpowiedź.";return;}
+ if(gi===game.length-1){
+   gi=0;gs=0;gameResults.fill(null);
+   document.getElementById("gameScore").textContent="0";
+   document.getElementById("gameProgress").style.width="0%";
+ }else gi++;
+ drawGame();
+}
+drawGame();
+
+/* quiz */
+const quizData=[
+ ["Zmiana skali osi pionowej…",["zmienia dane","nie zmienia danych, ale może zmienić wrażenie","zawsze jest błędem"],1],
+ ["Czy oś pionowa musi zawsze zaczynać się od 0?",["tak","nie","tylko na wykresie liniowym"],1],
+ ["Wykres pokazujący tylko wybrane pomiary może…",["zniekształcić obraz zjawiska","zawsze być dokładniejszy","usunąć jednostki"],0],
+ ["Przy porównaniu ryzyka wypadku należy uwzględnić…",["tylko kolor słupków","liczbę kierowców i ich ekspozycję na ryzyko","tylko liczbę roczników"],1],
+ ["175% w danych miesięcznych jest możliwe, gdy…",["te same osoby mogą należeć do kilku kategorii","wykres jest kołowy","próba ma 175 osób"],0],
+ ["97 tys. i 62 tys. dla dwóch państw najlepiej porównać…",["bez uwzględniania populacji","w odniesieniu do liczby ludności","na wykresie 3D"],1],
+ ["Korelacja oznacza…",["zawsze związek przyczynowy","współwystępowanie, niekoniecznie przyczynę","błąd w danych"],1],
+ ["Jeśli wykres wygląda dramatycznie, należy najpierw…",["sprawdzić osie i wartości","uwierzyć tytułowi","sprawdzić kolor"],0],
+ ["Dwa wykresy z różnymi skalami…",["mogą utrudniać bezpośrednie porównanie","zawsze są niepoprawne","muszą mieć identyczny kształt"],0],
+ ["Najlepszy wniosek statystyczny powinien być…",["oparty na liczbach i kontekście","jak najbardziej efektowny","oparty na jednym słupku"],0]
+];
+function renderQuiz(){
+ const q=document.getElementById("quiz");q.innerHTML="";
+ quizData.forEach((x,i)=>{
+  const d=document.createElement("div");d.className="card";d.style.boxShadow="none";
+  d.innerHTML=`<b>${i+1}. ${x[0]}</b>`+
+   x[1].map((o,j)=>`<label class="option"><input type="radio" name="q${i}" value="${j}"> ${o}</label>`).join("");
+  q.append(d);
+ });
+}
+renderQuiz();
+function gradeQuiz(){
+ let s=0;
+ quizData.forEach((x,i)=>{
+  const a=document.querySelector(`input[name=q${i}]:checked`);
+  if(a && +a.value===x[2])s++;
+ });
+ const r=document.getElementById("quizResult");r.style.display="block";
+ let msg=s>=9?"🏆 Mistrz Detektywów Danych!":s>=7?"🌟 Bardzo dobrze!":s>=5?"🙂 Jest nieźle — wróć do pułapek.":"🔎 Warto jeszcze raz przejść teorię.";
+ r.innerHTML=`<b>Wynik: ${s}/10</b><br>${msg}`;
+}
+
+/* drukowanie w nowej karcie */
+async function openPrint(){
+ const w=window.open("","_blank");
+ if(!w){alert("Przeglądarka zablokowała nowe okno. Zezwól na wyskakujące okna i spróbuj ponownie.");return;}
+ if(window.MathJax?.startup?.promise){try{await MathJax.startup.promise;await MathJax.typesetPromise();}catch(e){}}
+ const clone=document.documentElement.cloneNode(true);
+ clone.querySelectorAll(".no-print,script").forEach(x=>x.remove());
+ clone.querySelectorAll(".panel").forEach(x=>x.classList.add("active"));
+ clone.querySelectorAll(".answer").forEach(x=>x.style.display="block");
+ clone.querySelectorAll("details").forEach(x=>x.open=true);
+ clone.querySelectorAll("button").forEach(x=>x.remove());
+
+
+ w.document.open();
+ w.document.write("<!DOCTYPE html>"+clone.outerHTML);
+ w.document.close();
+
+ setTimeout(()=>{
+   const bar=w.document.createElement("div");
+   bar.style.cssText="position:sticky;top:0;z-index:999;padding:12px;background:#24355f;text-align:center";
+   bar.innerHTML='<button onclick="window.print()" style="font:700 16px Arial;padding:10px 18px;border:0;border-radius:10px;background:#64cf71;color:white;cursor:pointer">🖨️ Drukuj / Zapisz PDF</button>';
+   w.document.body.prepend(bar);
+  },350);
+}
+</script>
+
+</body>
+</html>
