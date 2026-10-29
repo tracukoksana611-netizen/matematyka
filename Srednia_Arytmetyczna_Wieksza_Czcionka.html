@@ -1,0 +1,3747 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Średnia arytmetyczna – interaktywny moduł</title>
+
+<!-- MathJax -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+
+<script defer
+src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+<style>
+
+:root{
+  --granat:#17345d;
+  --niebieski:#2f80ed;
+  --jasny:#eef7ff;
+  --zielony:#34b56a;
+  --zielony2:#e4f8e9;
+  --zolty:#ffd85c;
+  --zolty2:#fff6cc;
+  --roz:#ff7eb6;
+  --roz2:#ffe5f0;
+  --fiolet:#8c65d3;
+  --fiolet2:#efe8ff;
+  --pom:#ff9c55;
+  --pom2:#ffead7;
+  --czerwony:#d94343;
+  --linia:#cfdeea;
+  --bialy:#ffffff;
+
+  --shadow:
+  0 10px 25px rgba(37,72,110,.12);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  font-size:20px;
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-size:22px;
+  font-family:
+  "Trebuchet MS",
+  Arial,
+  sans-serif;
+
+  color:var(--granat);
+
+  background:
+  linear-gradient(
+    180deg,
+    #f7fbff,
+    #edf8ff
+  );
+
+  line-height:1.55;
+}
+
+/* ======================
+   HERO
+====================== */
+
+.hero{
+
+  background:
+  linear-gradient(
+    135deg,
+    #69c9ff,
+    #8fe28b
+  );
+
+  padding:
+  35px 20px;
+
+  text-align:center;
+
+  position:relative;
+
+  overflow:hidden;
+
+  border-bottom:
+  8px solid #ffffff;
+}
+
+.hero::before{
+
+  content:"";
+
+  position:absolute;
+
+  width:260px;
+  height:260px;
+
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,.25);
+
+  top:-100px;
+  left:-80px;
+}
+
+.hero::after{
+
+  content:"";
+
+  position:absolute;
+
+  width:300px;
+  height:300px;
+
+  border-radius:50%;
+
+  background:
+  rgba(255,255,255,.18);
+
+  right:-120px;
+  bottom:-170px;
+}
+
+.hero h1{
+
+  position:relative;
+
+  margin:0;
+
+  font-size:
+  clamp(
+    2rem,
+    6vw,
+    4.2rem
+  );
+
+  color:#ffffff;
+
+  text-shadow:
+  0 3px 0
+  rgba(20,60,90,.18);
+}
+
+.hero p{
+
+  position:relative;
+
+  font-size:
+  1.2rem;
+
+  max-width:780px;
+
+  margin:
+  12px auto 0;
+
+  color:#103b5d;
+
+  font-weight:700;
+}
+
+/* ======================
+   NAVIGATION
+====================== */
+
+.navigation{
+
+  position:sticky;
+
+  top:0;
+
+  z-index:100;
+
+  background:
+  rgba(255,255,255,.96);
+
+  backdrop-filter:
+  blur(10px);
+
+  border-bottom:
+  1px solid var(--linia);
+}
+
+.nav-inner{
+
+  max-width:1200px;
+
+  margin:auto;
+
+  padding:10px;
+
+  display:flex;
+
+  gap:8px;
+
+  flex-wrap:wrap;
+
+  justify-content:center;
+}
+
+.nav-btn{
+
+  border:none;
+
+  border-radius:15px;
+
+  padding:
+  10px 15px;
+
+  cursor:pointer;
+
+  font-weight:800;
+
+  background:#edf6ff;
+
+  color:var(--granat);
+
+  transition:.2s;
+}
+
+.nav-btn:hover{
+
+  transform:
+  translateY(-2px);
+
+  background:#dcefff;
+}
+
+.nav-btn.active{
+
+  color:white;
+
+  background:
+  linear-gradient(
+    135deg,
+    #3f8efc,
+    #246ed8
+  );
+}
+
+/* ======================
+   LAYOUT
+====================== */
+
+.layout{
+
+  max-width:1200px;
+
+  margin:20px auto;
+
+  padding:
+  0 16px 80px;
+
+  display:grid;
+
+  grid-template-columns:
+  250px minmax(0,1fr);
+
+  gap:20px;
+}
+
+/* ======================
+   SIDEBAR
+====================== */
+
+.sidebar{
+
+  position:sticky;
+
+  top:90px;
+
+  align-self:start;
+
+  padding:16px;
+
+  background:white;
+
+  border:
+  1px solid var(--linia);
+
+  border-radius:22px;
+
+  box-shadow:
+  var(--shadow);
+}
+
+.sidebar h3{
+
+  margin:
+  0 0 10px;
+}
+
+.sidebar select{
+
+  width:100%;
+
+  border:
+  1px solid #b9cad9;
+
+  border-radius:12px;
+
+  padding:10px;
+
+  margin-bottom:16px;
+
+  background:white;
+}
+
+.level-buttons{
+
+  display:grid;
+
+  gap:9px;
+}
+
+.level-button{
+
+  border:none;
+
+  padding:
+  11px 12px;
+
+  border-radius:14px;
+
+  text-align:left;
+
+  font-weight:800;
+
+  cursor:pointer;
+}
+
+.level-button[data-level="1"]{
+  background:#dff7e2;
+}
+
+.level-button[data-level="2"]{
+  background:#fff1bd;
+}
+
+.level-button[data-level="3"]{
+  background:#ffdadd;
+}
+
+.level-button:hover{
+  transform:scale(1.02);
+}
+
+/* ======================
+   MAIN
+====================== */
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+.card{
+
+  background:white;
+
+  border:
+  1px solid var(--linia);
+
+  border-radius:23px;
+
+  padding:22px;
+
+  margin-bottom:17px;
+
+  box-shadow:
+  var(--shadow);
+}
+
+.card h2,
+.card h3{
+
+  margin-top:0;
+}
+
+.intro{
+
+  font-size:1.12rem;
+}
+
+/* ======================
+   INFO BLOCKS
+====================== */
+
+.remember{
+
+  padding:14px;
+
+  border-radius:15px;
+
+  background:#e7faff;
+
+  border-left:
+  6px solid #23a8bb;
+
+  margin:
+  12px 0;
+}
+
+.tip{
+
+  padding:14px;
+
+  border-radius:15px;
+
+  background:
+  var(--zolty2);
+
+  border-left:
+  6px solid #e9bd27;
+
+  margin:
+  12px 0;
+}
+
+.warning{
+
+  padding:14px;
+
+  border-radius:15px;
+
+  background:#ffe5e5;
+
+  border-left:
+  6px solid #e85656;
+
+  margin:
+  12px 0;
+}
+
+/* ======================
+   STEPS
+====================== */
+
+.steps{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(4,1fr);
+
+  gap:12px;
+
+  margin-top:17px;
+}
+
+.step{
+
+  border-radius:18px;
+
+  padding:16px;
+
+  text-align:center;
+
+  font-weight:800;
+
+  min-height:130px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+}
+
+.step:nth-child(1){
+  background:var(--roz2);
+}
+
+.step:nth-child(2){
+  background:#dff1ff;
+}
+
+.step:nth-child(3){
+  background:var(--zolty2);
+}
+
+.step:nth-child(4){
+  background:var(--zielony2);
+}
+
+.step-number{
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  margin:
+  0 auto 8px;
+
+  width:36px;
+
+  height:36px;
+
+  border-radius:50%;
+
+  color:white;
+
+  background:
+  var(--niebieski);
+}
+
+/* ======================
+   VISUAL MEAN
+====================== */
+
+.mean-demo{
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(4,1fr);
+
+  gap:12px;
+
+  align-items:end;
+
+  padding:
+  25px 15px;
+
+  min-height:260px;
+
+  border-radius:20px;
+
+  background:
+  linear-gradient(
+    180deg,
+    #f8fcff,
+    #eef7ff
+  );
+
+  border:
+  1px solid #d7e7f3;
+}
+
+.stack{
+
+  text-align:center;
+}
+
+.blocks{
+
+  min-height:150px;
+
+  display:flex;
+
+  flex-direction:column-reverse;
+
+  align-items:center;
+
+  justify-content:flex-start;
+}
+
+.block{
+
+  width:58px;
+
+  height:25px;
+
+  margin-top:2px;
+
+  border-radius:6px;
+
+  background:
+  linear-gradient(
+    #80cfff,
+    #4a9ee6
+  );
+
+  border:
+  1px solid #3183c7;
+}
+
+.stack-value{
+
+  margin-top:7px;
+
+  font-size:1.2rem;
+
+  font-weight:900;
+}
+
+/* ======================
+   TASKS
+====================== */
+
+.level-block{
+  display:none;
+}
+
+.level-block.active{
+  display:block;
+}
+
+.task{
+
+  border:
+  1px solid #d5e2ed;
+
+  border-radius:19px;
+
+  padding:17px;
+
+  margin:
+  14px 0;
+
+  background:#ffffff;
+}
+
+.task h4{
+
+  margin:
+  0 0 8px;
+
+  color:#205f9e;
+
+  font-size:1.1rem;
+}
+
+input[type="text"],
+input[type="number"],
+textarea{
+
+  width:100%;
+
+  padding:11px;
+
+  border:
+  1px solid #b8cbdb;
+
+  border-radius:12px;
+
+  background:white;
+
+  margin-top:8px;
+}
+
+textarea{
+  min-height:100px;
+}
+
+/* ======================
+   BUTTONS
+====================== */
+
+.check-btn{
+
+  border:none;
+
+  border-radius:12px;
+
+  padding:
+  10px 14px;
+
+  background:
+  var(--niebieski);
+
+  color:white;
+
+  font-weight:800;
+
+  cursor:pointer;
+
+  margin-top:9px;
+}
+
+.check-btn:hover{
+
+  background:#176acb;
+}
+
+.secondary{
+
+  background:#657789;
+}
+
+.green{
+
+  background:#29a35e;
+}
+
+.feedback{
+
+  margin-top:8px;
+
+  min-height:22px;
+
+  font-weight:800;
+}
+
+.good{
+  color:#198754;
+}
+
+.bad{
+  color:#cf3d3d;
+}
+
+/* ======================
+   EXAMPLE
+====================== */
+
+.example{
+
+  background:
+  #f7fbff;
+
+  border:
+  1px dashed #8fb5d5;
+
+  border-radius:17px;
+
+  padding:16px;
+
+  margin:
+  12px 0;
+}
+
+/* ======================
+   TABLE
+====================== */
+
+table{
+
+  width:100%;
+
+  border-collapse:collapse;
+
+  margin:
+  12px 0;
+}
+
+th,
+td{
+
+  border:
+  1px solid #bfd0dd;
+
+  padding:8px;
+
+  text-align:center;
+}
+
+th{
+
+  background:
+  #eaf5ff;
+}
+
+/* ======================
+   GAME
+====================== */
+
+.game-box{
+
+  border-radius:20px;
+
+  padding:20px;
+
+  background:
+  linear-gradient(
+    135deg,
+    #e5f9ff,
+    #fff6cf
+  );
+}
+
+.score{
+
+  font-size:1.3rem;
+
+  font-weight:900;
+
+  margin-top:12px;
+}
+
+/* ======================
+   RESPONSIVE
+====================== */
+
+@media(max-width:900px){
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    position:static;
+  }
+
+  .steps{
+    grid-template-columns:
+    1fr 1fr;
+  }
+}
+
+@media(max-width:600px){
+
+  .steps{
+    grid-template-columns:1fr;
+  }
+
+  .mean-demo{
+    grid-template-columns:
+    repeat(2,1fr);
+  }
+}
+
+/* ======================
+   PRINT
+====================== */
+
+@media print{
+
+  .hero,
+  .navigation,
+  .sidebar,
+  .no-print{
+
+    display:none !important;
+  }
+
+  .layout{
+
+    display:block;
+
+    margin:0;
+
+    padding:0;
+  }
+
+  .section{
+
+    display:block !important;
+  }
+
+  .card,
+  .task{
+
+    box-shadow:none;
+
+    break-inside:avoid;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ======================
+ HERO
+====================== -->
+
+<header class="hero">
+
+<h1>
+📊 Średnia arytmetyczna
+</h1>
+
+<p>
+Odkrywamy, jak z wielu liczb stworzyć jedną wartość,
+która opisuje „przeciętny” wynik.
+</p>
+
+</header>
+
+
+<!-- ======================
+ NAVIGATION
+====================== -->
+
+<nav class="navigation">
+
+<div class="nav-inner">
+
+<button
+class="nav-btn active"
+data-tab="teoria">
+📘 Teoria
+</button>
+
+<button
+class="nav-btn"
+data-tab="przyklady">
+🔎 Przykłady
+</button>
+
+<button
+class="nav-btn"
+data-tab="zadania">
+✏️ Zadania
+</button>
+
+<button
+class="nav-btn"
+data-tab="trener">
+🎮 Trener
+</button>
+
+<button
+class="nav-btn"
+data-tab="gra">
+🏆 Gra
+</button>
+
+<button
+class="nav-btn"
+data-tab="test">
+✅ Test
+</button>
+
+<button
+class="nav-btn"
+data-tab="domowe">
+🏠 Praca domowa
+</button>
+
+<button
+class="nav-btn"
+id="printButton">
+🖨️ Drukuj
+</button>
+
+</div>
+
+</nav>
+
+
+<div class="layout">
+
+
+<!-- ======================
+ SIDEBAR
+====================== -->
+
+<aside class="sidebar">
+
+<h3>
+Średnia arytmetyczna
+</h3>
+
+<label>
+Wybierz temat:
+</label>
+
+<select>
+
+<option>
+Podstawy
+</option>
+
+<option>
+Średnia z kilku liczb
+</option>
+
+<option>
+Średnia z tabeli
+</option>
+
+<option>
+Brakująca liczba
+</option>
+
+<option>
+Średnia i mediana
+</option>
+
+</select>
+
+
+<h3>
+Poziom zadań
+</h3>
+
+<div class="level-buttons">
+
+<button
+class="level-button"
+data-level="1">
+
+🟢 Poziom 1<br>
+Łatwy
+
+</button>
+
+
+<button
+class="level-button"
+data-level="2">
+
+🟡 Poziom 2<br>
+Średni
+
+</button>
+
+
+<button
+class="level-button"
+data-level="3">
+
+🔴 Poziom 3<br>
+Trudny
+
+</button>
+
+</div>
+
+</aside>
+
+
+<!-- ======================
+ MAIN
+====================== -->
+
+<main>
+
+
+<!-- ======================
+ TEORIA
+====================== -->
+
+<section
+id="teoria"
+class="section active">
+
+
+<div class="card">
+
+<h2>
+📘 Co to jest średnia arytmetyczna?
+</h2>
+
+<p class="intro">
+
+<b>Średnia arytmetyczna</b>
+to liczba, która opisuje
+przeciętną wartość
+w pewnym zestawie danych.
+
+</p>
+
+<div class="remember">
+
+<b>Najważniejsza zasada:</b>
+
+najpierw dodajemy wszystkie liczby,
+a następnie dzielimy sumę
+przez liczbę tych liczb.
+
+</div>
+
+
+\[
+\boxed{
+\text{średnia}
+=
+\frac{\text{suma wszystkich wartości}}
+{\text{liczba wartości}}
+}
+\]
+
+</div>
+
+
+<div class="card">
+
+<h2>
+🪜 Algorytm krok po kroku
+</h2>
+
+<div class="steps">
+
+<div class="step">
+
+<div class="step-number">
+1
+</div>
+
+Dodaj wszystkie liczby.
+
+</div>
+
+
+<div class="step">
+
+<div class="step-number">
+2
+</div>
+
+Policz, ile jest liczb.
+
+</div>
+
+
+<div class="step">
+
+<div class="step-number">
+3
+</div>
+
+Podziel sumę przez liczbę danych.
+
+</div>
+
+
+<div class="step">
+
+<div class="step-number">
+4
+</div>
+
+Sprawdź, czy wynik jest rozsądny.
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+🍎 Co naprawdę oznacza średnia?
+</h2>
+
+<p>
+
+Wyobraź sobie,
+że cztery osoby mają:
+
+</p>
+
+\[
+2,\quad4,\quad6,\quad8
+\]
+
+<p>
+
+jabłek.
+
+Łącznie mają:
+
+</p>
+
+\[
+2+4+6+8=20
+\]
+
+<p>
+
+Gdyby podzielić wszystkie jabłka
+po równo między cztery osoby,
+każda otrzymałaby:
+
+</p>
+
+\[
+\frac{20}{4}=5
+\]
+
+<div class="remember">
+
+Średnia mówi,
+ile przypadłoby na każdą osobę,
+gdyby wszystkie wartości
+zostały rozdzielone po równo.
+
+</div>
+
+
+<div class="mean-demo">
+
+<div class="stack">
+
+<div class="blocks">
+
+<div class="block"></div>
+<div class="block"></div>
+
+</div>
+
+<div class="stack-value">
+2
+</div>
+
+</div>
+
+
+<div class="stack">
+
+<div class="blocks">
+
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+
+</div>
+
+<div class="stack-value">
+4
+</div>
+
+</div>
+
+
+<div class="stack">
+
+<div class="blocks">
+
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+
+</div>
+
+<div class="stack-value">
+6
+</div>
+
+</div>
+
+
+<div class="stack">
+
+<div class="blocks">
+
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+<div class="block"></div>
+
+</div>
+
+<div class="stack-value">
+8
+</div>
+
+</div>
+
+</div>
+
+<p>
+
+Po równym podziale
+każdy stos miałby wysokość:
+
+</p>
+
+\[
+5
+\]
+
+</div>
+
+
+<div class="card">
+
+<h2>
+⚠️ Bardzo ważne
+</h2>
+
+<div class="warning">
+
+Nie dzielimy sumy
+przez największą liczbę,
+ani przez wynik sumowania.
+
+Dzielimy przez
+<b>liczbę wszystkich danych</b>.
+
+</div>
+
+<div class="example">
+
+Przykład:
+
+\[
+4,\quad7,\quad5,\quad8
+\]
+
+Mamy <b>4 liczby</b>.
+
+\[
+\frac{4+7+5+8}{4}
+=
+\frac{24}{4}
+=
+6
+\]
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+🎯 Czy średnia musi być jedną z danych?
+</h2>
+
+<p>
+
+Nie.
+
+Na przykład:
+
+</p>
+
+\[
+4,\quad5,\quad8
+\]
+
+\[
+\frac{4+5+8}{3}
+=
+\frac{17}{3}
+=
+5\frac{2}{3}
+\]
+
+<p>
+
+Liczby
+\(5\frac{2}{3}\)
+nie ma w zestawie,
+ale jest ona jego średnią.
+
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+📈 Wartości skrajne
+</h2>
+
+<p>
+
+Bardzo duża
+lub bardzo mała wartość
+może mocno zmienić średnią.
+
+</p>
+
+<div class="example">
+
+Dane:
+
+\[
+5,\quad5,\quad6,\quad6,\quad7
+\]
+
+Średnia:
+
+\[
+\frac{29}{5}=5{,}8
+\]
+
+Teraz zamieńmy ostatnią liczbę
+na \(50\):
+
+\[
+5,\quad5,\quad6,\quad6,\quad50
+\]
+
+Średnia:
+
+\[
+\frac{72}{5}=14{,}4
+\]
+
+</div>
+
+<div class="tip">
+
+Dlatego podczas analizy danych
+warto patrzeć nie tylko na średnią,
+ale także na poszczególne wartości
+i medianę.
+
+</div>
+
+</div>
+
+
+</section>
+
+
+
+<!-- ======================
+ PRZYKŁADY
+====================== -->
+
+<section
+id="przyklady"
+class="section">
+
+
+<div class="card">
+
+<h2>
+🔎 Przykład 1
+</h2>
+
+<p>
+
+Oblicz średnią liczb:
+
+</p>
+
+\[
+3,\quad5,\quad4,\quad6,\quad7
+\]
+
+<p>
+<b>Krok 1.</b>
+Dodajemy liczby.
+</p>
+
+\[
+3+5+4+6+7=25
+\]
+
+<p>
+<b>Krok 2.</b>
+Jest pięć liczb.
+</p>
+
+<p>
+<b>Krok 3.</b>
+Dzielimy.
+</p>
+
+\[
+\frac{25}{5}=5
+\]
+
+<div class="remember">
+
+Odpowiedź:
+
+\[
+\boxed{5}
+\]
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+🔎 Przykład 2 – oceny
+</h2>
+
+<p>
+
+Uczeń otrzymał oceny:
+
+</p>
+
+\[
+4,\quad5,\quad3,\quad5,\quad4,\quad6
+\]
+
+<p>
+
+Suma ocen:
+
+</p>
+
+\[
+4+5+3+5+4+6=27
+\]
+
+<p>
+
+Liczba ocen:
+
+</p>
+
+\[
+6
+\]
+
+<p>
+
+Średnia:
+
+</p>
+
+\[
+\frac{27}{6}=4{,}5
+\]
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+🔎 Przykład 3 – brakująca liczba
+</h2>
+
+<p>
+
+Średnia czterech liczb
+wynosi \(7\).
+
+Trzy z nich to:
+
+</p>
+
+\[
+5,\quad8,\quad6
+\]
+
+<p>
+
+Znajdź czwartą liczbę.
+
+</p>
+
+<p>
+
+Jeśli średnia wynosi \(7\),
+to suma wszystkich czterech liczb wynosi:
+
+</p>
+
+\[
+7\cdot4=28
+\]
+
+<p>
+
+Suma znanych liczb:
+
+</p>
+
+\[
+5+8+6=19
+\]
+
+<p>
+
+Brakująca liczba:
+
+</p>
+
+\[
+28-19=9
+\]
+
+<div class="remember">
+
+\[
+\boxed{9}
+\]
+
+</div>
+
+</div>
+
+
+
+<div class="card">
+
+<h2>
+🔎 Przykład 4 – średnia z tabeli
+</h2>
+
+<table>
+
+<tr>
+<th>
+Liczba książek
+</th>
+
+<th>
+1
+</th>
+
+<th>
+2
+</th>
+
+<th>
+3
+</th>
+
+<th>
+4
+</th>
+</tr>
+
+
+<tr>
+<th>
+Liczba uczniów
+</th>
+
+<td>
+2
+</td>
+
+<td>
+3
+</td>
+
+<td>
+4
+</td>
+
+<td>
+1
+</td>
+</tr>
+
+</table>
+
+<p>
+
+Łączna liczba książek:
+
+</p>
+
+\[
+1\cdot2+
+2\cdot3+
+3\cdot4+
+4\cdot1
+\]
+
+\[
+=2+6+12+4=24
+\]
+
+<p>
+
+Liczba uczniów:
+
+</p>
+
+\[
+2+3+4+1=10
+\]
+
+<p>
+
+Średnia:
+
+</p>
+
+\[
+\frac{24}{10}=2{,}4
+\]
+
+</div>
+
+
+</section>
+
+
+
+<!-- ======================
+ ZADANIA
+====================== -->
+
+<section
+id="zadania"
+class="section">
+
+
+<div class="card">
+
+<h2>
+✏️ Zadania
+</h2>
+
+<p>
+
+Wybierz poziom
+po lewej stronie.
+
+</p>
+
+</div>
+
+
+<!-- LEVEL 1 -->
+
+<div
+class="level-block active"
+data-level-block="1">
+
+
+<div class="card">
+
+<h2>
+🟢 Poziom 1 – Łatwy
+</h2>
+
+
+<div class="task">
+
+<h4>
+1. Oblicz średnią.
+</h4>
+
+\[
+4,\quad6,\quad8
+\]
+
+<input
+id="task1"
+type="number"
+placeholder="Wpisz wynik">
+
+<button
+class="check-btn"
+onclick="checkNumber('task1',6)">
+Sprawdź
+</button>
+
+<div
+id="task1-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+2. Oblicz średnią.
+</h4>
+
+\[
+5,\quad5,\quad7,\quad7
+\]
+
+<input
+id="task2"
+type="number"
+placeholder="Wpisz wynik">
+
+<button
+class="check-btn"
+onclick="checkNumber('task2',6)">
+Sprawdź
+</button>
+
+<div
+id="task2-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+3. Oblicz średnią.
+</h4>
+
+\[
+10,\quad20,\quad30
+\]
+
+<input
+id="task3"
+type="number"
+placeholder="Wpisz wynik">
+
+<button
+class="check-btn"
+onclick="checkNumber('task3',20)">
+Sprawdź
+</button>
+
+<div
+id="task3-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+4. Średnia wyników
+</h4>
+
+<p>
+
+Ania zdobyła
+w czterech rundach:
+
+</p>
+
+\[
+8,\quad6,\quad10,\quad8
+\]
+
+<p>
+
+Ile punktów zdobywała średnio?
+
+</p>
+
+<input
+id="task4"
+type="number">
+
+<button
+class="check-btn"
+onclick="checkNumber('task4',8)">
+Sprawdź
+</button>
+
+<div
+id="task4-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- LEVEL 2 -->
+
+<div
+class="level-block"
+data-level-block="2">
+
+
+<div class="card">
+
+<h2>
+🟡 Poziom 2 – Średni
+</h2>
+
+
+<div class="task">
+
+<h4>
+5. Temperatury
+</h4>
+
+<p>
+
+Temperatury w pięciu dniach wynosiły:
+
+</p>
+
+\[
+12^\circ C,\quad
+15^\circ C,\quad
+14^\circ C,\quad
+18^\circ C,\quad
+16^\circ C
+\]
+
+<p>
+
+Oblicz średnią temperaturę.
+
+</p>
+
+<input
+id="task5"
+type="number">
+
+<button
+class="check-btn"
+onclick="checkNumber('task5',15)">
+Sprawdź
+</button>
+
+<div
+id="task5-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+6. Brakująca liczba
+</h4>
+
+<p>
+
+Średnia liczb
+
+</p>
+
+\[
+5,\quad7,\quad x,\quad10
+\]
+
+<p>
+
+wynosi \(8\).
+
+Znajdź \(x\).
+
+</p>
+
+<input
+id="task6"
+type="number">
+
+<button
+class="check-btn"
+onclick="checkNumber('task6',10)">
+Sprawdź
+</button>
+
+<div
+id="task6-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+7. Średnia masa
+</h4>
+
+<p>
+
+Cztery paczki ważą:
+
+</p>
+
+\[
+2{,}5,\quad
+3,\quad
+2,\quad
+4{,}5
+\]
+
+<p>
+
+kilograma.
+
+Oblicz średnią masę paczki.
+
+</p>
+
+<input
+id="task7"
+type="text"
+placeholder="np. 3">
+
+<button
+class="check-btn"
+onclick="checkDecimal('task7',3)">
+Sprawdź
+</button>
+
+<div
+id="task7-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+8. Oceń wynik
+</h4>
+
+<p>
+
+Średnia liczb
+
+</p>
+
+\[
+10,\quad12,\quad14
+\]
+
+<p>
+
+wynosi:
+
+</p>
+
+<label>
+<input
+type="radio"
+name="task8"
+value="10">
+10
+</label>
+
+<br>
+
+<label>
+<input
+type="radio"
+name="task8"
+value="12">
+12
+</label>
+
+<br>
+
+<label>
+<input
+type="radio"
+name="task8"
+value="14">
+14
+</label>
+
+<br>
+
+<button
+class="check-btn"
+onclick="checkRadio('task8','12','task8-feedback')">
+Sprawdź
+</button>
+
+<div
+id="task8-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- LEVEL 3 -->
+
+<div
+class="level-block"
+data-level-block="3">
+
+
+<div class="card">
+
+<h2>
+🔴 Poziom 3 – Trudny
+</h2>
+
+
+<div class="task">
+
+<h4>
+9. Brakujący wynik
+</h4>
+
+<p>
+
+Średnia pięciu wyników
+wynosi \(18\).
+
+Cztery wyniki to:
+
+</p>
+
+\[
+12,\quad15,\quad20,\quad21
+\]
+
+<p>
+
+Znajdź piąty wynik.
+
+</p>
+
+<input
+id="task9"
+type="number">
+
+<button
+class="check-btn"
+onclick="checkNumber('task9',22)">
+Sprawdź
+</button>
+
+<div
+id="task9-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+10. Zmiana średniej
+</h4>
+
+<p>
+
+Średnia pięciu liczb wynosi \(12\).
+
+Do zestawu dodano liczbę \(18\).
+
+Jaka jest nowa średnia?
+
+</p>
+
+<input
+id="task10"
+type="number">
+
+<button
+class="check-btn"
+onclick="checkNumber('task10',13)">
+Sprawdź
+</button>
+
+<div
+id="task10-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+11. Średnia z tabeli
+</h4>
+
+<table>
+
+<tr>
+
+<th>
+Wynik
+</th>
+
+<th>
+2
+</th>
+
+<th>
+3
+</th>
+
+<th>
+4
+</th>
+
+<th>
+5
+</th>
+
+</tr>
+
+<tr>
+
+<th>
+Liczba uczniów
+</th>
+
+<td>
+1
+</td>
+
+<td>
+2
+</td>
+
+<td>
+4
+</td>
+
+<td>
+3
+</td>
+
+</tr>
+
+</table>
+
+<p>
+
+Oblicz średni wynik.
+
+</p>
+
+<input
+id="task11"
+type="text">
+
+<button
+class="check-btn"
+onclick="checkDecimal('task11',3.9)">
+Sprawdź
+</button>
+
+<div
+id="task11-feedback"
+class="feedback">
+</div>
+
+</div>
+
+
+
+<div class="task">
+
+<h4>
+12. Średnia czy mediana?
+</h4>
+
+<p>
+
+Wynagrodzenia pięciu osób wynoszą:
+
+</p>
+
+\[
+4000,\quad
+4200,\quad
+4300,\quad
+4500,\quad
+20000
+\]
+
+<p>
+
+Wyjaśnij,
+dlaczego sama średnia
+może nie opisywać dobrze
+typowego wynagrodzenia.
+
+</p>
+
+<textarea
+placeholder="Napisz swoje wyjaśnienie...">
+</textarea>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+</section>
+
+
+
+<!-- ======================
+ TRENER
+====================== -->
+
+<section
+id="trener"
+class="section">
+
+<div class="card">
+
+<h2>
+🎮 Trener średniej
+</h2>
+
+<p>
+
+Za każdym razem otrzymasz
+nowe liczby.
+
+</p>
+
+<div id="trainerTask"
+class="task">
+</div>
+
+<button
+id="newTrainer"
+class="check-btn">
+
+🎲 Nowe zadanie
+
+</button>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================
+ GRA
+====================== -->
+
+<section
+id="gra"
+class="section">
+
+<div class="card">
+
+<h2>
+🏆 Gra „Strażnik średniej”
+</h2>
+
+<div class="game-box">
+
+<p>
+
+Odpowiedz poprawnie
+na pięć pytań
+i zdobądź komplet punktów.
+
+</p>
+
+<div id="gameQuestion">
+Kliknij „Start”.
+</div>
+
+<div class="score">
+
+Punkty:
+
+<span id="gameScore">
+0
+</span>
+
+/ 5
+
+</div>
+
+<button
+id="gameNext"
+class="check-btn green">
+
+▶ Start / następne
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================
+ TEST
+====================== -->
+
+<section
+id="test"
+class="section">
+
+<div class="card">
+
+<h2>
+✅ Test – Średnia arytmetyczna
+</h2>
+
+<div id="testContainer">
+</div>
+
+<button
+id="gradeTest"
+class="check-btn">
+
+Sprawdź test
+
+</button>
+
+<button
+id="printTestResult"
+class="check-btn secondary">
+
+🖨️ Drukuj tylko wynik
+
+</button>
+
+<div
+id="testResult"
+class="feedback">
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================
+ HOMEWORK
+====================== -->
+
+<section
+id="domowe"
+class="section">
+
+<div class="card">
+
+<h2>
+🏠 Praca domowa
+</h2>
+
+<div class="task">
+
+<h4>
+1.
+</h4>
+
+Oblicz średnią:
+
+\[
+6,\quad8,\quad5,\quad9,\quad7
+\]
+
+</div>
+
+
+<div class="task">
+
+<h4>
+2.
+</h4>
+
+Oblicz średnią:
+
+\[
+12,\quad18,\quad15,\quad20,\quad10
+\]
+
+</div>
+
+
+<div class="task">
+
+<h4>
+3.
+</h4>
+
+Średnia czterech liczb
+wynosi \(9\).
+
+Trzy liczby to:
+
+\[
+5,\quad10,\quad12
+\]
+
+Znajdź czwartą liczbę.
+
+</div>
+
+
+<div class="task">
+
+<h4>
+4.
+</h4>
+
+Uczeń uzyskał punkty:
+
+\[
+14,\quad18,\quad16,\quad20,\quad17
+\]
+
+Oblicz jego średni wynik.
+
+</div>
+
+
+<div class="task">
+
+<h4>
+5.
+</h4>
+
+Średnia pięciu liczb
+wynosi \(24\).
+
+Do zestawu dodano liczbę \(30\).
+
+Oblicz nową średnią.
+
+</div>
+
+
+<div class="task">
+
+<h4>
+6. Zadanie badawcze
+</h4>
+
+Zapytaj co najmniej 8 osób,
+ile minut dziennie
+poświęcają na czytanie.
+
+Następnie:
+
+<ol>
+
+<li>
+zapisz dane,
+</li>
+
+<li>
+oblicz średnią,
+</li>
+
+<li>
+wyznacz medianę,
+</li>
+
+<li>
+porównaj średnią z medianą,
+</li>
+
+<li>
+napisz jeden wniosek.
+</li>
+
+</ol>
+
+</div>
+
+
+<button
+class="check-btn no-print"
+onclick="printCurrentSection()">
+
+🖨️ Drukuj pracę domową
+
+</button>
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+<script>
+
+/* ======================
+ NAVIGATION
+====================== */
+
+const navButtons =
+document.querySelectorAll(
+  ".nav-btn[data-tab]"
+);
+
+navButtons.forEach(button=>{
+
+  button.addEventListener(
+    "click",
+    ()=>{
+
+      navButtons.forEach(
+        btn=>
+        btn.classList.remove(
+          "active"
+        )
+      );
+
+      button.classList.add(
+        "active"
+      );
+
+      document
+      .querySelectorAll(
+        ".section"
+      )
+      .forEach(
+        section=>
+        section.classList.remove(
+          "active"
+        )
+      );
+
+      const target =
+      document.getElementById(
+        button.dataset.tab
+      );
+
+      target.classList.add(
+        "active"
+      );
+
+    }
+  );
+
+});
+
+
+/* ======================
+ LEVELS
+====================== */
+
+document
+.querySelectorAll(
+  ".level-button"
+)
+.forEach(button=>{
+
+  button.addEventListener(
+    "click",
+    ()=>{
+
+      const level =
+      button.dataset.level;
+
+      document
+      .querySelectorAll(
+        ".level-block"
+      )
+      .forEach(
+        block=>
+        block.classList.remove(
+          "active"
+        )
+      );
+
+      document
+      .querySelector(
+        '[data-level-block="' +
+        level +
+        '"]'
+      )
+      .classList.add(
+        "active"
+      );
+
+      document
+      .querySelector(
+        '[data-tab="zadania"]'
+      )
+      .click();
+
+    }
+  );
+
+});
+
+
+/* ======================
+ CHECKING
+====================== */
+
+function showFeedback(
+  id,
+  message,
+  correct
+){
+
+  const element =
+  document.getElementById(
+    id
+  );
+
+  element.textContent =
+  message;
+
+  element.className =
+  "feedback " +
+  (
+    correct
+    ?
+    "good"
+    :
+    "bad"
+  );
+
+}
+
+
+function checkNumber(
+  inputId,
+  answer
+){
+
+  const value =
+  Number(
+    document
+    .getElementById(
+      inputId
+    )
+    .value
+  );
+
+  const correct =
+  value === answer;
+
+  showFeedback(
+    inputId +
+    "-feedback",
+
+    correct
+    ?
+    "✅ Brawo! Poprawna odpowiedź."
+    :
+    "❌ Jeszcze raz: najpierw policz sumę, potem podziel przez liczbę danych.",
+
+    correct
+  );
+
+}
+
+
+function checkDecimal(
+  inputId,
+  answer
+){
+
+  let value =
+  document
+  .getElementById(
+    inputId
+  )
+  .value
+  .replace(
+    ",",
+    "."
+  );
+
+  value =
+  Number(
+    value
+  );
+
+  const correct =
+  Math.abs(
+    value -
+    answer
+  ) < 0.001;
+
+  showFeedback(
+    inputId +
+    "-feedback",
+
+    correct
+    ?
+    "✅ Doskonale!"
+    :
+    "❌ Sprawdź sumę i liczbę danych.",
+
+    correct
+  );
+
+}
+
+
+function checkRadio(
+  name,
+  answer,
+  feedbackId
+){
+
+  const checked =
+  document.querySelector(
+    'input[name="' +
+    name +
+    '"]:checked'
+  );
+
+  if(!checked){
+
+    showFeedback(
+      feedbackId,
+      "Najpierw zaznacz odpowiedź.",
+      false
+    );
+
+    return;
+  }
+
+  const correct =
+  checked.value ===
+  answer;
+
+  showFeedback(
+    feedbackId,
+
+    correct
+    ?
+    "✅ Brawo!"
+    :
+    "❌ Spróbuj jeszcze raz.",
+
+    correct
+  );
+
+}
+
+
+/* ======================
+ TRAINER
+====================== */
+
+let trainerAnswer = 0;
+
+
+function generateTrainer(){
+
+  const count =
+  Math.floor(
+    Math.random()*3
+  ) + 3;
+
+  let numbers=[];
+
+  for(
+    let i=0;
+    i<count;
+    i++
+  ){
+
+    numbers.push(
+      Math.floor(
+        Math.random()*9
+      ) + 1
+    );
+
+  }
+
+  const sum =
+  numbers.reduce(
+    (a,b)=>a+b,
+    0
+  );
+
+  trainerAnswer =
+  sum /
+  numbers.length;
+
+
+  document
+  .getElementById(
+    "trainerTask"
+  )
+  .innerHTML = `
+
+  <h3>
+  Oblicz średnią liczb:
+  </h3>
+
+  <p style="
+  font-size:1.4rem;
+  font-weight:900;
+  ">
+  ${numbers.join(" , ")}
+  </p>
+
+  <input
+  id="trainerInput"
+  type="text"
+  placeholder="Wpisz średnią">
+
+  <button
+  class="check-btn"
+  onclick="checkTrainer()">
+  Sprawdź
+  </button>
+
+  <div
+  id="trainerFeedback"
+  class="feedback">
+  </div>
+
+  `;
+
+}
+
+
+function checkTrainer(){
+
+  let value =
+  document
+  .getElementById(
+    "trainerInput"
+  )
+  .value
+  .replace(
+    ",",
+    "."
+  );
+
+  value =
+  Number(
+    value
+  );
+
+  const correct =
+  Math.abs(
+    value -
+    trainerAnswer
+  ) < 0.01;
+
+
+  const feedback =
+  document.getElementById(
+    "trainerFeedback"
+  );
+
+  if(correct){
+
+    feedback.innerHTML =
+    "✅ Brawo! Średnia została obliczona poprawnie.";
+
+    feedback.className =
+    "feedback good";
+
+  }
+
+  else{
+
+    feedback.innerHTML =
+    "💡 Dodaj wszystkie liczby i podziel przez ich liczbę.";
+
+    feedback.className =
+    "feedback bad";
+
+  }
+
+}
+
+
+document
+.getElementById(
+  "newTrainer"
+)
+.addEventListener(
+  "click",
+  generateTrainer
+);
+
+
+generateTrainer();
+
+
+/* ======================
+ GAME
+====================== */
+
+const gameQuestions = [
+
+{
+q:
+"Średnia liczb 4, 6 i 8 wynosi:",
+a:
+"6"
+},
+
+{
+q:
+"Średnia liczb 5, 5, 5 i 5 wynosi:",
+a:
+"5"
+},
+
+{
+q:
+"Jeśli suma 5 liczb wynosi 40, to średnia wynosi:",
+a:
+"8"
+},
+
+{
+q:
+"Średnia 3 liczb wynosi 10. Ich suma wynosi:",
+a:
+"30"
+},
+
+{
+q:
+"Średnia liczb 2, 4, 6, 8, 10 wynosi:",
+a:
+"6"
+}
+
+];
+
+
+let gameIndex=-1;
+let gameScore=0;
+
+
+document
+.getElementById(
+  "gameNext"
+)
+.addEventListener(
+  "click",
+  ()=>{
+
+    gameIndex++;
+
+    if(
+      gameIndex >=
+      gameQuestions.length
+    ){
+
+      document
+      .getElementById(
+        "gameQuestion"
+      )
+      .innerHTML = `
+
+      <h3>
+      🎉 Koniec gry!
+      </h3>
+
+      <p>
+      Twój wynik:
+      <b>
+      ${gameScore}/5
+      </b>
+      </p>
+
+      `;
+
+      return;
+    }
+
+
+    const item =
+    gameQuestions[
+      gameIndex
+    ];
+
+
+    document
+    .getElementById(
+      "gameQuestion"
+    )
+    .innerHTML = `
+
+    <h3>
+    ${item.q}
+    </h3>
+
+    <input
+    id="gameInput"
+    type="text"
+    placeholder="Odpowiedź">
+
+    <button
+    class="check-btn"
+    onclick="checkGame()">
+    Odpowiedz
+    </button>
+
+    <div
+    id="gameFeedback"
+    class="feedback">
+    </div>
+
+    `;
+
+  }
+);
+
+
+function checkGame(){
+
+  const answer =
+  gameQuestions[
+    gameIndex
+  ].a;
+
+  const input =
+  document
+  .getElementById(
+    "gameInput"
+  );
+
+  const correct =
+  input.value.trim()
+  === answer;
+
+
+  const feedback =
+  document
+  .getElementById(
+    "gameFeedback"
+  );
+
+
+  if(correct){
+
+    gameScore++;
+
+    document
+    .getElementById(
+      "gameScore"
+    )
+    .textContent =
+    gameScore;
+
+    feedback.textContent =
+    "✅ Punkt!";
+
+    feedback.className =
+    "feedback good";
+
+  }
+
+  else{
+
+    feedback.textContent =
+    "❌ Poprawna odpowiedź: " +
+    answer;
+
+    feedback.className =
+    "feedback bad";
+
+  }
+
+  input.disabled=true;
+
+}
+
+
+/* ======================
+ TEST
+====================== */
+
+const testQuestions = [
+
+{
+q:
+"1. Jak obliczamy średnią arytmetyczną?",
+options:[
+"Dodajemy liczby i dzielimy przez ich liczbę",
+"Dodajemy tylko największe liczby",
+"Mnożymy wszystkie liczby"
+],
+answer:0
+},
+
+{
+q:
+"2. Średnia liczb 4, 6, 8 wynosi:",
+options:[
+"5",
+"6",
+"7"
+],
+answer:1
+},
+
+{
+q:
+"3. Średnia liczb 10, 20, 30 wynosi:",
+options:[
+"10",
+"20",
+"30"
+],
+answer:1
+},
+
+{
+q:
+"4. Suma 5 liczb wynosi 45. Ich średnia to:",
+options:[
+"9",
+"10",
+"15"
+],
+answer:0
+},
+
+{
+q:
+"5. Czy średnia musi należeć do zestawu danych?",
+options:[
+"Tak",
+"Nie",
+"Tylko czasami, gdy liczb jest 5"
+],
+answer:1
+},
+
+{
+q:
+"6. Średnia czterech liczb wynosi 8. Jaka jest ich suma?",
+options:[
+"12",
+"24",
+"32"
+],
+answer:2
+},
+
+{
+q:
+"7. Średnia liczb 2, 4, 6, 8 wynosi:",
+options:[
+"4",
+"5",
+"6"
+],
+answer:1
+},
+
+{
+q:
+"8. Bardzo duża wartość może:",
+options:[
+"zmienić średnią",
+"nie mieć żadnego wpływu",
+"zawsze zmniejszyć średnią"
+],
+answer:0
+},
+
+{
+q:
+"9. Średnia liczb 5, 7, 9 wynosi:",
+options:[
+"6",
+"7",
+"8"
+],
+answer:1
+},
+
+{
+q:
+"10. Średnia 6 liczb wynosi 4. Ich suma to:",
+options:[
+"10",
+"20",
+"24"
+],
+answer:2
+}
+
+];
+
+
+const testContainer =
+document.getElementById(
+  "testContainer"
+);
+
+
+testContainer.innerHTML =
+testQuestions
+.map(
+(item,index)=>{
+
+return `
+
+<div class="task">
+
+<h4>
+${item.q}
+</h4>
+
+${item.options
+.map(
+(option,i)=>`
+
+<label
+style="
+display:block;
+padding:8px;
+margin:5px 0;
+border-radius:10px;
+background:#f5f9fc;
+">
+
+<input
+type="radio"
+name="test${index}"
+value="${i}">
+
+${option}
+
+</label>
+
+`
+)
+.join("")}
+
+</div>
+
+`;
+
+}
+)
+.join("");
+
+
+document
+.getElementById(
+  "gradeTest"
+)
+.addEventListener(
+  "click",
+  ()=>{
+
+    let score=0;
+
+
+    testQuestions
+    .forEach(
+      (item,index)=>{
+
+        const checked =
+        document.querySelector(
+          'input[name="test' +
+          index +
+          '"]:checked'
+        );
+
+
+        if(
+          checked &&
+          Number(
+            checked.value
+          )
+          ===
+          item.answer
+        ){
+
+          score++;
+
+        }
+
+      }
+    );
+
+
+    const percent =
+    Math.round(
+      score /
+      testQuestions.length *
+      100
+    );
+
+
+    let comment;
+
+
+    if(percent>=90){
+
+      comment =
+      "🌟 Świetnie! Bardzo dobrze rozumiesz średnią arytmetyczną.";
+
+    }
+
+    else if(percent>=70){
+
+      comment =
+      "👍 Bardzo dobrze. Powtórz jeszcze zadania z brakującą liczbą.";
+
+    }
+
+    else if(percent>=50){
+
+      comment =
+      "🙂 Podstawy są opanowane. Warto jeszcze poćwiczyć.";
+
+    }
+
+    else{
+
+      comment =
+      "📘 Wróć do teorii i przejdź jeszcze raz przez poziom 1.";
+
+    }
+
+
+    const result =
+    document.getElementById(
+      "testResult"
+    );
+
+
+    result.innerHTML = `
+
+    <h3>
+    Wynik:
+    ${score}/
+    ${testQuestions.length}
+    </h3>
+
+    <p>
+    ${percent}%
+    </p>
+
+    <p>
+    ${comment}
+    </p>
+
+    `;
+
+    result.className =
+    "feedback " +
+    (
+      percent>=70
+      ?
+      "good"
+      :
+      ""
+    );
+
+  }
+);
+
+
+/* ======================
+ PRINT TEST RESULT
+====================== */
+
+document
+.getElementById(
+  "printTestResult"
+)
+.addEventListener(
+  "click",
+  ()=>{
+
+    const result =
+    document
+    .getElementById(
+      "testResult"
+    )
+    .innerHTML;
+
+
+    const newWindow =
+    window.open(
+      "",
+      "_blank"
+    );
+
+
+    newWindow.document.write(
+`
+<!DOCTYPE html>
+
+<html lang="pl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Wynik testu
+</title>
+
+<style>
+
+body{
+
+font-family:
+Arial,
+sans-serif;
+
+padding:40px;
+
+color:#17345d;
+
+}
+
+h1{
+
+color:#246ed8;
+
+}
+
+.box{
+
+border:
+2px solid #9ec8ee;
+
+padding:20px;
+
+border-radius:15px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+Średnia arytmetyczna
+</h1>
+
+<h2>
+Wynik testu
+</h2>
+
+<div class="box">
+
+${result ||
+"Najpierw rozwiąż test."}
+
+</div>
+
+</body>
+
+</html>
+`
+    );
+
+
+    newWindow.document.close();
+
+
+    setTimeout(
+      ()=>{
+        newWindow.print();
+      },
+      300
+    );
+
+  }
+);
+
+
+/* ======================
+ PRINT SECTION
+====================== */
+
+document
+.getElementById(
+  "printButton"
+)
+.addEventListener(
+  "click",
+  printCurrentSection
+);
+
+
+function printCurrentSection(){
+
+  const section =
+  document
+  .querySelector(
+    ".section.active"
+  )
+  .outerHTML;
+
+
+  const newWindow =
+  window.open(
+    "",
+    "_blank"
+  );
+
+
+  newWindow
+  .document
+  .write(
+`
+<!DOCTYPE html>
+
+<html lang="pl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Średnia arytmetyczna
+</title>
+
+<style>
+
+body{
+
+font-family:
+Arial,
+sans-serif;
+
+padding:25px;
+
+color:#17345d;
+
+line-height:1.5;
+
+}
+
+.card,
+.task{
+
+border:
+1px solid #b9cbd8;
+
+border-radius:12px;
+
+padding:14px;
+
+margin:
+12px 0;
+
+}
+
+button{
+
+display:none;
+
+}
+
+table{
+
+border-collapse:
+collapse;
+
+width:100%;
+
+}
+
+th,
+td{
+
+border:
+1px solid #888;
+
+padding:6px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>
+Średnia arytmetyczna
+</h1>
+
+${section}
+
+</body>
+
+</html>
+`
+  );
+
+
+  newWindow
+  .document
+  .close();
+
+
+  setTimeout(
+    ()=>{
+
+      newWindow.print();
+
+    },
+    300
+  );
+
+}
+
+</script>
+
+</body>
+</html>
