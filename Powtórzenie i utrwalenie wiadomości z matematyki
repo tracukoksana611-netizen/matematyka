@@ -1,0 +1,2409 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101b34">
+<title>Powtórzenie i utrwalenie wiadomości z matematyki</title>
+
+<!-- MATHJAX -->
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)'],['$','$']],
+    displayMath: [['\\[','\\]'],['$$','$$']]
+  },
+  svg: {fontCache:'global'}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<!-- FONTS -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ===================================
+   KOLORY I TYPOGRAFIA
+=================================== */
+:root {
+  --navy:#101b34;
+  --blue:#596aea;
+  --violet:#7965ed;
+  --mint:#20b99f;
+  --bg:#f6f8fc;
+  --text:#23324b;
+  --muted:#65758f;
+  --border:#e2e9f4;
+  --good:#087d66;
+  --bad:#cd4663;
+  --shadow:0 14px 38px rgba(20,35,77,.08);
+}
+
+* {box-sizing:border-box}
+
+html {
+  scroll-behavior:smooth;
+  scroll-padding-top:120px;
+}
+
+body {
+  margin:0;
+  font-family:Manrope,Arial,sans-serif;
+  font-size:22px;
+  line-height:1.8;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 90% 3%,#eae8ff,transparent 25%),
+    radial-gradient(circle at 4% 17%,#e5f8f2,transparent 23%),
+    var(--bg);
+}
+
+h1,h2,h3 {
+  font-family:Outfit,Manrope,Arial,sans-serif;
+  letter-spacing:-.035em;
+  line-height:1.2;
+}
+
+h2 {
+  margin:0;
+  font-size:clamp(2.25rem,3.8vw,3.2rem);
+  color:var(--navy);
+}
+
+h3 {
+  margin:10px 0 17px;
+  font-size:1.68rem;
+  color:var(--navy);
+}
+
+p {margin:.7em 0}
+
+button,input,select {font:inherit}
+
+button {
+  cursor:pointer;
+  transition:transform .2s,box-shadow .2s;
+}
+
+button:hover:not(:disabled) {
+  transform:translateY(-2px);
+}
+
+button:disabled {
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline:3px solid var(--mint);
+  outline-offset:3px;
+}
+
+input,select {
+  min-width:0;
+  max-width:100%;
+  padding:15px 17px;
+  border:1.5px solid #d4ddec;
+  border-radius:13px;
+  background:white;
+  color:var(--text);
+  font-size:1.05rem;
+}
+
+mjx-container {
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+
+/* ===================================
+   HERO
+=================================== */
+.hero {
+  position:relative;
+  min-height:530px;
+  display:grid;
+  grid-template-columns:1.35fr .65fr;
+  align-items:center;
+  gap:36px;
+  padding:75px max(5vw,24px);
+  overflow:hidden;
+  color:white;
+  background:
+    radial-gradient(circle at 85% 18%,#7371c562,transparent 36%),
+    linear-gradient(125deg,#101b34,#263d72 65%,#484399);
+}
+
+.hero::before {
+  content:"";
+  position:absolute;
+  right:-165px;
+  top:-215px;
+  width:450px;
+  height:450px;
+  border:1px solid #ffffff34;
+  border-radius:50%;
+  box-shadow:0 0 0 75px #ffffff09,
+             0 0 0 150px #ffffff05;
+}
+
+.hero-copy,.hero-art {
+  position:relative;
+  z-index:1;
+}
+
+.eyebrow {
+  display:inline-flex;
+  padding:11px 18px;
+  border:1px solid #ffffff39;
+  border-radius:99px;
+  background:#ffffff15;
+  font-size:.95rem;
+  font-weight:800;
+  letter-spacing:.05em;
+}
+
+.hero h1 {
+  margin:25px 0;
+  font-size:clamp(2.55rem,4.5vw,5rem);
+  line-height:1.1;
+  letter-spacing:-.05em;
+}
+
+.hero h1 span {color:#a2ecdc}
+
+.hero p {
+  max-width:770px;
+  color:#e0ebff;
+  font-size:1.22rem;
+  line-height:1.8;
+}
+
+.hero-badges {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:28px 0;
+}
+
+.hero-badges span {
+  padding:11px 16px;
+  border:1px solid #ffffff31;
+  border-radius:99px;
+  background:#ffffff13;
+  font-size:1rem;
+  font-weight:800;
+}
+
+.hero-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:13px;
+  margin-top:29px;
+}
+
+.hero-actions a {
+  padding:16px 24px;
+  border-radius:14px;
+  font-size:1.08rem;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.hero-primary {
+  background:white;
+  color:var(--navy);
+}
+
+.hero-secondary {
+  border:1px solid #ffffff80;
+  color:white;
+}
+
+.hero-art {
+  display:grid;
+  place-items:center;
+  min-height:300px;
+}
+
+.orbit {
+  width:min(310px,100%);
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  border:2px dashed #ffffff47;
+  border-radius:50%;
+  animation:float 5s ease-in-out infinite;
+}
+
+.orbit-card {
+  width:235px;
+  min-height:190px;
+  padding:22px;
+  display:grid;
+  justify-items:center;
+  align-content:center;
+  gap:10px;
+  border-radius:26px;
+  background:white;
+  color:var(--navy);
+  text-align:center;
+  box-shadow:0 25px 52px #050b254c;
+  transform:rotate(-5deg);
+}
+
+.orbit-card strong {
+  font-family:Georgia,serif;
+  font-size:4.4rem;
+  line-height:1;
+  color:var(--violet);
+}
+
+.orbit-card b {font-size:1.2rem}
+
+.orbit-card small {
+  color:var(--muted);
+  font-size:.92rem;
+}
+
+/* ===================================
+   MENU
+=================================== */
+nav {
+  position:sticky;
+  top:0;
+  z-index:50;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:12px 3vw;
+  background:#ffffffef;
+  border-bottom:1px solid var(--border);
+  box-shadow:0 8px 24px #101b3409;
+  backdrop-filter:blur(16px);
+}
+
+nav a,nav button {
+  padding:12px 15px;
+  border:0;
+  border-radius:11px;
+  background:transparent;
+  color:var(--navy);
+  font-size:1.1rem;
+  font-weight:800;
+  white-space:nowrap;
+  text-decoration:none;
+}
+
+nav a:hover,nav button:hover {
+  transform:none;
+  background:#eef0ff;
+}
+
+nav a.active {
+  background:var(--navy);
+  color:white;
+}
+
+nav button {
+  background:#e3f8f0;
+  color:#087762;
+}
+
+/* ===================================
+   UKŁAD STRONY
+=================================== */
+main {
+  width:min(1360px,94vw);
+  margin:auto;
+  padding:38px 0 110px;
+}
+
+section {
+  margin:58px 0 85px;
+  scroll-margin-top:120px;
+}
+
+.section-title {
+  display:flex;
+  align-items:center;
+  gap:19px;
+  margin-bottom:30px;
+}
+
+.section-icon {
+  display:grid;
+  place-items:center;
+  flex:0 0 74px;
+  width:74px;
+  height:74px;
+  border-radius:22px;
+  color:white;
+  font-size:2.15rem;
+  background:linear-gradient(135deg,var(--blue),var(--violet));
+  box-shadow:0 12px 25px #596aea35;
+}
+
+.small {
+  color:var(--muted);
+  font-size:1.14rem;
+}
+
+.card-grid,.visual-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(315px,1fr));
+  gap:24px;
+}
+
+.card,.panel {
+  min-width:0;
+  padding:30px;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:25px;
+  box-shadow:var(--shadow);
+}
+
+.card {
+  transition:transform .25s,box-shadow .25s;
+}
+
+.card:hover {
+  transform:translateY(-4px);
+  box-shadow:0 22px 46px #101b341b;
+}
+
+/* ===================================
+   TEORIA
+=================================== */
+.theory-card {
+  position:relative;
+  overflow:hidden;
+}
+
+.theory-card::before {
+  content:"";
+  position:absolute;
+  inset:0 0 auto;
+  height:5px;
+  background:linear-gradient(90deg,var(--mint),var(--violet));
+}
+
+.theory-card p {
+  font-size:1.2rem;
+  line-height:1.85;
+}
+
+.topic-number {
+  display:inline-grid;
+  place-items:center;
+  min-width:44px;
+  height:44px;
+  padding:0 11px;
+  border-radius:12px;
+  background:#eeebff;
+  color:#5e4cc2;
+  font-weight:800;
+}
+
+.formula {
+  margin:20px 0;
+  padding:23px 15px;
+  border:1px solid #e5e9f9;
+  border-radius:17px;
+  background:linear-gradient(125deg,#f0f3ff,#ecfaf7);
+  font-size:1.42rem;
+  text-align:center;
+  overflow-x:auto;
+}
+
+/* ===================================
+   ILUSTRACJE SVG + LATEX
+=================================== */
+.visual {
+  min-width:0;
+  overflow:hidden;
+  border:1px solid var(--border);
+  border-radius:28px;
+  background:white;
+  box-shadow:var(--shadow);
+  transition:transform .25s,box-shadow .25s;
+}
+
+.visual:hover {
+  transform:translateY(-5px);
+  box-shadow:0 24px 48px #101b3420;
+}
+
+.visual-canvas {
+  position:relative;
+  width:100%;
+  aspect-ratio:600/350;
+  overflow:hidden;
+  isolation:isolate;
+}
+
+/* Tylko SVG tła */
+.visual-canvas > svg {
+  position:absolute;
+  inset:0;
+  z-index:0;
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+/* SVG generowany przez MathJax zachowuje rozmiar */
+.visual-canvas .math-pin mjx-container {
+  position:static!important;
+  display:inline-block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+  vertical-align:middle!important;
+  color:inherit!important;
+}
+
+.visual-canvas .math-pin mjx-container > svg {
+  position:static!important;
+  inset:auto!important;
+  display:inline-block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:none!important;
+  overflow:visible!important;
+}
+
+.art-title {
+  position:absolute;
+  z-index:2;
+  top:4%;
+  left:5%;
+  width:90%;
+  text-align:center;
+  font-size:clamp(17px,2vw,29px);
+  font-weight:800;
+  color:#293c67;
+  pointer-events:none;
+}
+
+.math-pin {
+  position:absolute;
+  z-index:5;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  max-width:92%;
+  transform:translate(-50%,-50%);
+  color:#253a62;
+  font-size:clamp(15px,2vw,27px);
+  line-height:1;
+  white-space:nowrap;
+  pointer-events:none;
+}
+
+.math-pin.small-math {
+  font-size:clamp(13px,1.55vw,21px);
+}
+
+.math-pin.large-math {
+  font-size:clamp(16px,2.3vw,31px);
+}
+
+.math-pin.purple {color:#614bc6}
+.math-pin.green {color:#087763}
+.math-pin.brown {color:#8b5628}
+.math-pin.white {color:white}
+
+.visual .caption {
+  min-height:130px;
+  padding:27px 29px;
+  border-top:1px solid #e6ebf4;
+  color:#52617b;
+  font-size:1.23rem;
+  line-height:1.8;
+}
+
+.visual .caption b {color:#273b60}
+
+/* ===================================
+   PRZYCISKI I ZADANIA
+=================================== */
+.control-row {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:13px;
+  margin:21px 0;
+}
+
+.primary,.secondary,.success {
+  padding:16px 23px;
+  border:0;
+  border-radius:14px;
+  font-size:1.16rem;
+  font-weight:800;
+}
+
+.primary {
+  color:white;
+  background:linear-gradient(135deg,var(--blue),var(--violet));
+  box-shadow:0 7px 18px #596aea30;
+}
+
+.secondary {
+  background:#edf1f8;
+  color:#344762;
+}
+
+.success {
+  color:#087663;
+  background:#d9f7eb;
+}
+
+.exercise,.quiz-question {
+  margin:18px 0;
+  padding:27px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:white;
+  font-size:1.2rem;
+  line-height:1.85;
+}
+
+.exercise .num {
+  display:inline-grid;
+  place-items:center;
+  min-width:45px;
+  height:45px;
+  margin-right:12px;
+  padding:0 10px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--blue),var(--violet));
+  color:white;
+  font-weight:800;
+}
+
+.answerline {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:18px;
+}
+
+.answerline input {flex:1 1 190px}
+
+.feedback {
+  min-height:28px;
+  margin-top:13px;
+  font-size:1.1rem;
+  font-weight:800;
+}
+
+.good {color:var(--good)}
+.bad {color:var(--bad)}
+
+/* ===================================
+   GRY
+=================================== */
+.game-board {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:12px;
+}
+
+.memory {
+  min-height:120px;
+  padding:13px;
+  border:1px solid #6655c9;
+  border-radius:17px;
+  background:linear-gradient(145deg,#342c81,#7661e7);
+  color:white;
+  font-size:1.2rem;
+  font-weight:800;
+}
+
+.memory.revealed {
+  background:white;
+  border:2px solid #b9b0fa;
+  color:var(--navy);
+}
+
+.memory.matched {
+  background:#d9f8eb;
+  border:2px solid #75dcbb;
+  color:#087761;
+}
+
+/* ===================================
+   BANK ZADAŃ
+=================================== */
+.task-columns {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+  gap:20px;
+  align-items:start;
+}
+
+.topic-group {
+  padding:26px;
+  background:white;
+  border:1px solid var(--border);
+  border-radius:21px;
+  box-shadow:var(--shadow);
+}
+
+.topic-group summary {
+  cursor:pointer;
+  font-weight:800;
+  font-size:1.28rem;
+  color:var(--navy);
+}
+
+.topic-group[open] summary {margin-bottom:17px}
+
+.source-task {
+  margin:13px 0;
+  padding:20px;
+  border-left:4px solid var(--violet);
+  border-radius:14px;
+  background:#f8faff;
+  font-size:1.2rem;
+  overflow-x:auto;
+}
+
+/* ===================================
+   TEST
+=================================== */
+.progress-shell {
+  width:100%;
+  height:15px;
+  overflow:hidden;
+  background:#e7ecf5;
+  border-radius:99px;
+}
+
+.progress-bar {
+  width:0;
+  height:100%;
+  background:linear-gradient(90deg,var(--mint),var(--blue),var(--violet));
+  transition:width .35s;
+}
+
+.quiz-question label {
+  display:flex;
+  align-items:center;
+  gap:13px;
+  margin:11px 0;
+  padding:17px 19px;
+  background:#f7f9fd;
+  border:1px solid transparent;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:1.2rem;
+}
+
+.quiz-question label:hover {background:#eef0ff}
+
+.quiz-question label:has(input:checked) {
+  background:#eeebff;
+  border-color:#b9aff4;
+}
+
+.quiz-question input {accent-color:var(--violet)}
+
+.quiz-question.correct {border-color:#8cdec5}
+.quiz-question.incorrect {border-color:#f2b0be}
+
+/* ===================================
+   PRACA DOMOWA
+=================================== */
+.homework-sheet {
+  padding:35px;
+  background:white;
+  border:1px solid #dedcf7;
+  border-radius:24px;
+  box-shadow:var(--shadow);
+}
+
+.hw-item {
+  padding:21px 0;
+  border-bottom:1px solid #e9edf5;
+  break-inside:avoid;
+  font-size:1.2rem;
+}
+
+.hw-space {
+  height:65px;
+  margin-top:14px;
+  border-bottom:1px dashed #bbc7d8;
+}
+
+footer {
+  padding:50px 5vw;
+  background:var(--navy);
+  color:#cbd8ed;
+  text-align:center;
+  font-size:1.1rem;
+}
+
+footer b {color:white}
+
+/* ===================================
+   MOBILE
+=================================== */
+@keyframes float {
+  0%,100% {transform:translateY(0)}
+  50% {transform:translateY(-8px)}
+}
+
+@media(max-width:950px) {
+  .hero {grid-template-columns:1fr}
+}
+
+@media(max-width:620px) {
+  body {font-size:19px}
+
+  .hero {
+    min-height:auto;
+    padding:43px 22px;
+  }
+
+  .hero h1 {
+    font-size:clamp(2.1rem,9.3vw,3.5rem);
+  }
+
+  .hero p {font-size:1.08rem}
+  .hero-art {min-height:250px}
+  .orbit {max-width:235px}
+  .orbit-card {width:185px;min-height:145px}
+
+  nav {
+    justify-content:flex-start;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    scrollbar-width:none;
+    padding:11px;
+  }
+
+  nav a,nav button {
+    flex:0 0 auto;
+    font-size:1rem;
+  }
+
+  main {width:calc(100% - 28px)}
+  section {margin:38px 0 55px}
+
+  h2 {font-size:2rem}
+  h3 {font-size:1.4rem}
+
+  .small {font-size:1.02rem}
+
+  .section-icon {
+    flex:0 0 52px;
+    width:52px;
+    height:52px;
+    font-size:1.45rem;
+  }
+
+  .card-grid,.visual-grid,.task-columns {
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  .card,.panel,.topic-group {padding:20px}
+
+  .theory-card p {font-size:1.08rem}
+  .formula {font-size:1.18rem}
+
+  .visual .caption {
+    min-height:auto;
+    padding:20px;
+    font-size:1.08rem;
+  }
+
+  .art-title {font-size:clamp(16px,4.2vw,23px)}
+  .math-pin {font-size:16px}
+  .math-pin.small-math {font-size:13px}
+  .math-pin.large-math {font-size:19px}
+
+  .game-board {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  #searchTask,#topicFilter {width:100%}
+
+  .primary,.secondary,.success {
+    font-size:1.05rem;
+  }
+
+  .exercise,.quiz-question,.source-task,.hw-item {
+    font-size:1.08rem;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after {
+    animation:none!important;
+    transition:none!important;
+    scroll-behavior:auto!important;
+  }
+}
+
+/* ===================================
+   PRINT
+=================================== */
+@media print {
+  @page {size:A4;margin:13mm}
+
+  nav,.no-print,.hero-art,button {
+    display:none!important;
+  }
+
+  body {
+    background:white!important;
+    color:black;
+    font-size:12pt;
+  }
+
+  main {width:100%;padding:0}
+
+  .hero {
+    min-height:auto;
+    padding:12px;
+    background:white!important;
+    color:black!important;
+  }
+
+  .hero h1,.hero p {color:black!important}
+
+  .card,.panel,.visual,.exercise,
+  .quiz-question,.source-task,.homework-sheet {
+    box-shadow:none!important;
+    break-inside:avoid;
+  }
+
+  body.print-homework .hero,
+  body.print-homework nav,
+  body.print-homework footer,
+  body.print-homework main>section:not(#homework),
+  body.print-homework #homework .section-title,
+  body.print-homework #homework>.control-row {
+    display:none!important;
+  }
+
+  body.print-homework #homework {margin:0}
+
+  body.print-homework #homeworkSheet {
+    border:0;
+    padding:0;
+    box-shadow:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===================================
+   NAGŁÓWEK
+=================================== -->
+<header class="hero" id="top">
+
+  <div class="hero-copy">
+
+    <span class="eyebrow">
+      ✦ LEKCJA POWTÓRZENIOWA · MATEMATYKA
+    </span>
+
+    <h1>
+      Powtórzenie i utrwalenie<br>
+      <span>wiadomości z matematyki</span>
+    </h1>
+
+    <p>
+      Lekcja powtórzeniowa obejmująca liczby,
+      ułamki, podzielność, potęgi, wyrażenia
+      algebraiczne, równania, proporcje,
+      procenty i zadania tekstowe.
+      Powtórz teorię, wykonaj ćwiczenia
+      i sprawdź swoje umiejętności.
+    </p>
+
+    <div class="hero-badges">
+      <span>📘 Teoria</span>
+      <span>🪄 Ilustracje</span>
+      <span>🎯 Trening</span>
+      <span>🎮 Gry</span>
+      <span>🏆 Sprawdzian</span>
+    </div>
+
+    <div class="hero-actions">
+      <a class="hero-primary" href="#trainer">
+        Rozpocznij ćwiczenia
+      </a>
+      <a class="hero-secondary" href="#theory">
+        Powtórz teorię
+      </a>
+    </div>
+
+  </div>
+
+  <div class="hero-art" aria-hidden="true">
+    <div class="orbit">
+      <div class="orbit-card">
+        <strong>π</strong>
+        <b>Powtórzenie wiedzy</b>
+        <small>Teoria · Ćwiczenia · Test</small>
+      </div>
+    </div>
+  </div>
+
+</header>
+
+<nav aria-label="Nawigacja lekcji">
+  <a href="#theory">📘 Teoria</a>
+  <a href="#visuals">🪄 Ilustracje</a>
+  <a href="#trainer">🎯 Trening</a>
+  <a href="#games">🎮 Gry</a>
+  <a href="#bank">🗂 Zadania</a>
+  <a href="#test">🏆 Sprawdzian</a>
+  <a href="#homework">🏠 Praca domowa</a>
+  <button type="button" onclick="printAll()">🖨 Drukuj</button>
+</nav>
+
+<main>
+
+<!-- TEORIA -->
+<section id="theory">
+  <div class="section-title">
+    <div class="section-icon">📘</div>
+    <div>
+      <h2>Powtórzenie teorii</h2>
+      <div class="small">
+        Najważniejsze zasady, wzory i przykłady.
+      </div>
+    </div>
+  </div>
+  <div id="theoryGrid" class="card-grid"></div>
+</section>
+
+<!-- ===================================
+   ILUSTRACJE
+=================================== -->
+<section id="visuals">
+  <div class="section-title">
+    <div class="section-icon">🪄</div>
+    <div>
+      <h2>Matematyka na obrazkach</h2>
+      <div class="small">
+        Czytelne schematy z podpisami LaTeX.
+      </div>
+    </div>
+  </div>
+
+  <div class="visual-grid">
+
+    <!-- OŚ LICZBOWA -->
+    <article class="visual">
+      <div class="visual-canvas">
+
+        <svg viewBox="0 0 600 350" aria-hidden="true">
+          <rect width="600" height="350" fill="#edf1ff"/>
+          <rect x="23" y="20" width="554" height="310"
+                rx="27" fill="#fff" opacity=".75"/>
+
+          <rect x="205" y="105" width="190" height="48"
+                rx="24" fill="#e5dfff"/>
+
+          <path d="M90 195 Q265 69 440 195"
+                fill="none"
+                stroke="#7965ed"
+                stroke-width="6"
+                stroke-dasharray="10 11"
+                stroke-linecap="round"/>
+
+          <line x1="68" y1="222" x2="543" y2="222"
+                stroke="#273864"
+                stroke-width="5"
+                stroke-linecap="round"/>
+
+          <path d="M543 222 l-19 -11 v22 Z"
+                fill="#273864"/>
+
+          <g stroke="#273864" stroke-width="3">
+            <path d="M90 209v26 M160 209v26
+                     M230 209v26 M300 202v40
+                     M370 209v26 M440 209v26
+                     M510 209v26"/>
+          </g>
+
+          <circle cx="90" cy="222" r="13" fill="#ea7cad"/>
+          <circle cx="440" cy="222" r="13" fill="#596aea"/>
+        </svg>
+
+        <div class="art-title">Oś liczbowa</div>
+
+        <span class="math-pin purple"
+              style="left:50%;top:37%">
+          \(5\ \text{jednostek}\)
+        </span>
+
+        <span class="math-pin small-math"
+              style="left:15%;top:76%">\(-3\)</span>
+        <span class="math-pin small-math"
+              style="left:26.67%;top:76%">\(-2\)</span>
+        <span class="math-pin small-math"
+              style="left:38.33%;top:76%">\(-1\)</span>
+        <span class="math-pin small-math"
+              style="left:50%;top:76%">\(0\)</span>
+        <span class="math-pin small-math"
+              style="left:61.67%;top:76%">\(1\)</span>
+        <span class="math-pin small-math"
+              style="left:73.33%;top:76%">\(2\)</span>
+        <span class="math-pin small-math"
+              style="left:85%;top:76%">\(3\)</span>
+
+        <span class="math-pin large-math purple"
+              style="left:50%;top:90%">
+          \(\left|2-(-3)\right|=5\)
+        </span>
+
+      </div>
+
+      <div class="caption">
+        <b>Moduł różnicy</b> określa odległość
+        między dwiema liczbami na osi liczbowej.
+      </div>
+    </article>
+
+    <!-- UŁAMKI -->
+    <article class="visual">
+      <div class="visual-canvas">
+
+        <svg viewBox="0 0 600 350" aria-hidden="true">
+          <rect width="600" height="350" fill="#fff4e8"/>
+          <rect x="23" y="20" width="554" height="310"
+                rx="27" fill="#fff" opacity=".75"/>
+
+          <circle cx="187" cy="205" r="97"
+                  fill="#ffedc1"
+                  stroke="#b78131"
+                  stroke-width="4"/>
+
+          <path d="M187 205 V108 A97 97 0 0 1 284 205 Z"
+                fill="#f4ad46"/>
+
+          <path d="M187 108 V302 M90 205 H284"
+                stroke="#b78131" stroke-width="3"/>
+
+          <rect x="365" y="145" width="188" height="34"
+                rx="17" fill="#e0daff"/>
+
+          <rect x="365" y="145" width="94" height="34"
+                rx="17" fill="#7965ed"/>
+
+          <rect x="365" y="244" width="188" height="34"
+                rx="17" fill="#d2f4e8"/>
+
+          <rect x="365" y="244" width="47" height="34"
+                rx="17" fill="#20b99f"/>
+        </svg>
+
+        <div class="art-title" style="color:#855029">
+          Ułamki — części całości
+        </div>
+
+        <span class="math-pin brown large-math"
+              style="left:31.17%;top:58.5%">
+          \(\dfrac14\)
+        </span>
+
+        <span class="math-pin purple"
+              style="left:76.5%;top:35%">
+          \(\dfrac12\)
+        </span>
+
+        <span class="math-pin green"
+              style="left:76.5%;top:63%">
+          \(\dfrac14\)
+        </span>
+
+        <span class="math-pin brown large-math"
+              style="left:76%;top:90%">
+          \(\dfrac12=2\cdot\dfrac14\)
+        </span>
+      </div>
+
+      <div class="caption">
+        <b>Ułamek</b> określa część całości.
+        Jedna druga odpowiada dwóm czwartym.
+      </div>
+    </article>
+
+    <!-- ROZKŁAD NA CZYNNIKI -->
+    <article class="visual">
+      <div class="visual-canvas">
+
+        <svg viewBox="0 0 600 350" aria-hidden="true">
+          <rect width="600" height="350" fill="#eafaf4"/>
+          <rect x="23" y="20" width="554" height="310"
+                rx="27" fill="#fff" opacity=".75"/>
+
+          <g stroke="#24ad97"
+             stroke-width="4"
+             stroke-linecap="round"
+             fill="none">
+            <path d="M300 119 L180 155"/>
+            <path d="M300 119 L420 155"/>
+            <path d="M420 194 L326 224"/>
+            <path d="M420 194 L495 224"/>
+            <path d="M326 261 L270 274"/>
+            <path d="M326 261 L375 274"/>
+          </g>
+
+          <rect x="245" y="91" width="110" height="46"
+                rx="15" fill="#18ae97"/>
+          <rect x="145" y="153" width="72" height="43"
+                rx="13" fill="#c1f1e2"/>
+          <rect x="381" y="153" width="78" height="43"
+                rx="13" fill="#c1f1e2"/>
+          <rect x="288" y="223" width="73" height="43"
+                rx="13" fill="#c1f1e2"/>
+          <rect x="459" y="223" width="72" height="43"
+                rx="13" fill="#c1f1e2"/>
+
+          <circle cx="270" cy="285" r="19" fill="#bbecdc"/>
+          <circle cx="375" cy="285" r="19" fill="#bbecdc"/>
+
+          <rect x="145" y="313" width="310" height="30"
+                rx="15" fill="#dcf9ee"/>
+        </svg>
+
+        <div class="art-title" style="color:#087b68">
+          Rozkład na czynniki
+        </div>
+
+        <span class="math-pin white large-math"
+              style="left:50%;top:32.5%">\(126\)</span>
+        <span class="math-pin green"
+              style="left:30%;top:50%">\(2\)</span>
+        <span class="math-pin green"
+              style="left:70%;top:50%">\(63\)</span>
+        <span class="math-pin green"
+              style="left:54.3%;top:70%">\(9\)</span>
+        <span class="math-pin green"
+              style="left:82.5%;top:70%">\(7\)</span>
+        <span class="math-pin green small-math"
+              style="left:45%;top:81.4%">\(3\)</span>
+        <span class="math-pin green small-math"
+              style="left:62.5%;top:81.4%">\(3\)</span>
+
+        <span class="math-pin green"
+              style="left:50%;top:93.5%">
+          \(126=2\cdot3^2\cdot7\)
+        </span>
+      </div>
+
+      <div class="caption">
+        <b>Rozkład na czynniki pierwsze</b>
+        pomaga obliczać NWD i NWW.
+      </div>
+    </article>
+
+    <!-- WSPÓLNA PRACA -->
+    <article class="visual">
+      <div class="visual-canvas">
+
+        <svg viewBox="0 0 600 350" aria-hidden="true">
+          <rect width="600" height="350" fill="#f4efff"/>
+          <rect x="23" y="20" width="554" height="310"
+                rx="27" fill="#fff" opacity=".75"/>
+
+          <rect x="190" y="113" width="320" height="35"
+                rx="17" fill="#e1dcff"/>
+          <rect x="190" y="113" width="80" height="35"
+                rx="17" fill="#7965ed"/>
+
+          <rect x="190" y="188" width="320" height="35"
+                rx="17" fill="#d2f4e8"/>
+          <rect x="190" y="188" width="53.333" height="35"
+                rx="17" fill="#20b99f"/>
+
+          <rect x="61" y="262" width="478" height="66"
+                rx="21" fill="#e8e2ff"/>
+        </svg>
+
+        <div class="art-title" style="color:#5945ab">
+          Wspólna praca
+        </div>
+
+        <span class="math-pin purple"
+              style="left:21%;top:37%">
+          \(A:\ 4\,\mathrm h\)
+        </span>
+
+        <span class="math-pin green"
+              style="left:21%;top:58.5%">
+          \(B:\ 6\,\mathrm h\)
+        </span>
+
+        <span class="math-pin purple"
+              style="left:75%;top:36%">
+          \(\dfrac14\)
+        </span>
+
+        <span class="math-pin green"
+              style="left:75%;top:57.5%">
+          \(\dfrac16\)
+        </span>
+
+        <span class="math-pin purple large-math"
+              style="left:50%;top:84%">
+          \(\dfrac14+\dfrac16=\dfrac5{12}\)
+        </span>
+      </div>
+
+      <div class="caption">
+        <b>Wspólna praca:</b> dodajemy wydajności,
+        a nie czasy. W ciągu godziny pracownicy
+        wykonują razem \(\frac5{12}\) zadania.
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- TRENING -->
+<section id="trainer">
+  <div class="section-title">
+    <div class="section-icon">🎯</div>
+    <div>
+      <h2>Ćwiczenia utrwalające</h2>
+      <div class="small">
+        Rozwiązuj zadania i sprawdzaj odpowiedzi.
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="control-row no-print">
+      <button class="primary" onclick="newTraining()">
+        Nowy zestaw
+      </button>
+      <button class="secondary"
+              onclick="showTrainingAnswers()">
+        Pokaż odpowiedzi
+      </button>
+      <b id="trainingScore">Wynik: 0/0</b>
+    </div>
+
+    <div id="trainingList"></div>
+  </div>
+</section>
+
+<!-- GRY -->
+<section id="games">
+  <div class="section-title">
+    <div class="section-icon">🎮</div>
+    <div>
+      <h2>Ćwiczenia interaktywne</h2>
+      <div class="small">
+        Matematyka przez gry i krótkie wyzwania.
+      </div>
+    </div>
+  </div>
+
+  <div class="card-grid">
+
+    <article class="card">
+      <h3>Memory — połącz pary</h3>
+      <p>Znajdź działanie i jego wynik.</p>
+
+      <div id="memoryBoard" class="game-board"></div>
+
+      <div class="control-row">
+        <button class="primary" onclick="startMemory()">
+          Nowa gra
+        </button>
+        <b id="memoryStatus"></b>
+      </div>
+    </article>
+
+    <article class="card">
+      <h3>Strażnik podzielności</h3>
+      <p id="divQuestion"></p>
+
+      <div id="divChoices" class="game-board"></div>
+      <p id="divFeedback" class="feedback"
+         aria-live="polite"></p>
+
+      <button class="primary" onclick="newDivGame()">
+        Następne pytanie
+      </button>
+    </article>
+
+  </div>
+</section>
+
+<!-- BANK ZADAŃ -->
+<section id="bank">
+  <div class="section-title">
+    <div class="section-icon">🗂</div>
+    <div>
+      <h2>Bank zadań powtórzeniowych</h2>
+      <div class="small">
+        Wybierz zagadnienie lub wyszukaj zadanie.
+      </div>
+    </div>
+  </div>
+
+  <div class="control-row no-print">
+
+    <input id="searchTask"
+           aria-label="Szukaj zadania"
+           placeholder="Szukaj zadania..."
+           oninput="renderBank()">
+
+    <select id="topicFilter"
+            aria-label="Wybierz temat"
+            onchange="renderBank()"></select>
+
+    <button class="secondary"
+            onclick="setAllDetails(true)">
+      Rozwiń wszystkie
+    </button>
+
+    <button class="secondary"
+            onclick="setAllDetails(false)">
+      Zwiń wszystkie
+    </button>
+
+  </div>
+
+  <div id="bankContainer" class="task-columns"></div>
+</section>
+
+<!-- TEST -->
+<section id="test">
+  <div class="section-title">
+    <div class="section-icon">🏆</div>
+    <div>
+      <h2>Sprawdzian wiadomości</h2>
+      <div class="small">
+        Dwanaście pytań. Jedna poprawna odpowiedź.
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="progress-shell">
+      <div id="quizProgress" class="progress-bar"></div>
+    </div>
+
+    <div id="quizContainer"></div>
+
+    <div class="control-row no-print">
+      <button class="primary" onclick="checkQuiz()">
+        Sprawdź test
+      </button>
+      <button class="secondary" onclick="resetQuiz()">
+        Wyczyść
+      </button>
+    </div>
+
+    <h3 id="quizResult" aria-live="polite"></h3>
+  </div>
+</section>
+
+<!-- PRACA DOMOWA -->
+<section id="homework">
+  <div class="section-title">
+    <div class="section-icon">🏠</div>
+    <div>
+      <h2>Praca domowa</h2>
+      <div class="small">
+        Losowy zestaw zadań do wydrukowania.
+      </div>
+    </div>
+  </div>
+
+  <div class="homework-sheet" id="homeworkSheet">
+    <h3>Powtórzenie wiadomości z matematyki</h3>
+    <p>Imię i nazwisko: _______________________________</p>
+    <p>Data: ____________________</p>
+    <div id="homeworkList"></div>
+  </div>
+
+  <div class="control-row no-print">
+    <button class="primary" onclick="generateHomework()">
+      Wylosuj nowy zestaw
+    </button>
+    <button class="secondary" onclick="printHomework()">
+      Drukuj pracę domową
+    </button>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <b>Powtórzenie i utrwalenie wiadomości z matematyki</b>
+  <p>Teoria · Ćwiczenia · Zadania · Sprawdzian</p>
+</footer>
+
+<script>
+"use strict";
+
+/* ===================================
+   MATHJAX I FUNKCJE POMOCNICZE
+=================================== */
+let mathQueue=Promise.resolve();
+
+function typesetMath(nodes) {
+  mathQueue=mathQueue.then(async()=>{
+    if(!window.MathJax?.startup?.promise) return;
+
+    await MathJax.startup.promise;
+
+    const connected=nodes.filter(
+      n=>n&&n.isConnected
+    );
+
+    if(connected.length) {
+      await MathJax.typesetPromise(connected);
+    }
+  }).catch(err=>console.warn("MathJax:",err));
+
+  return mathQueue;
+}
+
+function inline(tex) {
+  return "\\("+tex+"\\)";
+}
+
+function display(tex) {
+  return "\\["+tex+"\\]";
+}
+
+function shuffle(arr) {
+  const a=[...arr];
+
+  for(let i=a.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+
+  return a;
+}
+
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g,c=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[c]);
+}
+
+function numeric(v) {
+  const s=String(v).trim()
+    .replace(/−/g,"-")
+    .replace(/\s/g,"")
+    .replace(",", ".");
+
+  if(/^[+-]?\d+\/[+-]?\d+$/.test(s)) {
+    const [a,b]=s.split("/").map(Number);
+    return b===0?NaN:a/b;
+  }
+
+  if(!/^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(s)) {
+    return NaN;
+  }
+
+  return Number(s);
+}
+
+/* ===================================
+   TEORIA
+=================================== */
+const theory=[
+  {
+    title:"Liczby naturalne, całkowite i wymierne",
+    desc:"Liczby naturalne służą do liczenia. Liczby całkowite obejmują też liczby ujemne. Liczby wymierne można zapisać jako ułamek.",
+    formula:String.raw`\frac ab,\quad a,b\in\mathbb Z,\ b\ne0`
+  },
+  {
+    title:"Moduł liczby",
+    desc:"Moduł liczby określa jej odległość od zera.",
+    formula:String.raw`|a|=\begin{cases}a,&a\ge0\\-a,&a<0\end{cases}`
+  },
+  {
+    title:"Ułamki",
+    desc:"Przy dodawaniu ułamków sprowadzamy je do wspólnego mianownika.",
+    formula:String.raw`\frac ab+\frac cd=\frac{ad+bc}{bd}`
+  },
+  {
+    title:"Rozwinięcia dziesiętne",
+    desc:"W ułamku nieskracalnym rozwinięcie jest skończone, gdy mianownik zawiera tylko czynniki pierwsze 2 i 5.",
+    formula:String.raw`\frac18=0{,}125,\quad\frac16=0{,}1(6)`
+  },
+  {
+    title:"Cechy podzielności",
+    desc:"Przez 2 — ostatnia cyfra parzysta. Przez 3 i 9 — suma cyfr podzielna odpowiednio przez 3 lub 9.",
+    formula:String.raw`126=2\cdot3^2\cdot7`
+  },
+  {
+    title:"NWD i NWW",
+    desc:"NWD oznacza największy wspólny dzielnik, NWW — najmniejszą wspólną wielokrotność dodatnich liczb całkowitych.",
+    formula:String.raw`\operatorname{NWD}(a,b)\cdot\operatorname{NWW}(a,b)=ab`
+  },
+  {
+    title:"Potęgi",
+    desc:"Przy mnożeniu potęg o tej samej podstawie dodajemy wykładniki.",
+    formula:String.raw`a^m\cdot a^n=a^{m+n}`
+  },
+  {
+    title:"Równania",
+    desc:"Iloczyn wynosi zero, gdy przynajmniej jeden czynnik jest zerowy.",
+    formula:String.raw`7(3x-4)=0\Rightarrow x=\frac43`
+  },
+  {
+    title:"Proporcje",
+    desc:"W proporcji iloczyny na krzyż są równe.",
+    formula:String.raw`\frac ab=\frac cd\Rightarrow ad=bc`
+  },
+  {
+    title:"Droga, prędkość i czas",
+    desc:"Prędkość to iloraz drogi i czasu.",
+    formula:String.raw`v=\frac st,\quad s=vt,\quad t=\frac sv`
+  },
+  {
+    title:"Wspólna praca",
+    desc:"Dodajemy wydajności pracowników, a nie czasy wykonania.",
+    formula:String.raw`\frac1m+\frac1n=\frac{m+n}{mn}`
+  },
+  {
+    title:"Średnia arytmetyczna",
+    desc:"Dodajemy wszystkie wartości i dzielimy przez ich liczbę.",
+    formula:String.raw`\bar x=\frac{x_1+x_2+\cdots+x_n}{n}`
+  },
+  {
+    title:"Procenty",
+    desc:"Procent oznacza setną część całości.",
+    formula:String.raw`p\%=\frac p{100}`
+  },
+  {
+    title:"Kolejność działań",
+    desc:"Nawiasy, potęgi, mnożenie i dzielenie, dodawanie i odejmowanie.",
+    formula:String.raw`2+3\cdot4=14`
+  }
+];
+
+function renderTheory() {
+  const box=document.getElementById("theoryGrid");
+
+  box.innerHTML=theory.map((t,i)=>`
+    <article class="card theory-card">
+      <span class="topic-number">${i+1}</span>
+      <h3>${escapeHTML(t.title)}</h3>
+      <p>${escapeHTML(t.desc)}</p>
+      <div class="formula">${display(t.formula)}</div>
+    </article>
+  `).join("");
+
+  typesetMath([box]);
+}
+
+/* ===================================
+   BANK ZADAŃ — LATEX
+=================================== */
+const topics={
+
+  "Ułamki i liczby dziesiętne":[
+    String.raw`Oblicz $\frac13+\frac14\cdot2$.`,
+    String.raw`Który ułamek ma skończone rozwinięcie: $\frac17,\frac18,\frac19,\frac1{11}$?`,
+    String.raw`Porównaj $\frac{17}{16}$, $\frac{16}{15}$ i $\frac{14}{13}$.`,
+    String.raw`Wybierz największą liczbę: $13{,}7$, $\frac{140}{8}$, $14\frac23$, $15$.`,
+    String.raw`Uporządkuj $0{,}47$, $0{,}(47)$, $0{,}477$ i $0{,}4(7)$.`,
+    String.raw`Wskaż ułamek nieskracalny: $\frac46$, $\frac{51}{68}$, $\frac{10}{49}$.`,
+    String.raw`Zaokrąglij $125{,}378$ do części dziesiątych.`,
+    String.raw`Oblicz $\frac14+\frac25\cdot\frac58$.`,
+    String.raw`Ile ułamków o mianowniku $32$ leży między $\frac38$ a $\frac34$?`,
+    String.raw`Zapisz $\frac7{15}$ jako rozwinięcie okresowe i zaokrąglij do setnych.`
+  ],
+
+  "Liczby i moduł":[
+    String.raw`Oblicz $|-15|:|3|$.`,
+    String.raw`Która liczba ma najmniejszy moduł: $-2,-6,4,6,-10$?`,
+    String.raw`Uprość $a-|a|$, gdy $a<0$.`,
+    String.raw`Uprość $1-|a+2|$, gdy $a<-2$.`,
+    String.raw`Która liczba jest niewymierna: $-3{,}4$, $0$, $147$, $\pi$?`,
+    String.raw`Uporządkuj malejąco $0{,}1$, $0{,}104$, $\frac17$.`,
+    String.raw`Wyznacz odległość na osi między $-3$ a $2$.`
+  ],
+
+  "Podzielność, NWD i NWW":[
+    String.raw`Oblicz $\operatorname{NWD}(24,84)$.`,
+    String.raw`Oblicz $\operatorname{NWW}(21,72)$.`,
+    String.raw`Wskaż liczbę pierwszą: $130$, $9$, $14$, $47$, $93$.`,
+    String.raw`Jaką cyfrę wstawić zamiast gwiazdki w zapisie $324*5$, aby liczba była podzielna przez $45$?`,
+    String.raw`Jakie cyfry można wstawić zamiast gwiazdki w zapisie $7134*$, aby liczba była podzielna przez $3$?`,
+    String.raw`Rozłóż liczbę $126$ na czynniki pierwsze.`,
+    String.raw`Z $84$ cukierków, $72$ jabłek i $84$ pomarańczy przygotuj maksymalną liczbę jednakowych zestawów.`,
+    String.raw`Oblicz NWD i NWW par: $(18,27)$, $(8,25)$ i $(3,6)$.`,
+    String.raw`Jeśli liczba $a$ daje resztę $3$ z dzielenia przez $8$, jaką resztę daje $2a+13$?`
+  ],
+
+  "Potęgi i wyrażenia algebraiczne":[
+    String.raw`Oblicz $\frac{30^3}{10^3}$.`,
+    String.raw`Oblicz $\frac13x+\frac14y$ dla $x=24$ i $y=-16$.`,
+    String.raw`Rozwiń nawiasy: $2(5x+6)$.`,
+    String.raw`Uprość: $2(x+3)-5(x-1)$.`,
+    String.raw`Uprość: $-3(x-1)-2(x+1)$.`,
+    String.raw`Oblicz $2^3$, $3^3$, $4^2$ i $3^2$.`,
+    String.raw`Uprość $-2xy^2-(3xy^2-2x^2y)$.`,
+    String.raw`Uprość $4(x-7)$ i $5(4+x)-19$.`
+  ],
+
+  "Równania i nierówności":[
+    String.raw`Rozwiąż równanie $\frac2x=5$.`,
+    String.raw`Rozwiąż równanie $\frac{|x|}{10}=2$.`,
+    String.raw`Ile liczb całkowitych spełnia $|x|<14$?`,
+    String.raw`Rozwiąż $|-0{,}9|=|x|\cdot|-2{,}6|$.`,
+    String.raw`Jeśli $7(3x-4)=0$, oblicz $3x-4$.`,
+    String.raw`Porównaj $\frac{11}{3}$ i $\frac{11}{7}$.`,
+    String.raw`Rozwiąż równanie $3x-7=14$.`
+  ],
+
+  "Droga, prędkość i czas":[
+    String.raw`Oblicz różnicę czasu: $13\,\mathrm h\ 16\,\mathrm{min}-10\,\mathrm h\ 42\,\mathrm{min}$.`,
+    String.raw`Przelicz $54\,\frac{\mathrm{km}}{\mathrm h}$ na $\frac{\mathrm m}{\mathrm{min}}$.`,
+    String.raw`Rowerzysta przejechał $30\,\mathrm{km}$ z prędkością $10\,\frac{\mathrm{km}}{\mathrm h}$, a następnie $45\,\mathrm{km}$ z prędkością $9\,\frac{\mathrm{km}}{\mathrm h}$. Oblicz średnią prędkość.`,
+    String.raw`Taras jedzie do stacji rowerem $3\,\mathrm h$, a pieszo idzie $7\,\mathrm h$. Rowerem porusza się o $8\,\frac{\mathrm{km}}{\mathrm h}$ szybciej. Oblicz odległość.`,
+    String.raw`Samochód jedzie z prędkością $72\,\frac{\mathrm{km}}{\mathrm h}$ przez $25\,\mathrm{min}$. Jaką drogę pokona?`
+  ],
+
+  "Proporcje, części i procenty":[
+    String.raw`W sadzie rośnie $140$ drzew. $\frac27$ z nich to jabłonie. Ile jest jabłoni?`,
+    String.raw`Turysta pokonał $\frac25$ trasy długości $100\,\mathrm{km}$, a następnie $36\,\mathrm{km}$. Ile kilometrów pozostało?`,
+    String.raw`Pierwszego dnia zaorano $\frac35$ pola, a drugiego pozostałe $15{,}6\,\mathrm{ha}$. Oblicz powierzchnię całego pola.`,
+    String.raw`Elementy są w stosunku $5:2$. Która liczba może być ich sumą: $46$, $57$, $58$, $84$, $93$?`,
+    String.raw`Basen ma objętość $x\,\mathrm{m^3}$ i napełnia się w $5\,\mathrm h$. Ile wody wpłynie w $2\,\mathrm h$?`,
+    String.raw`Oblicz $15\%$ z $240$.`
+  ],
+
+  "Wspólna praca":[
+    String.raw`Pracownik A wykonuje pracę w $4\,\mathrm h$, B w $6\,\mathrm h$. Jaką część wykonają razem w $2\,\mathrm h$?`,
+    String.raw`Basen napełnia się w $3\,\mathrm h$, a odpływ opróżnia go w $5\,\mathrm h$. Ile potrwa napełnianie przy otwartym odpływie?`,
+    String.raw`Mistrz wykonuje detal w $4\,\mathrm{min}$, a uczeń w $7\,\mathrm{min}$. Razem wykonali $44$ detale, pracując przez taki sam czas. Ile wykonał uczeń?`,
+    String.raw`Zapisz wzór na czas wspólnej pracy, gdy czasy osobno to $m$ i $n$ godzin.`,
+    String.raw`Dwie rury napełniają zbiornik w $6$ i $12$ godzin. Ile czasu potrzebują razem?`
+  ],
+
+  "Średnia i analiza danych":[
+    String.raw`Średnia wysokość $12$ budynków wynosi $50\,\mathrm m$. Średnia czterech wynosi $30\,\mathrm m$. Jaka jest średnia pozostałych ośmiu?`,
+    String.raw`Średni wiek $11$ zawodników wynosi $21$ lat. Po odejściu jednego średnia wynosi $20$ lat. Ile lat miał ten zawodnik?`,
+    String.raw`W sadzie jest $28$ jabłoni, $20$ wiśni i $12$ moreli. Oblicz kąty sektorów wykresu kołowego.`,
+    String.raw`Temperatury minimalne i maksymalne: pon. $(2,8)$, wt. $(3,12)$, śr. $(5,11)$, czw. $(1,9)$, pt. $(4,10)$. Którego dnia różnica była największa?`,
+    String.raw`Oblicz średnią arytmetyczną liczb $4$, $6$, $8$, $10$.`
+  ],
+
+  "Zadania tekstowe i logiczne":[
+    String.raw`Cztery krzewy rosną w rzędzie w odstępach po $2\,\mathrm m$. Jaka jest odległość między skrajnymi krzewami?`,
+    String.raw`W budynku $25$-piętrowym mieszkanie jest na dziewiątym piętrze od góry. Które to piętro od dołu?`,
+    String.raw`$17$ rowerów dwu- i trójkołowych ma razem $43$ koła. Ile jest trójkołowych?`,
+    String.raw`Ojciec i syn mają razem $28$ lat. Ile będą mieć razem za $4$ lata?`,
+    String.raw`Pierwszego i drugiego dnia sprzedano $126\,\mathrm{kg}$ jabłek, drugiego i trzeciego $129\,\mathrm{kg}$, a pierwszego i trzeciego $131\,\mathrm{kg}$. Ile sprzedano trzeciego dnia?`,
+    String.raw`Za pierwszy metr studni płaci się $50\,\mathrm{zł}$, za każdy kolejny o $20\,\mathrm{zł}$ więcej. Ile kosztuje wykopanie $12$ metrów?`
+  ]
+};
+
+function setupBank() {
+  const select=document.getElementById("topicFilter");
+
+  select.innerHTML=
+    '<option value="">Wszystkie tematy</option>';
+
+  Object.keys(topics).forEach(topic=>{
+    const option=document.createElement("option");
+    option.value=topic;
+    option.textContent=topic;
+    select.appendChild(option);
+  });
+
+  renderBank();
+}
+
+function renderBank() {
+  const query=document.getElementById("searchTask")
+    .value.trim().toLocaleLowerCase("pl");
+
+  const selected=document.getElementById("topicFilter").value;
+  const box=document.getElementById("bankContainer");
+  let html="";
+
+  Object.entries(topics).forEach(([topic,tasks])=>{
+    if(selected&&selected!==topic) return;
+
+    const matching=tasks.filter(task=>
+      !query||(topic+" "+task)
+        .toLocaleLowerCase("pl")
+        .includes(query)
+    );
+
+    if(!matching.length) return;
+
+    html+=`
+      <details class="topic-group" ${query?"open":""}>
+        <summary>
+          ${escapeHTML(topic)} (${matching.length})
+        </summary>
+        ${matching.map((t,i)=>`
+          <div class="source-task">
+            <b>${i+1}.</b> ${t}
+          </div>
+        `).join("")}
+      </details>
+    `;
+  });
+
+  box.innerHTML=html||
+    '<div class="panel">Nie znaleziono zadań.</div>';
+
+  typesetMath([box]);
+}
+
+function setAllDetails(open) {
+  document.querySelectorAll("#bankContainer details")
+    .forEach(d=>d.open=open);
+}
+
+/* ===================================
+   TRENING — LATEX
+=================================== */
+const trainingBase=[
+  {
+    q:String.raw`Oblicz $\frac13+\frac14\cdot2$.`,
+    a:"5/6",
+    solution:String.raw`$\frac13+\frac12=\frac56$`
+  },
+  {
+    q:String.raw`Oblicz $13\,\mathrm h\ 16\,\mathrm{min}-10\,\mathrm h\ 42\,\mathrm{min}$. Podaj wynik w minutach.`,
+    a:"154",
+    solution:String.raw`$154\,\mathrm{min}$`
+  },
+  {
+    q:String.raw`Która liczba ma najmniejszy moduł: $-2,-6,4,6,-10$?`,
+    a:"-2",
+    solution:String.raw`$-2$`
+  },
+  {
+    q:String.raw`Oblicz $\frac{30^3}{10^3}$.`,
+    a:"27",
+    solution:String.raw`$\frac{30^3}{10^3}=27$`
+  },
+  {
+    q:String.raw`Oblicz $|-15|:|3|$.`,
+    a:"5",
+    solution:String.raw`$\frac{15}{3}=5$`
+  },
+  {
+    q:String.raw`Oblicz $\operatorname{NWD}(24,84)$.`,
+    a:"12",
+    solution:String.raw`$\operatorname{NWD}(24,84)=12$`
+  },
+  {
+    q:String.raw`Oblicz $\operatorname{NWW}(21,72)$.`,
+    a:"504",
+    solution:String.raw`$\operatorname{NWW}(21,72)=504$`
+  },
+  {
+    q:String.raw`Przelicz $54\,\frac{\mathrm{km}}{\mathrm h}$ na $\frac{\mathrm m}{\mathrm{min}}$.`,
+    a:"900",
+    solution:String.raw`$900\,\frac{\mathrm m}{\mathrm{min}}$`
+  },
+  {
+    q:String.raw`Oblicz $\frac27\cdot140$.`,
+    a:"40",
+    solution:String.raw`$\frac27\cdot140=40$`
+  },
+  {
+    q:String.raw`Rozwiąż $\frac2x=5$.`,
+    a:"0.4",
+    solution:String.raw`$x=\frac25=0{,}4$`
+  },
+  {
+    q:String.raw`Zaokrąglij $125{,}378$ do części dziesiątych.`,
+    a:"125.4",
+    solution:String.raw`$125{,}4$`
+  },
+  {
+    q:String.raw`Ile rozwiązań całkowitych ma $|x|<14$?`,
+    a:"27",
+    solution:String.raw`$x\in\{-13,-12,\ldots,13\}$ — $27$ liczb`
+  },
+  {
+    q:String.raw`$17$ rowerów ma $43$ koła. Ile jest trójkołowych?`,
+    a:"9",
+    solution:String.raw`$9$`
+  },
+  {
+    q:String.raw`Cztery krzewy w odstępach po $2\,\mathrm m$. Jaka jest odległość skrajnych?`,
+    a:"6",
+    solution:String.raw`$3\cdot2=6\,\mathrm m$`
+  },
+  {
+    q:String.raw`Średnia wysokość $12$ budynków wynosi $50\,\mathrm m$. Podaj sumę wysokości.`,
+    a:"600",
+    solution:String.raw`$12\cdot50=600\,\mathrm m$`
+  },
+  {
+    q:String.raw`Oblicz $15\%$ z $240$.`,
+    a:"36",
+    solution:String.raw`$\frac{15}{100}\cdot240=36$`
+  }
+];
+
+let training=[];
+let trainingResults=[];
+
+function newTraining() {
+  training=shuffle(trainingBase).slice(0,10);
+  trainingResults=Array(training.length).fill(null);
+
+  const box=document.getElementById("trainingList");
+
+  box.innerHTML=training.map((t,i)=>`
+    <div class="exercise">
+      <div>
+        <span class="num">${i+1}</span>
+        ${t.q}
+      </div>
+
+      <div class="answerline no-print">
+        <input id="train${i}"
+               placeholder="Twoja odpowiedź"
+               aria-label="Odpowiedź ${i+1}">
+        <button class="success"
+                onclick="checkTraining(${i})">
+          Sprawdź
+        </button>
+      </div>
+
+      <div class="feedback" id="trainFb${i}"
+           aria-live="polite"></div>
+    </div>
+  `).join("");
+
+  updateTrainingScore();
+  typesetMath([box]);
+}
+
+function checkTraining(i) {
+  const raw=document.getElementById("train"+i)
+    .value.trim();
+
+  const fb=document.getElementById("trainFb"+i);
+
+  if(!raw) {
+    fb.textContent="Wpisz odpowiedź.";
+    fb.className="feedback bad";
+    return;
+  }
+
+  const x=numeric(raw);
+  const y=numeric(training[i].a);
+
+  const correct=Number.isFinite(x)&&
+    Number.isFinite(y)&&
+    Math.abs(x-y)<1e-8;
+
+  trainingResults[i]=correct;
+
+  fb.textContent=correct
+    ?"✓ Poprawna odpowiedź!"
+    :"✗ Sprawdź obliczenia i spróbuj ponownie.";
+
+  fb.className="feedback "+(correct?"good":"bad");
+
+  updateTrainingScore();
+}
+
+function updateTrainingScore() {
+  const done=trainingResults.filter(x=>x!==null).length;
+  const good=trainingResults.filter(x=>x===true).length;
+
+  document.getElementById("trainingScore")
+    .textContent=`Wynik: ${good}/${done}`;
+}
+
+function showTrainingAnswers() {
+  const box=document.getElementById("trainingList");
+
+  training.forEach((t,i)=>{
+    const fb=document.getElementById("trainFb"+i);
+    fb.innerHTML="Odpowiedź: "+t.solution;
+    fb.className="feedback good";
+  });
+
+  typesetMath([box]);
+}
+
+/* ===================================
+   MEMORY — LATEX
+=================================== */
+const memoryPairs=[
+  [String.raw`2^3`,String.raw`8`],
+  [String.raw`3^2`,String.raw`9`],
+  [String.raw`5^2`,String.raw`25`],
+  [String.raw`7\cdot6`,String.raw`42`],
+  [String.raw`\operatorname{NWD}(12,18)`,String.raw`6`],
+  [String.raw`10\%\ \text{z}\ 70`,String.raw`7`],
+  [String.raw`3^3`,String.raw`27`],
+  [String.raw`4^2`,String.raw`16`]
+];
+
+let memoryCards=[];
+let openedCards=[];
+let memoryLocked=false;
+let matched=0;
+let moves=0;
+let memoryGeneration=0;
+
+function startMemory() {
+  memoryGeneration++;
+
+  memoryCards=shuffle(memoryPairs.flatMap((p,id)=>[
+    {id,tex:p[0],open:false,matched:false},
+    {id,tex:p[1],open:false,matched:false}
+  ]));
+
+  openedCards=[];
+  memoryLocked=false;
+  matched=0;
+  moves=0;
+
+  renderMemory();
+  updateMemoryStatus();
+}
+
+function renderMemory() {
+  const board=document.getElementById("memoryBoard");
+
+  board.innerHTML=memoryCards.map((c,i)=>`
+    <button class="memory
+      ${c.open?"revealed":""}
+      ${c.matched?"matched":""}"
+      onclick="flipMemory(${i})"
+      ${c.matched?"disabled":""}>
+      ${c.open||c.matched?inline(c.tex):"✦"}
+    </button>
+  `).join("");
+
+  typesetMath([board]);
+}
+
+function updateMemoryStatus() {
+  document.getElementById("memoryStatus")
+    .textContent=
+    `Pary: ${matched}/${memoryPairs.length} · Ruchy: ${moves}`;
+}
+
+function flipMemory(i) {
+  if(memoryLocked||
+     memoryCards[i].open||
+     memoryCards[i].matched) return;
+
+  memoryCards[i].open=true;
+  openedCards.push(i);
+  renderMemory();
+
+  if(openedCards.length!==2) return;
+
+  moves++;
+  const [a,b]=openedCards;
+
+  if(memoryCards[a].id===memoryCards[b].id) {
+    memoryCards[a].matched=true;
+    memoryCards[b].matched=true;
+
+    matched++;
+    openedCards=[];
+
+    renderMemory();
+    updateMemoryStatus();
+
+    if(matched===memoryPairs.length) {
+      document.getElementById("memoryStatus")
+        .textContent=`🏆 Wygrana! Ruchy: ${moves}`;
+    }
+  } else {
+    memoryLocked=true;
+    const generation=memoryGeneration;
+
+    setTimeout(()=>{
+      if(generation!==memoryGeneration) return;
+
+      memoryCards[a].open=false;
+      memoryCards[b].open=false;
+      openedCards=[];
+      memoryLocked=false;
+
+      renderMemory();
+      updateMemoryStatus();
+    },900);
+  }
+}
+
+/* ===================================
+   PODZIELNOŚĆ — LATEX
+=================================== */
+let divGame=null;
+let divScore=0;
+let divRounds=0;
+
+function newDivGame() {
+  const divisors=[2,3,5,9,10];
+  const d=divisors[Math.floor(Math.random()*divisors.length)];
+
+  const good=d*(2+Math.floor(Math.random()*40));
+  const wrong=new Set();
+
+  while(wrong.size<3) {
+    const n=10+Math.floor(Math.random()*400);
+    if(n%d!==0&&n!==good) wrong.add(n);
+  }
+
+  divGame={d,good,done:false};
+
+  const question=document.getElementById("divQuestion");
+
+  question.innerHTML=
+    "Która liczba jest podzielna przez "+
+    inline(String(d))+"?";
+
+  const choices=document.getElementById("divChoices");
+
+  choices.innerHTML=shuffle([good,...wrong])
+    .map(n=>`
+      <button class="secondary" onclick="checkDiv(${n})">
+        ${inline(String(n))}
+      </button>
+    `).join("");
+
+  const fb=document.getElementById("divFeedback");
+  fb.textContent="";
+  fb.className="feedback";
+
+  typesetMath([question,choices]);
+}
+
+function checkDiv(n) {
+  if(!divGame||divGame.done) return;
+
+  divGame.done=true;
+  divRounds++;
+
+  const correct=n===divGame.good;
+  if(correct) divScore++;
+
+  document.querySelectorAll("#divChoices button")
+    .forEach(b=>b.disabled=true);
+
+  const fb=document.getElementById("divFeedback");
+
+  fb.innerHTML=
+    (correct
+      ?"✓ Dobrze!"
+      :"✗ Poprawna liczba: "+inline(String(divGame.good))+".")
+    +` Wynik: ${divScore}/${divRounds}`;
+
+  fb.className="feedback "+(correct?"good":"bad");
+
+  typesetMath([fb]);
+}
+
+/* ===================================
+   TEST — LATEX
+=================================== */
+const quiz=[
+  {
+    q:String.raw`Oblicz $\operatorname{NWD}(24,84)$.`,
+    options:["6","12","24","48"],
+    answer:1,
+    explanation:String.raw`$\operatorname{NWD}(24,84)=12$`
+  },
+  {
+    q:String.raw`Oblicz $\operatorname{NWW}(21,72)$.`,
+    options:["144","252","504","756"],
+    answer:2,
+    explanation:String.raw`$\operatorname{NWW}(21,72)=504$`
+  },
+  {
+    q:String.raw`Przelicz $54\,\frac{\mathrm{km}}{\mathrm h}$ na $\frac{\mathrm m}{\mathrm{min}}$.`,
+    options:["540","900","1080","1500"],
+    answer:1,
+    explanation:String.raw`$54\cdot\frac{1000}{60}=900$`
+  },
+  {
+    q:String.raw`Oblicz $2^3$.`,
+    options:["6","8","9","12"],
+    answer:1,
+    explanation:String.raw`$2^3=2\cdot2\cdot2=8$`
+  },
+  {
+    q:String.raw`Oblicz $|-15|$.`,
+    options:["-15","0","15","30"],
+    answer:2,
+    explanation:String.raw`$|-15|=15$`
+  },
+  {
+    q:String.raw`Oblicz $\frac27$ ze $140$.`,
+    options:["20","35","40","70"],
+    answer:2,
+    explanation:String.raw`$\frac27\cdot140=40$`
+  },
+  {
+    q:String.raw`Ile liczb całkowitych spełnia $|x|<14$?`,
+    options:["26","27","28","29"],
+    answer:1,
+    explanation:String.raw`$-13\le x\le13$, czyli $27$ liczb`
+  },
+  {
+    q:String.raw`Która liczba jest pierwsza?`,
+    options:["21","33","47","91"],
+    answer:2,
+    explanation:String.raw`$47$ jest liczbą pierwszą`
+  },
+  {
+    q:String.raw`Oblicz $\frac{30^3}{10^3}$.`,
+    options:["3","9","27","90"],
+    answer:2,
+    explanation:String.raw`$\frac{30^3}{10^3}=3^3=27$`
+  },
+  {
+    q:String.raw`Cztery krzewy rosną co $2\,\mathrm m$. Jaka jest odległość między skrajnymi?`,
+    options:["4","6","8","10"],
+    answer:1,
+    explanation:String.raw`$3\cdot2=6\,\mathrm m$`
+  },
+  {
+    q:String.raw`Oblicz $0{,}5+0{,}5$.`,
+    options:["0","0.5","1","1.5"],
+    answer:2,
+    explanation:String.raw`$0{,}5+0{,}5=1$`
+  },
+  {
+    q:String.raw`Oblicz średnią arytmetyczną liczb $4$, $6$, $8$.`,
+    options:["5","6","7","8"],
+    answer:1,
+    explanation:String.raw`$\frac{4+6+8}{3}=6$`
+  }
+];
+
+let quizLocked=false;
+
+function renderQuiz() {
+  quizLocked=false;
+
+  const box=document.getElementById("quizContainer");
+
+  box.innerHTML=quiz.map((q,i)=>`
+    <div class="quiz-question" id="quizQ${i}">
+      <h3>${i+1}. ${q.q}</h3>
+
+      ${q.options.map((v,j)=>`
+        <label>
+          <input type="radio"
+                 name="quiz${i}"
+                 value="${j}"
+                 onchange="updateQuizProgress()">
+          <span>${inline(v.replace(".", "{,}"))}</span>
+        </label>
+      `).join("")}
+
+      <div id="quizFb${i}" class="feedback"></div>
+    </div>
+  `).join("");
+
+  document.getElementById("quizResult").textContent="";
+  document.getElementById("quizProgress").style.width="0%";
+
+  typesetMath([box]);
+}
+
+function updateQuizProgress() {
+  const answered=quiz.filter((_,i)=>
+    document.querySelector(`input[name="quiz${i}"]:checked`)
+  ).length;
+
+  document.getElementById("quizProgress").style.width=
+    (answered/quiz.length*100)+"%";
+}
+
+function checkQuiz() {
+  if(quizLocked) return;
+
+  let score=0;
+  const feedbackNodes=[];
+
+  quiz.forEach((q,i)=>{
+    const selected=document.querySelector(
+      `input[name="quiz${i}"]:checked`
+    );
+
+    const correct=!!selected&&
+      Number(selected.value)===q.answer;
+
+    if(correct) score++;
+
+    const fb=document.getElementById("quizFb"+i);
+
+    fb.innerHTML=(correct?"✓ ":"✗ ")+q.explanation;
+    fb.className="feedback "+(correct?"good":"bad");
+
+    feedbackNodes.push(fb);
+
+    document.getElementById("quizQ"+i)
+      .classList.add(correct?"correct":"incorrect");
+  });
+
+  document.querySelectorAll("#quizContainer input")
+    .forEach(x=>x.disabled=true);
+
+  quizLocked=true;
+
+  const percent=Math.round(score/quiz.length*100);
+
+  const message=percent>=90
+    ?"🏆 Znakomicie!"
+    :percent>=70
+    ?"👏 Bardzo dobrze!"
+    :percent>=50
+    ?"👍 Dobry początek!"
+    :"📘 Powtórz materiał.";
+
+  document.getElementById("quizResult").textContent=
+    `${message} Wynik: ${score}/${quiz.length} (${percent}%).`;
+
+  document.getElementById("quizProgress").style.width="100%";
+
+  typesetMath(feedbackNodes);
+}
+
+function resetQuiz() {
+  renderQuiz();
+}
+
+/* ===================================
+   PRACA DOMOWA
+=================================== */
+function generateHomework() {
+  const groups=shuffle(Object.entries(topics));
+  const selected=[];
+
+  for(const [topic,tasks] of groups) {
+    selected.push({topic,task:shuffle(tasks)[0]});
+    if(selected.length===8) break;
+  }
+
+  const box=document.getElementById("homeworkList");
+
+  box.innerHTML=selected.map((item,i)=>`
+    <div class="hw-item">
+      <b>Zadanie ${i+1} · ${escapeHTML(item.topic)}</b>
+      <div>${item.task}</div>
+      <div class="hw-space"></div>
+    </div>
+  `).join("");
+
+  typesetMath([box]);
+}
+
+/* ===================================
+   DRUKOWANIE
+=================================== */
+function printHomework() {
+  document.body.classList.add("print-homework");
+
+  mathQueue.then(()=>{
+    requestAnimationFrame(()=>window.print());
+  });
+}
+
+function printAll() {
+  document.body.classList.remove("print-homework");
+
+  mathQueue.then(()=>window.print());
+}
+
+window.addEventListener("afterprint",()=>{
+  document.body.classList.remove("print-homework");
+});
+
+/* ===================================
+   NAWIGACJA
+=================================== */
+function setupMenu() {
+  const links=[
+    ...document.querySelectorAll('nav a[href^="#"]')
+  ];
+
+  const sections=links
+    .map(a=>document.querySelector(a.getAttribute("href")))
+    .filter(Boolean);
+
+  if(!("IntersectionObserver" in window)) return;
+
+  const observer=new IntersectionObserver(entries=>{
+    const visible=entries.filter(e=>e.isIntersecting)
+      .sort((a,b)=>b.intersectionRatio-a.intersectionRatio);
+
+    if(!visible.length) return;
+
+    const id="#"+visible[0].target.id;
+
+    links.forEach(link=>
+      link.classList.toggle(
+        "active",
+        link.getAttribute("href")===id
+      )
+    );
+  },{
+    rootMargin:"-100px 0px -45% 0px",
+    threshold:0
+  });
+
+  sections.forEach(s=>observer.observe(s));
+}
+
+/* ===================================
+   START
+=================================== */
+document.addEventListener("DOMContentLoaded",()=>{
+  renderTheory();
+  setupBank();
+  newTraining();
+  startMemory();
+  newDivGame();
+  renderQuiz();
+  generateHomework();
+  setupMenu();
+});
+</script>
+
+</body>
+</html>
