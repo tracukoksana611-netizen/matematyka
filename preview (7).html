@@ -1,0 +1,2034 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#174b70">
+<title>5.2. Zbiory, przedziały i nierówności</title>
+
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)'],['$','$']],
+    displayMath: [['\\[','\\]'],['$$','$$']]
+  },
+  svg: {fontCache:"global"}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --zoom:1;
+  --blue:#0876aa;
+  --navy:#142a40;
+  --sky:#d8effd;
+  --pale:#eff8ff;
+  --green:#eaf5e9;
+  --line:#cbdfea;
+  --muted:#50677c;
+  --white:#fff;
+}
+
+* {box-sizing:border-box}
+
+html {
+  scroll-behavior:smooth;
+  scroll-padding-top:110px;
+}
+
+body {
+  margin:0;
+  background:#f3f8fc;
+  color:var(--navy);
+  font-family:Manrope,Arial,sans-serif;
+  font-size:calc(22px * var(--zoom));
+  line-height:1.75;
+}
+
+button,textarea,input {
+  font:inherit;
+}
+
+button {
+  cursor:pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+textarea:focus-visible,
+input:focus-visible {
+  outline:3px solid #00a9b7;
+  outline-offset:3px;
+}
+
+button:disabled {
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+mjx-container {
+  max-width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+
+h1,h2,h3,h4 {
+  font-family:Outfit,Manrope,sans-serif;
+  line-height:1.25;
+}
+
+h1 {font-size:clamp(2rem,4vw,3.2rem)}
+h2 {font-size:clamp(1.8rem,3vw,2.5rem)}
+h3 {font-size:1.5rem}
+p {margin:.6em 0}
+
+.page {
+  max-width:1400px;
+  margin:auto;
+  padding:20px 20px 100px;
+}
+
+.hero {
+  padding:38px;
+  color:#fff;
+  background:linear-gradient(125deg,#104a76,#096d9e);
+  border-radius:23px;
+  box-shadow:0 16px 35px #0f517f20;
+}
+
+.hero h1 {
+  margin:12px 0;
+}
+
+.hero p {
+  font-size:1.08em;
+  color:#e6f7ff;
+}
+
+.kicker {
+  font-size:.75em;
+  font-weight:800;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+}
+
+.toolbar {
+  position:sticky;
+  top:0;
+  z-index:30;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:18px 0;
+  padding:13px 16px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:0 8px 20px #0f517f12;
+}
+
+.toolbar b {
+  color:#174a70;
+}
+
+.btn,
+.toolbar a {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:10px 15px;
+  border:1px solid #b8d7ea;
+  border-radius:10px;
+  background:#eaf5fc;
+  color:#15557e;
+  text-decoration:none;
+  font-size:.8em;
+  font-weight:800;
+}
+
+.btn:hover,
+.toolbar a:hover {
+  background:#d8efff;
+}
+
+.btn.main {
+  background:#0c679a;
+  color:white;
+  border-color:#0c679a;
+}
+
+#zoomLabel {
+  min-width:66px;
+  font-size:.88em;
+  font-weight:800;
+  text-align:center;
+}
+
+.section {
+  margin:30px 0;
+  padding:30px;
+  border:1px solid #d6e5ef;
+  border-radius:22px;
+  background:white;
+  box-shadow:0 8px 24px #153b590a;
+}
+
+.section>h2 {
+  margin:0 0 23px;
+  color:#105c8e;
+}
+
+.theory-sheet {
+  padding:30px;
+  background:var(--green);
+  border-radius:17px;
+}
+
+.theory-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+
+.theory-block {
+  min-width:0;
+}
+
+.theory-block h3 {
+  margin:0 0 11px;
+  color:#164c54;
+}
+
+.theory-block p {
+  font-size:.99em;
+}
+
+.figure {
+  padding:12px;
+  border:1px solid #a9bec8;
+  border-radius:10px;
+  background:#e1f3ff;
+}
+
+.figure svg {
+  width:100%;
+  display:block;
+}
+
+.caption {
+  margin:9px 0 0;
+  font-size:.77em;
+  color:#394d55;
+}
+
+.theory-formula {
+  padding:18px;
+  margin:14px 0;
+  background:#fff;
+  border-left:5px solid #1bbd94;
+  border-radius:12px;
+  font-size:1.1em;
+  overflow-x:auto;
+}
+
+.rules {
+  margin-top:20px;
+  padding:18px 23px;
+  background:#ffffffa8;
+  border-radius:14px;
+}
+
+.rules li {
+  margin:10px 0;
+}
+
+.rules li::marker {
+  color:#12a97d;
+}
+
+.example {
+  margin:22px 0;
+  padding:22px;
+  border:1px solid #b9d9ec;
+  border-radius:15px;
+  background:#f1f9ff;
+}
+
+.example h3 {
+  margin:0 0 10px;
+  color:#125b8c;
+}
+
+.interval-demo {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  align-items:center;
+}
+
+.interval-controls {
+  display:grid;
+  gap:12px;
+}
+
+.interval-controls label {
+  display:grid;
+  gap:5px;
+  font-weight:800;
+}
+
+.interval-controls input {
+  accent-color:#147fb6;
+  width:100%;
+}
+
+.axis-graphic {
+  width:100%;
+  background:white;
+  border:1px solid #c7dfed;
+  border-radius:12px;
+}
+
+.set-heading {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:#145d88;
+}
+
+.set-heading::before {
+  content:"";
+  width:18px;
+  height:18px;
+  flex:none;
+  background:#069cd2;
+}
+
+.set-description {
+  font-size:.88em;
+  color:var(--muted);
+}
+
+.task {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(260px,32%);
+  margin:20px 0;
+  border:1px solid #d1e2ed;
+  border-radius:18px;
+  overflow:hidden;
+  background:#fff;
+  scroll-margin-top:100px;
+}
+
+.task-main {
+  min-width:0;
+  padding:26px;
+}
+
+.task-top {
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:center;
+}
+
+.task-top h3 {
+  margin:0;
+  color:#144f79;
+}
+
+.done {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:.75em;
+  font-weight:800;
+  color:#46728c;
+}
+
+.done input {
+  width:22px;
+  height:22px;
+  accent-color:#009e97;
+}
+
+.statement {
+  margin:17px 0;
+  line-height:1.8;
+  font-size:1em;
+}
+
+.parts {
+  display:grid;
+  gap:10px;
+  margin:18px 0;
+}
+
+.part {
+  display:flex;
+  align-items:flex-start;
+  gap:13px;
+  min-width:0;
+  padding:14px 17px;
+  border-radius:11px;
+  background:#f5faff;
+  border:1px solid #e0edf5;
+  overflow-x:auto;
+}
+
+.part b {
+  flex:none;
+  color:#0875aa;
+}
+
+.part span {
+  min-width:0;
+}
+
+.solution-panel {
+  min-width:0;
+  padding:23px;
+  background:#d7effc;
+  border-left:1px solid #b6d6e9;
+  font-size:.88em;
+  line-height:1.8;
+  overflow-x:auto;
+}
+
+.solution-panel h4 {
+  margin:0 0 14px;
+  color:#12557d;
+  font-size:1.1em;
+}
+
+.solution-panel details {
+  margin:10px 0;
+}
+
+.solution-panel summary {
+  cursor:pointer;
+  font-weight:800;
+}
+
+.solution-panel .answer-row {
+  padding:11px 0;
+  border-bottom:1px solid #b8d9e9;
+  overflow-wrap:anywhere;
+}
+
+.solution-panel .answer-row b {
+  color:#0d608e;
+}
+
+.notes-label {
+  display:block;
+  margin:18px 0 8px;
+  font-size:.82em;
+  font-weight:800;
+  color:#315d78;
+}
+
+.notes {
+  display:block;
+  width:100%;
+  min-height:120px;
+  padding:16px;
+  resize:vertical;
+  background:#fcfeff;
+  border:1.5px solid #b7d3e4;
+  border-radius:12px;
+  color:#18364a;
+  font-size:.9em;
+  line-height:1.5;
+}
+
+.venn-task {
+  max-width:540px;
+  margin:20px 0;
+}
+
+.venn-task svg {
+  width:100%;
+  display:block;
+}
+
+.numline {
+  position:relative;
+  margin:17px 0;
+  padding:18px 20px;
+  background:#eff9ff;
+  border:1px solid #d3e8f5;
+  border-radius:12px;
+}
+
+.numline svg {
+  display:block;
+  width:100%;
+}
+
+.question-table {
+  width:100%;
+  border-collapse:collapse;
+  margin:15px 0;
+}
+
+.question-table td,
+.question-table th {
+  padding:12px;
+  border:1px solid #bdcbd5;
+}
+
+.question-table th {
+  background:#e9f5ff;
+}
+
+.footer {
+  text-align:center;
+  padding:35px 10px;
+  color:#52758b;
+  font-size:.8em;
+}
+
+@media(max-width:950px) {
+  .theory-grid,
+  .interval-demo {
+    grid-template-columns:1fr;
+  }
+
+  .task {
+    grid-template-columns:1fr;
+  }
+
+  .solution-panel {
+    border-left:0;
+    border-top:1px solid #b6d6e9;
+  }
+}
+
+@media(max-width:650px) {
+  body {font-size:calc(19px * var(--zoom))}
+  .page {padding:10px}
+  .hero {padding:25px 20px}
+  .hero h1 {font-size:2rem}
+  .toolbar {
+    position:relative;
+    padding:11px;
+  }
+  .section {padding:18px}
+  .theory-sheet {padding:18px}
+  .task-main,.solution-panel {padding:17px}
+  .part {padding:12px}
+}
+
+@media print {
+  @page {size:A4;margin:12mm}
+
+  body {
+    background:white;
+    font-size:12pt;
+  }
+
+  .page {
+    width:100%;
+    padding:0;
+    max-width:none;
+  }
+
+  .hero,
+  .toolbar,
+  .notes-label,
+  textarea,
+  .done,
+  .footer {
+    display:none!important;
+  }
+
+  .section {
+    padding:0;
+    border:0;
+    box-shadow:none;
+  }
+
+  .task {
+    box-shadow:none;
+    break-inside:avoid;
+    margin:14px 0;
+  }
+
+  .task-main,
+  .solution-panel {
+    padding:12px;
+  }
+
+  body.print-without-answers .solution-panel {
+    display:none!important;
+  }
+
+  body.print-without-answers .task {
+    display:block;
+  }
+
+  .theory-sheet,
+  .part,
+  .solution-panel {
+    print-color-adjust:exact;
+    -webkit-print-color-adjust:exact;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<header class="hero">
+  <span class="kicker">Matematyka · Materiał interaktywny</span>
+  <h1>5.2. Zbiory, przedziały i nierówności</h1>
+  <p>
+    Teoria · Diagramy Venna · Oś liczbowa ·
+    Wartość bezwzględna · 35 zadań · Odpowiedzi
+  </p>
+  <p id="progress" style="font-size:.82em"></p>
+</header>
+
+<div class="toolbar" aria-label="Narzędzia">
+  <b>🔎 Wielkość tekstu</b>
+  <button class="btn" id="fontMinus">A−</button>
+  <output id="zoomLabel">100%</output>
+  <button class="btn" id="fontPlus">A+</button>
+  <button class="btn" id="fontReset">100%</button>
+
+  <a href="#theory">📘 Teoria</a>
+  <a href="#set1">🟦 Zestaw I</a>
+  <a href="#set2">🟩 Zestaw II</a>
+  <a href="#set3">🟪 Zestaw III</a>
+
+  <button class="btn main" id="showAnswers">
+    Pokaż odpowiedzi
+  </button>
+  <button class="btn" id="hideAnswers">
+    Ukryj odpowiedzi
+  </button>
+  <button class="btn" id="saveNotes">
+    💾 Zapisz
+  </button>
+  <button class="btn" id="printTasks">
+    🖨 Drukuj zadania
+  </button>
+  <button class="btn" id="printAll">
+    🖨 Drukuj całość
+  </button>
+</div>
+
+<!-- =============================
+     TEORIA
+============================= -->
+<section class="section" id="theory">
+<h2>📘 Teoria: zbiory, przedziały i nierówności</h2>
+
+<div class="theory-sheet">
+
+  <div class="theory-grid">
+
+    <!-- PODZBIÓR -->
+    <div class="theory-block">
+      <h3>Podzbiór</h3>
+
+      <div class="figure">
+        <svg viewBox="0 0 500 250" role="img"
+             aria-label="Zbiór A zawarty w zbiorze B">
+          <rect x="7" y="7" width="486" height="236"
+                fill="#dff2ff" stroke="#8195a1" stroke-width="2"/>
+          <ellipse cx="250" cy="125" rx="180" ry="92"
+                   fill="#bee8fc" stroke="#566f80" stroke-width="2"/>
+          <ellipse cx="250" cy="125" rx="91" ry="48"
+                   fill="#8dcceb" stroke="#566f80" stroke-width="2"/>
+          <text x="250" y="132" font-size="32"
+                text-anchor="middle" font-style="italic">A</text>
+          <text x="250" y="70" font-size="27"
+                text-anchor="middle" font-style="italic">B</text>
+          <text x="455" y="215" font-size="26"
+                text-anchor="middle" font-style="italic">U</text>
+        </svg>
+      </div>
+
+      <p>
+        Zbiór \(A\) jest <b>podzbiorem</b> zbioru \(B\),
+        jeżeli każdy element zbioru \(A\)
+        należy również do zbioru \(B\).
+      </p>
+
+      <div class="theory-formula">
+        \[A\subseteq B\]
+      </div>
+    </div>
+
+    <!-- SUMA -->
+    <div class="theory-block">
+      <h3>Suma zbiorów</h3>
+
+      <div class="figure">
+        <svg viewBox="0 0 500 250" role="img"
+             aria-label="Suma zbiorów A i B">
+          <defs>
+            <pattern id="hatchUnion" width="8" height="8"
+                     patternUnits="userSpaceOnUse"
+                     patternTransform="rotate(35)">
+              <rect width="8" height="8" fill="#ccecff"/>
+              <path d="M0 0V8" stroke="#76b9db" stroke-width="2"/>
+            </pattern>
+          </defs>
+          <rect x="7" y="7" width="486" height="236"
+                fill="#e3f3ff" stroke="#8195a1" stroke-width="2"/>
+          <ellipse cx="192" cy="125" rx="137" ry="87"
+                   fill="url(#hatchUnion)" stroke="#556d7d"/>
+          <ellipse cx="310" cy="125" rx="137" ry="87"
+                   fill="url(#hatchUnion)" stroke="#556d7d"/>
+          <text x="165" y="132" font-size="30" font-style="italic">A</text>
+          <text x="338" y="132" font-size="30" font-style="italic">B</text>
+          <text x="456" y="215" font-size="26" font-style="italic">U</text>
+        </svg>
+      </div>
+
+      <p>
+        <b>Sumą zbiorów</b> nazywamy zbiór elementów,
+        które należą do co najmniej jednego
+        ze zbiorów \(A\) lub \(B\).
+      </p>
+
+      <div class="theory-formula">
+        \[A\cup B\]
+      </div>
+    </div>
+
+    <!-- ILOCZYN -->
+    <div class="theory-block">
+      <h3>Iloczyn zbiorów</h3>
+
+      <div class="figure">
+        <svg viewBox="0 0 500 250" role="img"
+             aria-label="Część wspólna A i B">
+          <defs>
+            <pattern id="hatchIntersection" width="7" height="7"
+                     patternUnits="userSpaceOnUse"
+                     patternTransform="rotate(45)">
+              <rect width="7" height="7" fill="#99d7f4"/>
+              <path d="M0 0V7" stroke="#328fc1" stroke-width="2"/>
+            </pattern>
+            <clipPath id="clipLeftCircle">
+              <ellipse cx="190" cy="125" rx="140" ry="88"/>
+            </clipPath>
+          </defs>
+          <rect x="7" y="7" width="486" height="236"
+                fill="#e3f3ff" stroke="#8195a1" stroke-width="2"/>
+          <ellipse cx="190" cy="125" rx="140" ry="88"
+                   fill="#d6f0ff" stroke="#566d7d"/>
+          <ellipse cx="310" cy="125" rx="140" ry="88"
+                   fill="#d6f0ff" stroke="#566d7d"/>
+          <ellipse cx="310" cy="125" rx="140" ry="88"
+                   fill="url(#hatchIntersection)"
+                   clip-path="url(#clipLeftCircle)"/>
+          <ellipse cx="190" cy="125" rx="140" ry="88"
+                   fill="none" stroke="#566d7d"/>
+          <text x="143" y="135" font-size="30" font-style="italic">A</text>
+          <text x="340" y="135" font-size="30" font-style="italic">B</text>
+          <text x="458" y="215" font-size="26" font-style="italic">U</text>
+        </svg>
+      </div>
+
+      <p>
+        <b>Iloczynem zbiorów</b> nazywamy zbiór
+        elementów należących jednocześnie
+        do \(A\) i do \(B\).
+      </p>
+
+      <div class="theory-formula">
+        \[A\cap B\]
+      </div>
+    </div>
+
+    <!-- RÓŻNICA -->
+    <div class="theory-block">
+      <h3>Różnica zbiorów</h3>
+
+      <div class="figure">
+        <svg viewBox="0 0 500 250" role="img"
+             aria-label="Różnica zbiorów A bez B">
+          <defs>
+            <pattern id="hatchDiff" width="8" height="8"
+                     patternUnits="userSpaceOnUse"
+                     patternTransform="rotate(35)">
+              <rect width="8" height="8" fill="#a9dfff"/>
+              <path d="M0 0V8" stroke="#64afe0" stroke-width="2"/>
+            </pattern>
+            <mask id="maskDiff">
+              <rect width="500" height="250" fill="white"/>
+              <ellipse cx="310" cy="125" rx="140" ry="88"
+                       fill="black"/>
+            </mask>
+          </defs>
+          <rect x="7" y="7" width="486" height="236"
+                fill="#e3f3ff" stroke="#8195a1" stroke-width="2"/>
+          <ellipse cx="190" cy="125" rx="140" ry="88"
+                   fill="url(#hatchDiff)" mask="url(#maskDiff)"/>
+          <ellipse cx="190" cy="125" rx="140" ry="88"
+                   fill="none" stroke="#566d7d"/>
+          <ellipse cx="310" cy="125" rx="140" ry="88"
+                   fill="none" stroke="#566d7d"/>
+          <text x="145" y="135" font-size="30" font-style="italic">A</text>
+          <text x="340" y="135" font-size="30" font-style="italic">B</text>
+          <text x="458" y="215" font-size="26" font-style="italic">U</text>
+        </svg>
+      </div>
+
+      <p>
+        <b>Różnicą zbiorów</b> \(A\) i \(B\) jest zbiór
+        elementów, które należą do \(A\),
+        ale nie należą do \(B\).
+      </p>
+
+      <div class="theory-formula">
+        \[A\setminus B\]
+      </div>
+    </div>
+  </div>
+
+  <!-- PRZEDZIAŁY -->
+  <h3>Przedziały liczbowe</h3>
+
+  <p>
+    Przedział opisuje zbiór liczb rzeczywistych
+    znajdujących się między wskazanymi granicami.
+    Koło zamalowane oznacza, że koniec należy
+    do przedziału; koło puste — że nie należy.
+  </p>
+
+  <div class="theory-grid">
+    <div class="theory-formula">
+      \[(a,b)=\{x\in\mathbb R:a\lt x\lt b\}\]
+      <p>Przedział otwarty.</p>
+    </div>
+    <div class="theory-formula">
+      \[[a,b]=\{x\in\mathbb R:a\le x\le b\}\]
+      <p>Przedział domknięty.</p>
+    </div>
+    <div class="theory-formula">
+      \[[a,b)=\{x\in\mathbb R:a\le x\lt b\}\]
+      <p>Lewostronnie domknięty.</p>
+    </div>
+    <div class="theory-formula">
+      \[(a,b]=\{x\in\mathbb R:a\lt x\le b\}\]
+      <p>Prawostronnie domknięty.</p>
+    </div>
+  </div>
+
+  <!-- MODUŁ -->
+  <h3>Wartość bezwzględna</h3>
+
+  <p>
+    Wartość bezwzględna liczby jest
+    odległością tej liczby od zera.
+  </p>
+
+  <div class="theory-grid">
+    <div class="theory-formula">
+      \[
+      |a|=
+      \begin{cases}
+      a,&a\ge0,\\
+      -a,&a\lt0.
+      \end{cases}
+      \]
+    </div>
+    <div class="theory-formula">
+      \[
+      \sqrt{a^2}=|a|
+      \]
+      \[
+      |a\cdot b|=|a|\cdot|b|
+      \]
+    </div>
+  </div>
+
+  <h3>Równania i nierówności z modułem</h3>
+
+  <p>Dla dowolnego \(a\gt0\):</p>
+
+  <div class="rules">
+    <ul>
+      <li>
+        \(|x|=a\) wtedy i tylko wtedy, gdy
+        \(x=-a\) lub \(x=a\).
+      </li>
+      <li>
+        \(|x|\lt a\) wtedy i tylko wtedy, gdy
+        \(-a\lt x\lt a\).
+      </li>
+      <li>
+        \(|x|\gt a\) wtedy i tylko wtedy, gdy
+        \(x\lt-a\) lub \(x\gt a\).
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- INTERAKTYWNA OŚ -->
+<div class="example">
+  <h3>Interaktywna oś liczbowa</h3>
+  <p>
+    Zmieniaj granice przedziału i obserwuj
+    jego położenie na osi.
+  </p>
+
+  <div class="interval-demo">
+    <div class="interval-controls">
+
+      <label>
+        Lewa granica:
+        <output id="leftValue">-3</output>
+        <input id="leftRange" type="range"
+               min="-9" max="8" value="-3">
+      </label>
+
+      <label>
+        Prawa granica:
+        <output id="rightValue">5</output>
+        <input id="rightRange" type="range"
+               min="-8" max="9" value="5">
+      </label>
+
+      <label>
+        <span>
+          <input id="leftClosed" type="checkbox" checked>
+          Lewy koniec należy do przedziału
+        </span>
+      </label>
+
+      <label>
+        <span>
+          <input id="rightClosed" type="checkbox">
+          Prawy koniec należy do przedziału
+        </span>
+      </label>
+
+      <div id="intervalFormula" class="theory-formula"></div>
+
+    </div>
+
+    <svg id="intervalAxis" class="axis-graphic"
+         viewBox="0 0 650 190"
+         aria-label="Interaktywna oś liczbowa">
+    </svg>
+  </div>
+</div>
+
+</section>
+
+<!-- =============================
+     ZESTAW I
+============================= -->
+<section class="section" id="set1">
+  <h2 class="set-heading">Zestaw I — wprowadzający</h2>
+  <p class="set-description">
+    Zbiory i działania na zbiorach, przedziały,
+    podstawowe nierówności, wartość bezwzględna.
+  </p>
+  <div id="tasks1"></div>
+</section>
+
+<!-- =============================
+     ZESTAW II
+============================= -->
+<section class="section" id="set2">
+  <h2 class="set-heading">Zestaw II — ćwiczeniowy</h2>
+  <p class="set-description">
+    Działania na przedziałach, równania z wartością
+    bezwzględną i zadania rachunkowe.
+  </p>
+  <div id="tasks2"></div>
+</section>
+
+<!-- =============================
+     ZESTAW III
+============================= -->
+<section class="section" id="set3">
+  <h2 class="set-heading">Zestaw III — podsumowujący</h2>
+  <p class="set-description">
+    Rozbudowane zadania z działaniami na zbiorach,
+    równaniami i układami nierówności.
+  </p>
+  <div id="tasks3"></div>
+</section>
+
+<footer class="footer">
+  5.2. Zbiory, przedziały i nierówności ·
+  Materiał edukacyjny · MathJax / LaTeX
+</footer>
+
+</div>
+
+<script>
+"use strict";
+
+/* ==================================
+   MATHJAX
+================================== */
+
+let mathQueue=Promise.resolve();
+
+function typeset(nodes) {
+  mathQueue=mathQueue.then(async()=>{
+    if(!window.MathJax?.startup?.promise) return;
+    await MathJax.startup.promise;
+
+    const live=nodes.filter(n=>n&&n.isConnected);
+    if(live.length) {
+      await MathJax.typesetPromise(live);
+    }
+  }).catch(console.warn);
+
+  return mathQueue;
+}
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g,c=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[c]);
+}
+
+/* ==================================
+   DIAGRAM DO ZADANIA 1
+================================== */
+
+const vennTask=`
+<div class="venn-task">
+  <svg viewBox="0 0 600 290"
+       role="img"
+       aria-label="Diagram zbiorów A i B">
+    <rect x="5" y="5" width="590" height="280"
+          fill="#e0f3ff" stroke="#829bab" stroke-width="2"/>
+
+    <ellipse cx="240" cy="140" rx="170" ry="113"
+             fill="#fff" stroke="#667987" stroke-width="2"/>
+
+    <ellipse cx="360" cy="140" rx="170" ry="113"
+             fill="#fff" stroke="#667987" stroke-width="2"/>
+
+    <g font-family="Georgia,serif"
+       font-style="italic"
+       font-size="25" fill="#324b60">
+      <text x="135" y="48">A</text>
+      <text x="470" y="48">B</text>
+      <text x="555" y="265">U</text>
+    </g>
+
+    <g font-family="Georgia,serif"
+       font-size="27" text-anchor="middle">
+      <text x="155" y="105">7</text>
+      <text x="148" y="150">5</text>
+      <text x="165" y="195">2</text>
+
+      <text x="300" y="85">4</text>
+      <text x="285" y="145">0</text>
+      <text x="316" y="200">−1</text>
+
+      <text x="445" y="95">3</text>
+      <text x="457" y="155">1</text>
+      <text x="455" y="205">−2</text>
+    </g>
+  </svg>
+</div>
+`;
+
+/* ==================================
+   ZADANIA
+   n     - numer
+   text  - treść
+   parts - podpunkty
+   ans   - odpowiedzi
+================================== */
+
+const tasks=[
+
+/* ============== I ============== */
+
+{
+  n:1,
+  text:String.raw`Na podstawie diagramu wyznacz zbiory
+    \(A\), \(B\), \(A\cup B\), \(A\cap B\),
+    \(A\setminus B\) oraz \(B\setminus A\).`,
+  parts:[],
+  figure:vennTask,
+  ans:[
+    String.raw`\(A=\{-1,0,2,4,5,7\}\)`,
+    String.raw`\(B=\{-2,-1,0,1,3,4\}\)`,
+    String.raw`\(A\cup B=\{-2,-1,0,1,2,3,4,5,7\}\)`,
+    String.raw`\(A\cap B=\{-1,0,4\}\)`,
+    String.raw`\(A\setminus B=\{2,5,7\}\)`,
+    String.raw`\(B\setminus A=\{-2,1,3\}\)`
+  ]
+},
+{
+  n:2,
+  text:String.raw`Wyznacz zbiory \(A\cup B\), \(A\cap B\),
+    \(A\setminus B\), \(B\setminus A\).`,
+  parts:[
+    String.raw`\(A=\{0,1,2\},\quad B=\{-2,-1,0\}\)`,
+    String.raw`\(A=\{-1,0,1\},\quad B=\{0,1\}\)`,
+    String.raw`\(A=\{2,4,5,6\},\quad B=\{4,5\}\)`,
+    String.raw`\(A=\{1,3,5\},\quad B=\{2,4,6\}\)`
+  ],
+  ans:[
+    String.raw`\(A\cup B=\{-2,-1,0,1,2\},\quad A\cap B=\{0\}\)`,
+    String.raw`\(A\setminus B=\{1,2\},\quad B\setminus A=\{-2,-1\}\)`,
+    String.raw`Dla b): \(A\cup B=\{-1,0,1\},\ A\cap B=\{0,1\}\)`,
+    String.raw`Dla c): \(A\cup B=A,\ A\cap B=B\)`,
+    String.raw`Dla d): \(A\cap B=\varnothing\)`
+  ]
+},
+{
+  n:3,
+  text:String.raw`Na osi liczbowej zaznaczono zbiory
+    \(A\) i \(B\). Wyznacz \(A\cup B\), \(A\cap B\),
+    \(A\setminus B\), \(B\setminus A\).`,
+  parts:[
+    String.raw`\(A=(-7,2],\quad B=[-3,5)\)`,
+    String.raw`\(A=(-\infty,3],\quad B=[-1,1)\)`,
+    String.raw`\(A=[-3,3],\quad B=(-\infty,-2)\cup[2,\infty)\)`
+  ],
+  ans:[
+    String.raw`a) \(A\cup B=(-7,5),\quad A\cap B=[-3,2]\)`,
+    String.raw`a) \(A\setminus B=(-7,-3),\quad B\setminus A=(2,5)\)`,
+    String.raw`b) \(A\cup B=A,\quad A\cap B=B\)`,
+    String.raw`c) \(A\cap B=[-3,-2)\cup[2,3]\)`
+  ]
+},
+{
+  n:4,
+  text:String.raw`Zapisz zbiory \(A\) i \(B\) w postaci
+    przedziałów. Wyznacz i zaznacz na osi liczbowej
+    \(A\cup B\), \(A\cap B\), \(A\setminus B\),
+    \(B\setminus A\).`,
+  parts:[
+    String.raw`\(A=\{x\in\mathbb R:x\lt2\}\), \(B=\{x\in\mathbb R:x\ge0\}\)`,
+    String.raw`\(A=\{x\in\mathbb R:x\le9\}\), \(B=\{x\in\mathbb R:x\gt0\}\)`
+  ],
+  ans:[
+    String.raw`a) \(A=(-\infty,2),\ B=[0,\infty)\)`,
+    String.raw`a) \(A\cup B=\mathbb R,\ A\cap B=[0,2)\)`,
+    String.raw`a) \(A\setminus B=(-\infty,0),\ B\setminus A=[2,\infty)\)`,
+    String.raw`b) \(A=(-\infty,9],\ B=(0,\infty)\)`,
+    String.raw`b) \(A\cap B=(0,9]\)`
+  ]
+},
+{
+  n:5,
+  text:String.raw`Zaznacz zbiór \(A\cap B\) na osi
+    liczbowej. Wypisz wszystkie liczby całkowite,
+    które do niego należą.`,
+  parts:[
+    String.raw`\(A=[-3,2),\ B=[0,4]\)`,
+    String.raw`\(A=(\frac12,6),\ B=[2,8)\)`,
+    String.raw`\(A=(-\infty,1)\cup[4,\infty),\ B=(0,8)\)`,
+    String.raw`\(A=\{0\}\cup(2,5),\ B=[0,4]\)`,
+    String.raw`\(A=\mathbb R\setminus(-1,4),\ B=[-2,6)\)`,
+    String.raw`\(A=\mathbb R\setminus[2,\infty),\ B=(-3,3)\)`
+  ],
+  ans:[
+    String.raw`a) \(A\cap B=[0,2)\), liczby: \(0,1\)`,
+    String.raw`b) \(A\cap B=[2,6)\), liczby: \(2,3,4,5\)`,
+    String.raw`c) \(A\cap B=(0,1)\cup[4,8)\)`,
+    String.raw`d) \(A\cap B=\{0\}\cup(2,4]\)`,
+    String.raw`e) \(A\cap B=[-2,-1]\cup[4,6)\)`,
+    String.raw`f) \(A\cap B=(-3,2)\)`
+  ]
+},
+{
+  n:6,
+  text:String.raw`Zapisz zbiory \(A\) i \(B\)
+    w postaci przedziałów. Wyznacz \(A\cap B\)
+    oraz \(A\setminus B\).`,
+  parts:[
+    String.raw`\(A=\{x\in\mathbb R:3x-5\lt1\},\ B=\{x\in\mathbb R:1-2x\le3\}\)`,
+    String.raw`\(A=\{x\in\mathbb R:2-5x\lt1-2x\},\ B=\{x\in\mathbb R:\frac12x+0{,}75\lt1\}\)`,
+    String.raw`\(A=\{x\in\mathbb R:-4\lt2x\le6\},\ B=\{x\in\mathbb R:1\le3x+1\lt7\}\)`,
+    String.raw`\(A=\{x\in\mathbb R:-3\le2-x\le3\},\ B=\{x\in\mathbb R:0\lt1-2x\le5\}\)`
+  ],
+  ans:[
+    String.raw`a) \(A=(-\infty,2),\ B=[-1,\infty)\)`,
+    String.raw`a) \(A\cap B=[-1,2),\ A\setminus B=(-\infty,-1)\)`,
+    String.raw`b) \(A=(\frac13,\infty),\ B=(-\infty,\frac12)\)`,
+    String.raw`b) \(A\cap B=(\frac13,\frac12)\)`,
+    String.raw`c) \(A=(-2,3],\ B=[0,2)\)`,
+    String.raw`d) \(A=[-1,5],\ B=[-2,\frac12)\)`
+  ]
+},
+{
+  n:7,
+  text:"Rozwiąż nierówność. Zbiór rozwiązań zaznacz na osi liczbowej.",
+  parts:[
+    String.raw`\(-3(4-2x)\ge2x+4\)`,
+    String.raw`\(-\frac34(2x-6)\le2-x\)`,
+    String.raw`\(\frac{2x+1}{3}-\frac{3x-2}{4}\ge0\)`,
+    String.raw`\(\frac{x-6}{2}+\frac{5-3x}{4}\lt0\)`,
+    String.raw`\((x-2)(x+2)\le(x-2)^2\)`,
+    String.raw`\((2x+4)^2\gt(2x-4)^2\)`,
+    String.raw`\((x-2)^2-(4-x)^2\ge2{,}75+\frac{x+1}{4}\)`,
+    String.raw`\(\frac{(2x-4)^2}{4}+7\gt\frac{(3x+1)^2}{9}\)`
+  ],
+  ans:[
+    String.raw`a) \(x\in[4,\infty)\)`,
+    String.raw`b) \(x\in[5,\infty)\)`,
+    String.raw`c) \(x\in(-\infty,10]\)`,
+    String.raw`d) \(x\in(-7,\infty)\)`,
+    String.raw`e) \(x\in(-\infty,2]\)`,
+    String.raw`f) \(x\in(0,\infty)\)`,
+    String.raw`g) \(x\in[4,\infty)\)`,
+    String.raw`h) \(x\in(-\infty,\frac73)\)`
+  ]
+},
+{
+  n:8,
+  text:String.raw`Zapisz zbiór rozwiązań układu
+    nierówności w postaci przedziału. Wypisz
+    wszystkie liczby całkowite należące do niego.`,
+  parts:[
+    String.raw`\(\begin{cases}2x-5\le11\\1-4x\lt5\end{cases}\)`,
+    String.raw`\(\begin{cases}6x+4\gt10\\-4+2x\le8\end{cases}\)`,
+    String.raw`\(\begin{cases}7x\lt0\\3x+7\gt4\end{cases}\)`
+  ],
+  ans:[
+    String.raw`a) \(x\in(-1,8]\), całkowite \(0,1,\ldots,8\)`,
+    String.raw`b) \(x\in(1,6]\), całkowite \(2,3,4,5,6\)`,
+    String.raw`c) \(x\in(-1,0)\), brak liczb całkowitych`
+  ]
+},
+{
+  n:9,
+  text:"Oblicz.",
+  parts:[
+    String.raw`\(|7-8|\)`,
+    String.raw`\(\left|\frac13-\frac12\right|\)`,
+    String.raw`\(|\sqrt3-2|\)`,
+    String.raw`\(|2\sqrt3-3\sqrt2|\)`,
+    String.raw`\(2\sqrt3-|3-2\sqrt3|\)`,
+    String.raw`\(|\sqrt3-2|+|1-\sqrt3|\)`
+  ],
+  ans:[
+    String.raw`a) \(1\)`,
+    String.raw`b) \(\frac16\)`,
+    String.raw`c) \(2-\sqrt3\)`,
+    String.raw`d) \(3\sqrt2-2\sqrt3\)`,
+    String.raw`e) \(3\)`,
+    String.raw`f) \(1\)`
+  ]
+},
+{
+  n:10,
+  text:String.raw`Wypisz wszystkie elementy zbioru \(A\).`,
+  parts:[
+    String.raw`\(A=\{x\in\mathbb Z:|x|\lt5\}\)`,
+    String.raw`\(A=\{x\in\mathbb Z:|x|\le3\}\)`,
+    String.raw`\(A=\{x\in\mathbb Z:|x|\le\sqrt8\}\)`,
+    String.raw`\(A=\{x\in\mathbb Z:|x|\ge2\ \land\ |x|\le4\}\)`,
+    String.raw`\(A=\{x\in\mathbb Z:|x|\gt3\ \land\ |x|\lt7\}\)`,
+    String.raw`\(A=\{x\in\mathbb Z:|x|\ge\sqrt2\ \land\ |x|\le\sqrt{10}\}\)`
+  ],
+  ans:[
+    String.raw`a) \(\{-4,-3,-2,-1,0,1,2,3,4\}\)`,
+    String.raw`b) \(\{-3,-2,-1,0,1,2,3\}\)`,
+    String.raw`c) \(\{-2,-1,0,1,2\}\)`,
+    String.raw`d) \(\{-4,-3,-2,2,3,4\}\)`,
+    String.raw`e) \(\{-6,-5,-4,4,5,6\}\)`,
+    String.raw`f) \(\{-3,-2,2,3\}\)`
+  ]
+},
+
+/* ============== II ============== */
+
+{
+  n:11,
+  text:String.raw`Wyznacz zbiory \(A\) i \(B\),
+    jeżeli \(A\cup B=\{1,2,3,4,5,6\}\)
+    oraz spełnione są warunki:`,
+  parts:[
+    String.raw`\(A\cap B=\{2,3,4\},\ A\setminus B=\{5\}\)`,
+    String.raw`\(A\setminus B=\{1,2\},\ B\setminus A=\{3,4\}\)`,
+    String.raw`\(A\setminus B=\{1,3,5\},\ B\setminus A=\{2,4,6\}\)`,
+    String.raw`\(A\setminus B=\{1,2,3,4,5,6\}\)`
+  ],
+  ans:[
+    String.raw`a) \(A=\{2,3,4,5\},\ B=\{1,2,3,4,6\}\)`,
+    String.raw`b) \(A=\{1,2,5,6\},\ B=\{3,4,5,6\}\)`,
+    String.raw`c) \(A=\{1,3,5\},\ B=\{2,4,6\}\)`,
+    String.raw`d) \(A=\{1,2,3,4,5,6\},\ B=\varnothing\)`
+  ]
+},
+{
+  n:12,
+  text:String.raw`Podaj liczbę elementów zbioru
+    \(A\cup B\), jeżeli:`,
+  parts:[
+    String.raw`Zbiór \(A\setminus B\) ma \(7\) elementów, a \(B\) — \(8\) elementów.`,
+    String.raw`Zbiór \(A\) ma \(7\) elementów, \(B\) — \(8\), a \(A\setminus B\) — \(3\).`,
+    String.raw`Zbiór \(A\) ma \(7\) elementów, \(B\) — \(8\), a \(A\cap B\) — \(3\).`,
+    String.raw`\(A\) to trzycyfrowe liczby parzyste, a \(B\) — trzycyfrowe liczby podzielne przez \(7\).`
+  ],
+  ans:[
+    String.raw`a) \(7+8=15\)`,
+    String.raw`b) \(3+8=11\)`,
+    String.raw`c) \(7+8-3=12\)`,
+    String.raw`d) \(450+128-64=514\)`
+  ]
+},
+{
+  n:13,
+  text:String.raw`Wyznacz \(A\cup B\), \(A\cap B\),
+    \(A\setminus B\), \(B\setminus A\).
+    Do których zbiorów należy liczba \(5\)?`,
+  parts:[
+    String.raw`\(A=[1,4],\ B=[5,6]\)`,
+    String.raw`\(A=(5,7],\ B=(5,6)\)`,
+    String.raw`\(A=[-1,4)\cup(5,\infty),\ B=(0,5)\)`,
+    String.raw`\(A=(-\infty,5)\cup(6,8),\ B=[5,7)\)`
+  ],
+  ans:[
+    String.raw`a) \(A\cap B=\varnothing,\ A\cup B=[1,4]\cup[5,6]\)`,
+    String.raw`b) \(A\cap B=(5,6)\)`,
+    String.raw`c) \(A\cap B=(0,4)\)`,
+    String.raw`d) \(A\cap B=(6,7)\)`
+  ]
+},
+{
+  n:14,
+  text:String.raw`Które ze zbiorów \(A\cup B\),
+    \(A\cap B\), \(A\setminus B\), \(B\setminus A\)
+    zawierają przedział \([-2,5)\)?`,
+  parts:[
+    String.raw`\(A=(-\infty,3),\ B=(2,7)\)`,
+    String.raw`\(A=[-2,\infty),\ B=[5,7)\)`,
+    String.raw`\(A=[-4,\infty),\ B=(-3,5)\)`,
+    String.raw`\(A=(-\infty,5),\ B=(-2,\infty)\)`
+  ],
+  ans:[
+    String.raw`a) \(A\cup B\)`,
+    String.raw`b) \(A\cup B,\ A\setminus B\)`,
+    String.raw`c) \(A\cup B,\ A\cap B\)`,
+    String.raw`d) \(A\cup B\)`
+  ]
+},
+{
+  n:15,
+  text:String.raw`Zaznacz na osi liczbowej zbiór
+    \(A\cap B\), jeśli \(A\) i \(B\) są zbiorami
+    rozwiązań podanych nierówności.`,
+  parts:[
+    String.raw`\(A:\ 4(2-x)^2-(3+2x)^2\lt35,\quad B:\ 6-(3-x)^2\le(3-x)(3+x)\)`,
+    String.raw`\(A:\ 3-\frac{2+x}{4}\ge\frac{6-x}{3},\quad B:\ \frac{3-2x}{3}-6\gt\frac{x-5}{6}\)`
+  ],
+  ans:[
+    String.raw`a) \(A\cap B=(-1,2)\)`,
+    String.raw`b) \(A\cap B=[-6,-5)\)`
+  ]
+},
+{
+  n:16,
+  text:String.raw`Wyznacz najmniejszą liczbę całkowitą
+    spełniającą nierówność podwójną.`,
+  parts:[
+    String.raw`\(2x-11\le7\lt4x-1\)`,
+    String.raw`\(3-5x\le8\le3x-6\)`,
+    String.raw`\(2x-4\lt2+x\lt3x+4\)`,
+    String.raw`\(-9\lt5x-2\le5x+3\)`
+  ],
+  ans:[
+    String.raw`a) \(x\in(2,9]\), najmniejsza: \(3\)`,
+    String.raw`b) \(x\in[\frac{14}{3},\infty)\), najmniejsza: \(5\)`,
+    String.raw`c) \(x\in(-1,6)\), najmniejsza: \(0\)`,
+    String.raw`d) \(x\in(-\frac75,\infty)\), najmniejsza: \(-1\)`
+  ]
+},
+{
+  n:17,
+  text:String.raw`Sprawdź, czy równość zachodzi
+    dla \(x=2\) i \(y=-3\).
+    Czy zachodzi dla dowolnych
+    liczb rzeczywistych?`,
+  parts:[
+    String.raw`\(|x-y|=|y-x|\)`,
+    String.raw`\(|x+y|=|x|+|y|\)`,
+    String.raw`\(|x-y|=|x|-|y|\)`
+  ],
+  ans:[
+    String.raw`a) Prawdziwa dla wszystkich \(x,y\in\mathbb R\)`,
+    String.raw`b) Fałszywa dla \(x=2,\ y=-3\)`,
+    String.raw`c) Fałszywa dla \(x=2,\ y=-3\)`
+  ]
+},
+{
+  n:18,
+  text:"Oblicz.",
+  parts:[
+    String.raw`\(|2\sqrt2+1|-2|\sqrt2-2|\)`,
+    String.raw`\(|\sqrt{11}-2\sqrt3|\cdot(\sqrt{11}+2\sqrt3)\)`,
+    String.raw`\(\sqrt{(1-\sqrt3)^2}-\left|\frac32-\sqrt3\right|\)`,
+    String.raw`\(\sqrt{(8-3\sqrt7)^2}+|3\sqrt7-7|\)`
+  ],
+  ans:[
+    String.raw`a) \(4\sqrt2-3\)`,
+    String.raw`b) \(1\)`,
+    String.raw`c) \(\frac12\)`,
+    String.raw`d) \(1\)`
+  ]
+},
+{
+  n:19,
+  text:"Rozwiąż równanie.",
+  parts:[
+    String.raw`\(|x|=9\)`,
+    String.raw`\(|x|=1{,}6\)`,
+    String.raw`\(|x|=-2\)`,
+    String.raw`\(|x|=0\)`,
+    String.raw`\(|x|=\sqrt3+1\)`,
+    String.raw`\(|x|=1-\sqrt2\)`
+  ],
+  ans:[
+    String.raw`a) \(x=-9\) lub \(x=9\)`,
+    String.raw`b) \(x=-1{,}6\) lub \(x=1{,}6\)`,
+    String.raw`c) Brak rozwiązań`,
+    String.raw`d) \(x=0\)`,
+    String.raw`e) \(x=\pm(\sqrt3+1)\)`,
+    String.raw`f) Brak rozwiązań`
+  ]
+},
+{
+  n:20,
+  text:"Rozwiąż równanie.",
+  parts:[
+    String.raw`\(|x-2|=3\)`,
+    String.raw`\(|x-1|=6\)`,
+    String.raw`\(|x+3|=0\)`,
+    String.raw`\(|x+1|=3\)`,
+    String.raw`\(|4-x|=4\)`,
+    String.raw`\(\left|\frac12-x\right|=\frac14\)`
+  ],
+  ans:[
+    String.raw`a) \(x=-1\) lub \(x=5\)`,
+    String.raw`b) \(x=-5\) lub \(x=7\)`,
+    String.raw`c) \(x=-3\)`,
+    String.raw`d) \(x=-4\) lub \(x=2\)`,
+    String.raw`e) \(x=0\) lub \(x=8\)`,
+    String.raw`f) \(x=\frac14\) lub \(x=\frac34\)`
+  ]
+},
+{
+  n:21,
+  text:"Rozwiąż równanie.",
+  parts:[
+    String.raw`\(2|2-x|=4\)`,
+    String.raw`\(3|1-x|=9\)`,
+    String.raw`\(|2-x|+|x-2|=6\)`
+  ],
+  ans:[
+    String.raw`a) \(x=0\) lub \(x=4\)`,
+    String.raw`b) \(x=-2\) lub \(x=4\)`,
+    String.raw`c) \(x=-1\) lub \(x=5\)`
+  ]
+},
+{
+  n:22,
+  text:"Rozwiąż równanie.",
+  parts:[
+    String.raw`\(\sqrt{x^2-6x+9}=3\)`,
+    String.raw`\(\sqrt{x^2-8x+16}=\frac92\)`,
+    String.raw`\(\sqrt{x^2+10x+25}=1\)`,
+    String.raw`\(\sqrt{36-12x+x^2}=2\)`
+  ],
+  ans:[
+    String.raw`a) \(x=0\) lub \(x=6\)`,
+    String.raw`b) \(x=-\frac12\) lub \(x=\frac{17}{2}\)`,
+    String.raw`c) \(x=-6\) lub \(x=-4\)`,
+    String.raw`d) \(x=4\) lub \(x=8\)`
+  ]
+},
+
+/* ============== III ============== */
+
+{
+  n:23,
+  text:String.raw`Wyznacz zbiory \(A\cup B\),
+    \(A\cap B\), \(A\setminus B\) oraz
+    \(B\setminus A\).`,
+  parts:[
+    String.raw`\(A=[1,4],\ B=[2,5]\)`,
+    String.raw`\(A=(-2,1),\ B=(1,5)\)`,
+    String.raw`\(A=(-\infty,6),\ B=(0,2)\cup[6,\infty)\)`,
+    String.raw`\(A=(2,\infty),\ B=[-5,0)\cup(4,\infty)\)`,
+    String.raw`\(A=(1,3),\ B=\{-2,0,3,4\}\)`,
+    String.raw`\(A=\{-2,0,1,3,5\},\ B=(3,7)\)`
+  ],
+  ans:[
+    String.raw`a) \(A\cup B=[1,5],\ A\cap B=[2,4]\)`,
+    String.raw`b) \(A\cap B=\varnothing\)`,
+    String.raw`c) \(A\cup B=\mathbb R,\ A\cap B=(0,2)\)`,
+    String.raw`d) \(A\cap B=(4,\infty)\)`,
+    String.raw`e) \(A\cap B=\varnothing\)`,
+    String.raw`f) \(A\cap B=\{5\}\)`
+  ]
+},
+{
+  n:24,
+  text:String.raw`Wyznacz zbiory
+    \(A\cup(B\cap C)\),
+    \(A\cap(B\cup C)\),
+    \((A\setminus B)\cap C\).`,
+  parts:[
+    String.raw`\(A=[1,3),\ B=[2,5),\ C=(3,8)\)`,
+    String.raw`\(A=(0,6),\ B=(1,6),\ C=(4,6)\)`,
+    String.raw`\(A=[2,7),\ B=(-1,7),\ C=[2,\infty)\)`,
+    String.raw`\(A=[3,6),\ B=\{3,5,6\},\ C=\{6,7\}\)`
+  ],
+  ans:[
+    String.raw`a) \(A\cup(B\cap C)=[1,5)\)`,
+    String.raw`a) \(A\cap(B\cup C)=[2,3)\)`,
+    String.raw`b) \(A\cup(B\cap C)=A\)`,
+    String.raw`c) \(A\cap(B\cup C)=A\)`,
+    String.raw`d) \(A\cap(B\cup C)=\{3,5\}\)`
+  ]
+},
+{
+  n:25,
+  text:"Rozwiąż nierówność.",
+  parts:[
+    String.raw`\(|x-5|\le4\)`,
+    String.raw`\(|x+4|\lt5\)`,
+    String.raw`\(|x-3|\ge2\)`,
+    String.raw`\(|x+2|\gt3\)`,
+    String.raw`\(|6-x|\lt4\)`,
+    String.raw`\(|2-x|\gt3\)`
+  ],
+  ans:[
+    String.raw`a) \(x\in[1,9]\)`,
+    String.raw`b) \(x\in(-9,1)\)`,
+    String.raw`c) \(x\in(-\infty,1]\cup[5,\infty)\)`,
+    String.raw`d) \(x\in(-\infty,-5)\cup(1,\infty)\)`,
+    String.raw`e) \(x\in(2,10)\)`,
+    String.raw`f) \(x\in(-\infty,-1)\cup(5,\infty)\)`
+  ]
+},
+{
+  n:26,
+  text:String.raw`Rozwiąż układ nierówności.
+    Rozwiązanie zaznacz na osi liczbowej.`,
+  parts:[
+    String.raw`\(\begin{cases}|x|\le4\\|x+2|\gt1\end{cases}\)`,
+    String.raw`\(\begin{cases}|x-3|\le6\\|x-2|\gt2\end{cases}\)`,
+    String.raw`\(\begin{cases}|x+1|\gt4\\|x-1|\ge7\end{cases}\)`
+  ],
+  ans:[
+    String.raw`a) \(x\in[-4,-3)\cup(-1,4]\)`,
+    String.raw`b) \(x\in[-3,0)\cup(4,9]\)`,
+    String.raw`c) \(x\in(-\infty,-6]\cup[8,\infty)\)`
+  ]
+},
+{
+  n:27,
+  text:"Rozwiąż równanie.",
+  parts:[
+    String.raw`\(|5x+10|=20\)`,
+    String.raw`\(|7-14x|=7\)`,
+    String.raw`\(|3x+6|+|7x+14|=10\)`,
+    String.raw`\(|4x-12|=5-|3-x|\)`,
+    String.raw`\(\sqrt{9x^2-6x+1}+|9x-3|=12\)`,
+    String.raw`\(\sqrt{25-10x+x^2}=8-3|x-5|\)`
+  ],
+  ans:[
+    String.raw`a) \(x=-6\) lub \(x=2\)`,
+    String.raw`b) \(x=0\) lub \(x=1\)`,
+    String.raw`c) \(x=-3\) lub \(x=-1\)`,
+    String.raw`d) \(x=\frac{13}{4}\) lub \(x=\frac{35}{12}\)`,
+    String.raw`e) \(x=-\frac23\) lub \(x=1\)`,
+    String.raw`f) \(x=3\) lub \(x=7\)`
+  ]
+},
+{
+  n:28,
+  text:String.raw`Zaznacz na osi liczbowej
+    zbiór liczb spełniających podany warunek.`,
+  parts:[
+    String.raw`\(1\le|x|\lt4\)`,
+    String.raw`\(2\lt|x-1|\le7\)`,
+    String.raw`\(0\le|x+3|\lt8\)`,
+    String.raw`\(1\le|x-3|\le5\)`
+  ],
+  ans:[
+    String.raw`a) \(x\in(-4,-1]\cup[1,4)\)`,
+    String.raw`b) \(x\in[-6,-1)\cup(3,8]\)`,
+    String.raw`c) \(x\in(-11,5)\)`,
+    String.raw`d) \(x\in[-2,2]\cup[4,8]\)`
+  ]
+},
+{
+  n:29,
+  text:"Rozwiąż nierówność.",
+  parts:[
+    String.raw`\(|2x+4|\le6\)`,
+    String.raw`\(|2x+3|\gt1\)`,
+    String.raw`\(|3x-6|\lt12\)`,
+    String.raw`\(|4-2x|\lt3\)`,
+    String.raw`\(|4x-8|+|5x-10|\le18\)`,
+    String.raw`\(|5-10x|\ge4+2|x-\frac12|\)`,
+    String.raw`\(|5x+25|-|3x+15|\gt6\)`,
+    String.raw`\(|3x-3|-|1-x|\le8\)`
+  ],
+  ans:[
+    String.raw`a) \(x\in[-5,1]\)`,
+    String.raw`b) \(x\in(-\infty,-2)\cup(-1,\infty)\)`,
+    String.raw`c) \(x\in(-2,6)\)`,
+    String.raw`d) \(x\in(\frac12,\frac72)\)`,
+    String.raw`e) \(x\in[0,4]\)`,
+    String.raw`f) \(x\in(-\infty,\frac1{12}]\cup[\frac{11}{12},\infty)\)`,
+    String.raw`g) \(x\in(-\infty,-8)\cup(-2,\infty)\)`,
+    String.raw`h) \(x\in[-3,5]\)`
+  ]
+},
+{
+  n:30,
+  text:"Uprość wyrażenie.",
+  parts:[
+    String.raw`\(|x|-|-x|+|2x|\quad\text{dla }x\le0\)`,
+    String.raw`\(|2x|-\sqrt{x^2}-|x-1|\quad\text{dla }x\ge1\)`,
+    String.raw`\(|x+3|-|x|\quad\text{dla }x\le-3\)`,
+    String.raw`\(|x+2|+|x-2|+\sqrt{9-6x+x^2}\quad\text{dla }-2\le x\le2\)`
+  ],
+  ans:[
+    String.raw`a) \(-2x\)`,
+    String.raw`b) \(1\)`,
+    String.raw`c) \(-3\)`,
+    String.raw`d) \(7-x\)`
+  ]
+},
+{
+  n:31,
+  text:String.raw`Niech
+    \(A=\{x\in\mathbb R:|x+4|=x+4\}\),
+    \(B=\{x\in\mathbb R:|x-3|=3-x\}\),
+    \(C=\{x\in\mathbb R:|4-2x|=4-2x\}\).
+    Zapisz zbiory jako przedziały i sprawdź,
+    czy \(0\) należy do podanych zbiorów.`,
+  parts:[
+    String.raw`\(\mathbb R\setminus A\)`,
+    String.raw`\(\mathbb R\setminus(A\cap B)\)`,
+    String.raw`\(\mathbb R\setminus(B\setminus C)\)`
+  ],
+  ans:[
+    String.raw`\(A=[-4,\infty)\)`,
+    String.raw`\(B=(-\infty,3]\)`,
+    String.raw`\(C=(-\infty,2]\)`,
+    String.raw`a) \(0\notin\mathbb R\setminus A\)`,
+    String.raw`b) \(0\notin\mathbb R\setminus(A\cap B)\)`,
+    String.raw`c) \(0\in\mathbb R\setminus(B\setminus C)\)`
+  ]
+},
+{
+  n:32,
+  text:"Rozwiąż nierówność.",
+  parts:[
+    String.raw`\(|6x|-\sqrt{4x^2}\gt0\)`,
+    String.raw`\(|x|+\sqrt{2x^2}\le1\)`,
+    String.raw`\(\sqrt{x^2-2x+1}+|3x-3|\le1\)`,
+    String.raw`\(\sqrt{9x^2-6x+1}-|x-\frac13|\gt2\)`
+  ],
+  ans:[
+    String.raw`a) \(x\in\mathbb R\setminus\{0\}\)`,
+    String.raw`b) \(x\in[1-\sqrt2,\sqrt2-1]\)`,
+    String.raw`c) \(x\in[\frac34,\frac54]\)`,
+    String.raw`d) \(x\in(-\infty,-\frac23)\cup(\frac43,\infty)\)`
+  ]
+},
+{
+  n:33,
+  text:String.raw`Dane są zbiory
+    \(X=(-\infty,-3)\cup[4,\infty)\)
+    i \(Y=(-\infty,-5)\cup[9,\infty)\).
+    Ile liczb całkowitych należy do
+    \(X\setminus Y\)?`,
+  parts:[
+    String.raw`Wybierz odpowiedź: \(A.\ 6,\quad B.\ 7,\quad C.\ 8\).`,
+    String.raw`Uzasadnij odpowiedź, wypisując liczby całkowite.`
+  ],
+  ans:[
+    String.raw`\(X\setminus Y=[-5,-3)\cup[4,9)\)`,
+    String.raw`Liczby: \(-5,-4,4,5,6,7,8\)`,
+    String.raw`Odpowiedź: \(B.\ 7\)`
+  ]
+},
+{
+  n:34,
+  text:String.raw`Oceń prawdziwość zdań.
+    Wybierz P, jeśli zdanie jest prawdziwe,
+    albo F, jeśli jest fałszywe.`,
+  parts:[
+    String.raw`Nierówność \(|x|\gt0\) jest spełniona przez każdą liczbę rzeczywistą.`,
+    String.raw`Nierówność \(|x|\le\pi\) jest spełniona przez siedem liczb całkowitych.`
+  ],
+  ans:[
+    String.raw`a) F — dla \(x=0\) nierówność nie zachodzi.`,
+    String.raw`b) P — liczby: \(-3,-2,-1,0,1,2,3\).`
+  ]
+},
+{
+  n:35,
+  text:String.raw`Rozpatrz równanie
+    \(\sqrt{x^2-4x+4}+|x-2|=4-2x\).
+    Oceń prawdziwość zdań.`,
+  parts:[
+    "Równanie jest spełnione przez nieskończenie wiele liczb naturalnych.",
+    "Równanie jest spełnione przez każdą liczbę ujemną."
+  ],
+  ans:[
+    String.raw`\(\sqrt{(x-2)^2}=|x-2|\)`,
+    String.raw`\(2|x-2|=4-2x\)`,
+    String.raw`Równanie zachodzi dla każdego \(x\le2\).`,
+    "a) F",
+    "b) P"
+  ]
+}
+
+];
+
+/* ==================================
+   GENEROWANIE ZADAŃ
+================================== */
+
+function renderTask(t) {
+  const letters="abcdefghijklmnopqrstuvwxyz";
+
+  return `
+    <article class="task" id="task-${t.n}">
+      <div class="task-main">
+
+        <div class="task-top">
+          <h3>Zadanie ${t.n}</h3>
+
+          <label class="done">
+            <input type="checkbox"
+                   class="done-check"
+                   data-id="${t.n}">
+            Zrobione
+          </label>
+        </div>
+
+        <div class="statement">
+          ${t.text}
+        </div>
+
+        ${t.figure||""}
+
+        ${t.parts?.length?`
+          <div class="parts">
+            ${t.parts.map((p,i)=>`
+              <div class="part">
+                <b>${letters[i]})</b>
+                <span>${p}</span>
+              </div>
+            `).join("")}
+          </div>
+        `:""}
+
+        <label class="notes-label" for="note-${t.n}">
+          ✏️ Moje obliczenia i rozwiązanie
+        </label>
+
+        <textarea
+          class="notes"
+          id="note-${t.n}"
+          data-note="${t.n}"
+          placeholder="Tutaj zapisz swoje rozwiązanie..."
+        ></textarea>
+
+      </div>
+
+      <aside class="solution-panel">
+        <h4>Odpowiedzi · ${t.n}</h4>
+
+        <details class="answer-details">
+          <summary>Sprawdź odpowiedzi</summary>
+
+          ${t.ans.map(a=>`
+            <div class="answer-row">${a}</div>
+          `).join("")}
+        </details>
+      </aside>
+    </article>
+  `;
+}
+
+function renderAllTasks() {
+  document.getElementById("tasks1").innerHTML=
+    tasks.filter(t=>t.n<=10)
+         .map(renderTask).join("");
+
+  document.getElementById("tasks2").innerHTML=
+    tasks.filter(t=>t.n>=11&&t.n<=22)
+         .map(renderTask).join("");
+
+  document.getElementById("tasks3").innerHTML=
+    tasks.filter(t=>t.n>=23)
+         .map(renderTask).join("");
+
+  typeset([
+    document.getElementById("tasks1"),
+    document.getElementById("tasks2"),
+    document.getElementById("tasks3")
+  ]);
+}
+
+/* ==================================
+   INTERAKTYWNA OŚ LICZBOWA
+================================== */
+
+function drawAxis() {
+  let left=Number(document.getElementById("leftRange").value);
+  let right=Number(document.getElementById("rightRange").value);
+
+  if(left>=right) {
+    right=Math.min(9,left+1);
+    if(left>=right) left=right-1;
+    document.getElementById("leftRange").value=left;
+    document.getElementById("rightRange").value=right;
+  }
+
+  const lc=document.getElementById("leftClosed").checked;
+  const rc=document.getElementById("rightClosed").checked;
+
+  document.getElementById("leftValue").textContent=left;
+  document.getElementById("rightValue").textContent=right;
+
+  const x=n=>325+n*29;
+
+  let svg=`
+    <rect width="650" height="190" fill="#ffffff"/>
+    <line x1="32" y1="90" x2="617" y2="90"
+          stroke="#3e566b" stroke-width="3"/>
+    <path d="M617 90 L603 82 V98 Z" fill="#3e566b"/>
+  `;
+
+  for(let i=-9;i<=9;i++) {
+    svg+=`
+      <line x1="${x(i)}" y1="82"
+            x2="${x(i)}" y2="98"
+            stroke="#6d8394" stroke-width="2"/>
+      <text x="${x(i)}" y="122"
+            font-family="Arial"
+            font-size="18" text-anchor="middle"
+            fill="#34516b">${i}</text>
+    `;
+  }
+
+  svg+=`
+    <line x1="${x(left)}" y1="90"
+          x2="${x(right)}" y2="90"
+          stroke="#087fbd" stroke-width="9"
+          stroke-linecap="round"/>
+
+    <circle cx="${x(left)}" cy="90" r="10"
+            fill="${lc?"#087fbd":"white"}"
+            stroke="#087fbd" stroke-width="3"/>
+
+    <circle cx="${x(right)}" cy="90" r="10"
+            fill="${rc?"#087fbd":"white"}"
+            stroke="#087fbd" stroke-width="3"/>
+
+    <text x="325" y="165" text-anchor="middle"
+          font-family="Arial" font-size="20"
+          font-weight="bold" fill="#126692">
+      Przedział
+    </text>
+  `;
+
+  document.getElementById("intervalAxis").innerHTML=svg;
+
+  const notation=
+    (lc?"[":"(")+left+","+right+(rc?"]":")");
+
+  const out=document.getElementById("intervalFormula");
+  out.textContent="\\("+notation+"\\)";
+
+  typeset([out]);
+}
+
+/* ==================================
+   WIELKOŚĆ TEKSTU
+================================== */
+
+let zoom=1;
+
+function setZoom(v) {
+  zoom=Math.max(.85,Math.min(1.6,v));
+
+  document.documentElement.style.setProperty(
+    "--zoom",zoom
+  );
+
+  document.getElementById("zoomLabel")
+    .textContent=Math.round(zoom*100)+"%";
+}
+
+document.getElementById("fontPlus")
+  .addEventListener("click",()=>setZoom(zoom+.08));
+
+document.getElementById("fontMinus")
+  .addEventListener("click",()=>setZoom(zoom-.08));
+
+document.getElementById("fontReset")
+  .addEventListener("click",()=>setZoom(1));
+
+/* ==================================
+   ODPOWIEDZI
+================================== */
+
+document.getElementById("showAnswers")
+  .addEventListener("click",()=>{
+    document.querySelectorAll(".answer-details")
+      .forEach(d=>d.open=true);
+  });
+
+document.getElementById("hideAnswers")
+  .addEventListener("click",()=>{
+    document.querySelectorAll(".answer-details")
+      .forEach(d=>d.open=false);
+  });
+
+/* ==================================
+   POSTĘP I NOTATKI
+================================== */
+
+const storageKey="matematyka-5-2-notes-v1";
+
+function updateProgress() {
+  const completed=document.querySelectorAll(
+    ".done-check:checked"
+  ).length;
+
+  document.getElementById("progress").textContent=
+    `Wykonano ${completed} z ${tasks.length} zadań`;
+}
+
+function saveNotes() {
+  const data={notes:{},done:[]};
+
+  document.querySelectorAll("[data-note]")
+    .forEach(el=>{
+      data.notes[el.dataset.note]=el.value;
+    });
+
+  document.querySelectorAll(".done-check:checked")
+    .forEach(el=>{
+      data.done.push(el.dataset.id);
+    });
+
+  try {
+    localStorage.setItem(storageKey,JSON.stringify(data));
+    alert("Zapisano notatki i postęp na tym urządzeniu.");
+  } catch(err) {
+    alert("Przeglądarka nie pozwala zapisać danych.");
+  }
+}
+
+function restoreNotes() {
+  try {
+    const raw=localStorage.getItem(storageKey);
+    if(!raw) return;
+
+    const data=JSON.parse(raw);
+
+    document.querySelectorAll("[data-note]")
+      .forEach(el=>{
+        el.value=data.notes?.[el.dataset.note]||"";
+      });
+
+    document.querySelectorAll(".done-check")
+      .forEach(el=>{
+        el.checked=(data.done||[]).includes(el.dataset.id);
+      });
+
+  } catch(err) {
+    console.warn("Nie można przywrócić notatek.",err);
+  }
+
+  updateProgress();
+}
+
+document.getElementById("saveNotes")
+  .addEventListener("click",saveNotes);
+
+/* ==================================
+   DRUKOWANIE
+================================== */
+
+document.getElementById("printTasks")
+  .addEventListener("click",()=>{
+    document.body.classList.add("print-without-answers");
+    mathQueue.then(()=>window.print());
+  });
+
+document.getElementById("printAll")
+  .addEventListener("click",()=>{
+    document.body.classList.remove("print-without-answers");
+    document.querySelectorAll(".answer-details")
+      .forEach(d=>d.open=true);
+    mathQueue.then(()=>window.print());
+  });
+
+window.addEventListener("afterprint",()=>{
+  document.body.classList.remove("print-without-answers");
+});
+
+/* ==================================
+   START
+================================== */
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+  renderAllTasks();
+
+  [
+    "leftRange",
+    "rightRange",
+    "leftClosed",
+    "rightClosed"
+  ].forEach(id=>{
+    document.getElementById(id)
+      .addEventListener("input",drawAxis);
+  });
+
+  drawAxis();
+  restoreNotes();
+  updateProgress();
+
+  document.querySelectorAll(".done-check")
+    .forEach(el=>{
+      el.addEventListener("change",updateProgress);
+    });
+
+});
+</script>
+
+</body>
+</html>
