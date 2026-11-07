@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ACCA PM — Decision Tree Lab + Videos</title>
+<style>
+:root{
+ --bg:#edf3fa;--ink:#243b57;--muted:#647990;
+ --blue:#2869aa;--violet:#7247ad;--green:#168052;
+ --amber:#c58a2d;--line:#d5e1ed;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font:16px/1.65 Arial,"Segoe UI",sans-serif}
+header{padding:30px 16px;text-align:center;color:white;
+ background:linear-gradient(115deg,#23467e,#7048ad,#c4478d)}
+h1{margin:0;font-size:clamp(25px,4vw,38px)}
+header p{margin:5px}
+main{max-width:1120px;margin:auto;padding:13px}
+.card{background:white;border-radius:18px;padding:23px;
+ margin:14px 0;box-shadow:0 5px 20px #19345012}
+h2{margin:0 0 13px;color:#284d86}
+h3{color:#285982}
+button{background:var(--blue);color:white;border:0;
+ border-radius:10px;padding:12px 15px;
+ font:700 14px Arial;cursor:pointer}
+button:hover{filter:brightness(.94)}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.secondary{background:#e5eef9;color:#235080}
+button.active{background:var(--violet)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{background:#eff5ff;padding:16px;border-radius:12px}
+.green{background:#e4f5e9}
+.amber{background:#fff1db}
+.purple{background:#efe9ff}
+.note{background:#ebf4ff;border-left:5px solid var(--blue);
+ padding:14px;border-radius:10px;margin:14px 0}
+.note.good{background:#e7f5ec;border-color:var(--green)}
+.formula{background:#fff0b8;padding:14px;
+ font-size:clamp(16px,2.6vw,21px);
+ border-radius:11px;text-align:center;
+ font-weight:bold;margin:12px 0;overflow-x:auto}
+nav{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+nav button{min-height:48px;font-size:12px;padding:9px}
+.stages{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stages button{background:#e2ecf9;color:#255483}
+.stages button.active{background:var(--violet);color:white}
+.stages button.done{background:#d9f0e2;color:#166842}
+.tree-scroll{width:100%;overflow:auto;border-radius:14px;
+ background:#f3f8fd;border:1px solid var(--line);
+ margin:15px 0}
+#treeSvg{display:block;min-width:760px;width:100%;height:auto}
+.actions{display:flex;justify-content:space-between;gap:10px}
+.work{border:1px solid var(--line);border-radius:11px;
+ padding:13px;margin:10px 0}
+input[type=number]{padding:12px;font-size:16px;
+ border:1px solid #b7cce0;border-radius:10px;
+ width:100%;max-width:240px}
+.feedback{display:none;background:#e9f7ef;
+ border-radius:11px;padding:13px;margin:12px 0}
+details{border:1px solid var(--line);border-radius:11px;
+ padding:13px;margin:12px 0}
+summary{cursor:pointer;font-weight:bold;color:#28649b}
+.progress{background:#e0eaf5;height:9px;border-radius:9px;overflow:hidden}
+.progress div{height:100%;width:0;background:#26895c;transition:width .2s}
+.quiz-option{display:block;background:#f1f6fc;
+ border-radius:9px;margin:7px 0;padding:9px;cursor:pointer}
+.quiz-option:has(input:checked){outline:2px solid #3d83be}
+.quiz-option input{margin-right:8px}
+.video-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.video-frame{width:100%;aspect-ratio:16/9;
+ background:#10223c;border-radius:13px;overflow:hidden}
+.video-frame iframe{width:100%;height:100%;border:0}
+a.video-link{display:inline-block;margin-top:10px;
+ color:#225d99;font-weight:bold}
+.small{font-size:13px;color:var(--muted)}
+.result{font-size:25px;font-weight:bold;color:var(--green)}
+table{width:100%;border-collapse:collapse;margin:13px 0}
+th,td{border:1px solid var(--line);padding:9px;text-align:left}
+th{background:#dceafa}
+footer{text-align:center;color:#718399;padding:20px;font-size:13px}
+@media(max-width:700px){
+ .grid,.video-grid{grid-template-columns:1fr}
+ nav{grid-template-columns:repeat(2,1fr)}
+ .stages{grid-template-columns:repeat(2,1fr)}
+ .card{padding:16px}
+}
+
+.lesson-hero{background:linear-gradient(135deg,#153f73,#6542a0);color:white;border-radius:16px;padding:22px;margin:12px 0}
+.lesson-hero h3{color:white;margin:0 0 7px}
+.theory-table td:first-child{font-weight:bold;width:27%}
+.mathline{font-family:Arial,sans-serif;background:#f2f7ff;border-left:4px solid #3a79b8;border-radius:8px;padding:11px 14px;margin:9px 0;font-size:17px}
+.mathline strong{color:#155f99}
+.lesson-step{position:relative;background:#f8fbff;border:1px solid #d7e4f0;border-radius:12px;padding:16px;margin:11px 0}
+.lesson-step h4{margin:0 0 8px;color:#235b94;font-size:17px}
+.lesson-step p{margin:5px 0}
+.lesson-step .step-number{display:inline-block;background:#2869aa;color:white;border-radius:50%;width:27px;height:27px;text-align:center;line-height:27px;margin-right:7px}
+.final-choice{background:#e5f5ec;border:2px solid #56a67d;padding:16px;border-radius:12px;font-weight:bold;margin:16px 0}
+.warning-note{background:#fff4e3;border-left:5px solid #c58a2d;padding:13px;border-radius:10px;margin:12px 0}
+.topic-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.topic-tabs a{color:#245c94;background:#eaf3ff;text-decoration:none;padding:7px 11px;border-radius:9px;font-weight:bold}
+@media print{header{background:#24467e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}button,.actions,.video-frame{display:none!important}.card{box-shadow:none;break-inside:avoid}}
+
+
+.lesson-lead{font-size:17px;color:#526981;max-width:850px}
+.theory-visual{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.visual-tile{border:1px solid var(--line);border-radius:16px;padding:17px;background:linear-gradient(145deg,#f6faff,#edf3ff);text-align:center}
+.visual-tile strong{display:block;color:#234c83;margin:8px 0}
+.visual-symbol{font-size:48px;line-height:1.1;color:#2e72b0}
+.visual-tile p{font-size:14px;margin:4px 0}
+.explain-steps{counter-reset:step;display:grid;gap:10px}
+.explain-step{position:relative;padding:13px 16px 13px 58px;border:1px solid #d9e6f1;background:#f7fbff;border-radius:12px}
+.explain-step:before{counter-increment:step;content:counter(step);position:absolute;left:13px;top:13px;background:#2869aa;color:#fff;border-radius:50%;width:30px;height:30px;text-align:center;line-height:30px;font-weight:bold}
+.mathline{font:700 17px/1.5 Arial,sans-serif;background:#e8f2ff;border-radius:10px;padding:12px;margin:9px 0;overflow-x:auto}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.compare>div{background:#f0f5fc;padding:15px;border-radius:12px;border:1px solid #d8e4f1}
+.compare strong{display:block;font-size:22px;color:#205f9b}
+.diagram{width:100%;height:auto;max-height:290px;border-radius:13px;background:#f6faff;border:1px solid #dbe7f2}
+.lesson-table td:first-child{font-weight:bold;width:32%}
+@media(max-width:700px){.theory-visual{grid-template-columns:1fr}.compare{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🌳 ACCA — Decision Tree Lab</h1>
+<p>BUILD → LABEL → CALCULATE → ROLLBACK</p>
+<p>Інтерактивні блок-схеми, задачі та відеоуроки</p>
+</header>
+
+<main>
+
+<section class="card">
+<h2>📘 Основна теорія</h2>
+<p><b>Decision Tree</b> — схема послідовних рішень
+і випадкових результатів.</p>
+
+<div class="grid">
+ <div class="panel purple">
+  <h3>□ Decision Node</h3>
+  <p>Тут менеджер сам обирає альтернативу.</p>
+  <p>Для прибутку вибираємо найбільший EV.
+  Для витрат — найменший EV.</p>
+ </div>
+ <div class="panel amber">
+  <h3>○ Chance Node</h3>
+  <p>Тут результат залежить від випадку.</p>
+  <p>Множимо кожен результат на його
+  ймовірність і додаємо.</p>
+ </div>
+</div>
+
+<div class="formula">EV = Σ (Probability × Result)</div>
+
+<div class="note good">
+<b>Золоте правило:</b> дерево будуємо
+зліва направо, а розв'язуємо справа наліво.
+Цей зворотний розрахунок називається
+<b>Rollback</b>.
+</div>
+
+<h3>Чотири кроки</h3>
+<p>1️⃣ <b>Build:</b> розміщуємо вузли рішення,
+випадкові вузли та кінцеві результати.</p>
+<p>2️⃣ <b>Label:</b> підписуємо ймовірності,
+прибутки, збитки й витрати.</p>
+<p>3️⃣ <b>Calculate:</b> обчислюємо EV,
+починаючи з кінцевих гілок.</p>
+<p>4️⃣ <b>Rollback:</b> в кожному квадраті
+залишаємо найкращий варіант і рухаємося
+до початку дерева.</p>
+</section>
+
+
+<section class="card" id="deepTheory">
+<h2>📚 Повний конспект теорії ACCA PM</h2>
+<div class="lesson-hero"><h3>Як мислити на іспиті</h3>
+<p>Дерево рішень показує, що компанія <b>контролює</b> (рішення), що вона <b>не контролює</b> (випадкові події) та який грошовий результат отримає. Головне — обрати стратегію з найкращим очікуваним результатом.</p></div>
+<h3>1. Основні терміни</h3>
+<table class="theory-table"><tr><th>Термін</th><th>Пояснення</th></tr>
+<tr><td>Decision node □</td><td>Квадрат: керівник обирає дію. Для прибутку — найбільше значення, для витрат — найменше.</td></tr>
+<tr><td>Chance node ○</td><td>Коло: майбутній результат залежить від випадку. Тут рахуємо зважене середнє.</td></tr>
+<tr><td>Branch</td><td>Гілка: конкретна дія або можливий сценарій, наприклад «високий попит».</td></tr>
+<tr><td>Payoff</td><td>Кінцевий прибуток, збиток або витрата. Важливо не переплутати виручку з прибутком.</td></tr>
+<tr><td>Probability</td><td>Імовірність сценарію від 0 до 1. На гілках одного chance node сума має бути 1.</td></tr>
+<tr><td>Rollback</td><td>Зворотний розрахунок: починаємо з кінцевих результатів і рухаємося до кореня дерева.</td></tr></table>
+<h3>2. Expected Value (EV) / Expected Monetary Value (EMV)</h3>
+<div class="formula">EMV = p₁ × payoff₁ + p₂ × payoff₂ + … + pₙ × payoffₙ</div>
+<p><b>Приклад:</b> прибуток £100 тис. з імовірністю 0,6 або збиток £20 тис. з імовірністю 0,4.</p>
+<div class="mathline">EMV = 0,6 × 100 + 0,4 × (−20) = 60 − 8 = <strong>52 тис. £</strong></div>
+<p>EMV — це не гарантований прибуток. Це середній результат у довгостроковій перспективі за заданих імовірностей. У задачах ACCA рішення за EMV передбачає нейтральне ставлення до ризику.</p>
+<h3>3. Rollback: порядок обчислення</h3>
+<div class="grid">
+<div class="panel"><b>У колі ○</b><p>Не вибираємо сценарій! Обчислюємо суму «ймовірність × результат» для всіх можливих сценаріїв.</p></div>
+<div class="panel green"><b>У квадраті □</b><p>Порівнюємо вже обчислені значення альтернатив. Вибираємо MAX прибутку або MIN витрат.</p></div></div>
+<h3>4. Вартість дослідження та інформації</h3>
+<div class="formula">EVPI = EV with perfect information − Best EV without information</div>
+<p><b>EVPI</b> — найбільша сума, яку варто заплатити за абсолютно точну інформацію, якщо оцінюємо рішення лише за очікуваною грошовою вигодою.</p>
+<div class="formula">EVSI = EV with sample information (до вартості дослідження) − Best EV without information</div>
+<p><b>EVSI</b> — цінність недосконалого прогнозу або маркетингового дослідження. Саме дослідження вигідне, коли <b>EVSI перевищує його вартість</b>.</p>
+<div class="mathline">Net EV with research = EV after using signals − Research cost</div>
+<div class="warning-note"><b>Не плутайте:</b> EVSI — вигода від інформації <i>до</i> оплати дослідження; чиста вигода = EVSI − вартість дослідження. EVPI ≥ EVSI ≥ 0 за узгодженої моделі ймовірностей.</div>
+<h3>5. Умовні ймовірності</h3>
+<p>Після позитивного або негативного прогнозу ймовірності попиту можуть змінитися. Використовуйте саме <b>умовні ймовірності відповідного сигналу</b>, а не загальні ймовірності ринку. Якщо задано спільні ймовірності, умовні обчислюють за формулою:</p>
+<div class="formula">P(A | B) = P(A ∩ B) / P(B)</div>
+<h3>6. Витрати та доходи на гілках</h3>
+<p>Якщо початкову вартість проєкту записано на гілці, віднімайте її <b>лише один раз</b>. Якщо результат у кінцевому вузлі вже є чистим прибутком, повторно віднімати витрати не можна.</p>
+<h3>7. Чекліст перед відповіддю</h3>
+<ol><li>Визначити, чи задача про максимізацію прибутку або мінімізацію витрат.</li><li>Відокремити рішення від випадкових подій.</li><li>Перевірити всі ймовірності.</li><li>Позначити одиниці: £, $, тис. £ або тис. $.</li><li>Обчислити chance nodes справа наліво.</li><li>Вибрати оптимальні гілки у decision nodes.</li><li>Врахувати одноразові витрати.</li><li>Сформулювати бізнес-рекомендацію з числовим обґрунтуванням.</li></ol>
+</section>
+
+
+<section class="card" id="deepTheory">
+<h2>📚 Повний візуальний конспект: дерева рішень</h2>
+<p class="lesson-lead">Дерево рішень — це карта вибору в умовах невизначеності. Воно показує, що залежить від менеджера, що залежить від випадку і як порівняти можливі фінансові результати.</p>
+<div class="theory-visual">
+ <div class="visual-tile"><div class="visual-symbol">□</div><strong>Decision node</strong><p>Квадрат: менеджер обирає дію.</p><p><b>MAX</b> прибутку або <b>MIN</b> витрат.</p></div>
+ <div class="visual-tile"><div class="visual-symbol">◯</div><strong>Chance node</strong><p>Коло: випадкова подія.</p><p>Рахуємо зважене середнє за ймовірностями.</p></div>
+ <div class="visual-tile"><div class="visual-symbol">▣</div><strong>Terminal payoff</strong><p>Кінець гілки: грошовий результат.</p><p>Знак «−» означає збиток.</p></div>
+</div>
+<h3>1. Як виглядає дерево на практиці</h3>
+<svg class="diagram" viewBox="0 0 900 300" role="img" aria-label="Коректне дерево рішень: запуск або відмова, два сценарії попиту">
+<rect x="35" y="117" width="112" height="58" rx="12" fill="#dceafa" stroke="#2e72b0" stroke-width="3"/>
+<text x="91" y="152" font-size="17" font-weight="bold" text-anchor="middle" fill="#244f80">Вибір</text>
+<path d="M147 134 L330 83 M147 158 L708 255 M390 72 L708 49 M390 93 L708 144" fill="none" stroke="#8da7c0" stroke-width="3" stroke-linecap="round"/>
+<circle cx="360" cy="83" r="32" fill="#fff0c5" stroke="#c58a2d" stroke-width="3"/>
+<text x="360" y="88" font-size="15" text-anchor="middle">Попит</text>
+<rect x="708" y="22" width="170" height="55" rx="12" fill="#dff3e6"/>
+<text x="793" y="43" font-size="16" font-weight="bold" text-anchor="middle">+80 тис. $</text>
+<text x="793" y="61" font-size="12" text-anchor="middle">виручка</text>
+<rect x="708" y="117" width="170" height="55" rx="12" fill="#dff3e6"/>
+<text x="793" y="138" font-size="16" font-weight="bold" text-anchor="middle">+30 тис. $</text>
+<text x="793" y="156" font-size="12" text-anchor="middle">виручка</text>
+<rect x="708" y="229" width="170" height="55" rx="12" fill="#e9eef6"/>
+<text x="793" y="250" font-size="16" font-weight="bold" text-anchor="middle">0</text>
+<text x="793" y="269" font-size="12" text-anchor="middle">без запуску</text>
+<text x="195" y="93" font-size="15" fill="#285982">Запуск: −20 тис. $</text>
+<text x="402" y="223" font-size="15" fill="#285982">Не запускати</text>
+<text x="537" y="48" font-size="16" fill="#285982">60%</text>
+<text x="540" y="139" font-size="16" fill="#285982">40%</text>
+</svg>
+<p class="small">Читаємо зліва направо: спочатку рішення про запуск, потім невідомий попит, наприкінці — виручка. Для розрахунку повертаємося справа наліво.</p>
+<h3>2. Expected Value (EV / EMV)</h3>
+<div class="formula">EMV = p₁ × V₁ + p₂ × V₂ + … + pₙ × Vₙ</div>
+<div class="explain-steps">
+ <div class="explain-step"><b>Запишіть сценарії.</b> Високий попит — 60%, низький — 40%. Разом 100%.</div>
+ <div class="explain-step"><b>Знайдіть очікувану виручку.</b><div class="mathline">0,6 × 80 + 0,4 × 30 = 48 + 12 = 60 тис. $</div></div>
+ <div class="explain-step"><b>Відніміть вартість запуску.</b><div class="mathline">60 − 20 = 40 тис. $</div>20 — це одноразова витрата, тому її не віднімаємо вдруге.</div>
+ <div class="explain-step"><b>Порівняйте з альтернативою.</b> Не запускати = 0. Оскільки 40 &gt; 0, запуск вигідніший за критерієм EMV.</div>
+</div>
+<h3>3. Прибуток і витрати — різні критерії</h3>
+<div class="compare">
+ <div><b>Мета — отримати прибуток</b><strong>MAX</strong><p>Проєкт A: 68 тис. £; B: 54 тис. £. Обираємо A.</p></div>
+ <div><b>Мета — зменшити витрати</b><strong>MIN</strong><p>Власна доставка: 55 тис. $; аутсорсинг: 52 тис. $. Обираємо аутсорсинг.</p></div>
+</div>
+<h3>4. EVPI та EVSI — скільки коштує інформація?</h3>
+<table class="lesson-table">
+ <tr><th>Показник</th><th>Значення</th><th>Формула</th></tr>
+ <tr><td>EVPI</td><td>Цінність ідеального знання майбутнього</td><td>EV з ідеальною інформацією − найкращий EV без неї</td></tr>
+ <tr><td>EVSI</td><td>Цінність неповного прогнозу чи дослідження</td><td>EV з дослідженням до витрат − найкращий EV без нього</td></tr>
+ <tr><td>Чиста вигода</td><td>Чи окупається дослідження?</td><td>EVSI − вартість дослідження</td></tr>
+</table>
+<div class="note"><b>Важливо:</b> EVSI обчислюємо <em>до</em> витрат на інформацію. Потім порівнюємо EVSI з її ціною. У задачі 4: EVSI = 3 тис. $, а дослідження коштує 6 тис. $, отже купувати його не варто.</div>
+<h3>5. Умовні ймовірності та послідовні рішення</h3>
+<p>Якщо після прогнозу з'являється нова інформація, ймовірності майбутнього попиту можуть змінитися. У задачі 4 після хорошого прогнозу ймовірність високого попиту дорівнює 80%, а після поганого — лише 20%. Саме тому після різних сигналів компанія може прийняти різні рішення.</p>
+<div class="formula">P(високий попит | хороший прогноз) = 0,8</div>
+<p>Це <b>умовна ймовірність</b>. Не плутайте її із загальною ймовірністю високого попиту до отримання прогнозу.</p>
+<h3>6. Типові помилки на ACCA PM</h3>
+<div class="grid">
+ <div class="panel amber"><b>❌ Відняти витрати двічі</b><p>Якщо вартість запуску вже стоїть на гілці, не віднімайте її повторно від кінцевого результату.</p></div>
+ <div class="panel green"><b>✅ Врахувати витрати один раз</b><p>Вартість можна поставити на гілці або включити до всіх її кінцевих payoff — але не одночасно.</p></div>
+ <div class="panel amber"><b>❌ Вибирати MAX для витрат</b><p>Для прибутку MAX, для витрат MIN — залежно від формулювання задачі.</p></div>
+ <div class="panel green"><b>✅ Rollback справа наліво</b><p>Спочатку кінцеві результати, потім chance nodes, потім decision nodes.</p></div>
+</div>
+</section>
+
+<section class="card">
+<h2>🧩 Оберіть задачу</h2>
+<nav id="taskNav"></nav>
+<p id="progressText" class="small"></p>
+<div class="progress"><div id="progressBar"></div></div>
+</section>
+
+<section class="card" id="problemSection">
+<h2 id="problemTitle"></h2>
+<p id="problemDescription"></p>
+<div id="problemData"></div>
+</section>
+
+<section class="card" id="detailedProblem"><h2>📝 Повна умова та пояснення даних</h2><div id="detailedStatement"></div></section>
+<section class="card" id="deepSolutionCard">
+<h2>🔎 Повна умова, пояснення даних і детальний розбір</h2>
+<div id="deepSolution"></div>
+</section>
+
+<section class="card">
+<h2>🌳 Побудова дерева крок за кроком</h2>
+
+<div class="stages">
+<button id="stage0" onclick="setStage(0)">1️⃣ Build</button>
+<button id="stage1" onclick="setStage(1)">2️⃣ Label</button>
+<button id="stage2" onclick="setStage(2)">3️⃣ Calculate</button>
+<button id="stage3" onclick="setStage(3)">4️⃣ Rollback</button>
+</div>
+
+<div class="tree-scroll">
+<svg id="treeSvg" role="img"
+ aria-label="Блок-схема дерева рішень"></svg>
+</div>
+
+<div class="note" id="stageInfo"></div>
+
+<div class="actions">
+<button class="secondary" id="backStage"
+ onclick="setStage(stage-1)">
+← Назад
+</button>
+<button id="forwardStage"
+ onclick="setStage(stage+1)">
+Наступний крок →
+</button>
+</div>
+</section>
+
+<section class="card">
+<h2>🧮 Розрахунки на схемі</h2>
+<p>На етапах Calculate та Rollback
+з'являються обчислення для кожного вузла.</p>
+<div id="workings"></div>
+</section>
+
+<section class="card" id="detailedSolution"><h2>📖 Детальне розв’язання з поясненням</h2><div id="fullDetailedSolution"></div></section>
+<section class="card">
+<h2>✏️ Перевір себе</h2>
+<p id="answerQuestion"></p>
+<div class="note" id="answerContext">Спочатку прочитайте умову задачі та побудуйте дерево. У відповідь введіть тільки число — без валюти та слова «тисяч».</div>
+<label for="answerInput"><b>Ваша відповідь (у тисячах):</b></label>
+<input type="number" step="any"
+ id="answerInput" placeholder="Наприклад: 40">
+<button onclick="checkAnswer()">Перевірити</button>
+<div id="answerFeedback" class="feedback"></div>
+
+<details id="solutionDetails">
+<summary>📖 Показати повне розв'язання</summary>
+<div id="solution"></div>
+</details>
+</section>
+
+<section class="card">
+<h2>🎬 Відеоуроки ACCA та OpenTuition</h2>
+<p>Перегляньте пояснення викладача,
+а потім повторіть побудову відповідного
+дерева у тренажері вище.</p>
+
+<div class="video-grid">
+<div class="panel">
+<h3>1️⃣ ACCA — Decision Trees</h3>
+<div class="video-frame">
+<iframe loading="lazy"
+ title="ACCA Topic Explainer Decision Trees"
+ src="https://www.youtube-nocookie.com/embed/Z1mC4gkxBV8"
+ allow="accelerometer; autoplay; encrypted-media;
+ gyroscope; picture-in-picture; web-share"
+ referrerpolicy="strict-origin-when-cross-origin"
+ allowfullscreen></iframe>
+</div>
+<p>Офіційний відеоурок ACCA.
+Побудова дерева та розрахунок EV.</p>
+<a class="video-link"
+ href="https://www.youtube.com/watch?v=Z1mC4gkxBV8"
+ target="_blank" rel="noopener">
+▶ Відкрити на YouTube
+</a>
+</div>
+
+<div class="panel">
+<h3>2️⃣ ACCA — Decision Rules</h3>
+<div class="video-frame">
+<iframe loading="lazy"
+ title="ACCA Decision Rules"
+ src="https://www.youtube-nocookie.com/embed/hKSW1I1_KM4"
+ allow="accelerometer; autoplay; encrypted-media;
+ gyroscope; picture-in-picture; web-share"
+ referrerpolicy="strict-origin-when-cross-origin"
+ allowfullscreen></iframe>
+</div>
+<p>Maximax, Maximin та Minimax Regret.
+Додаткове пояснення вибору альтернатив.</p>
+<a class="video-link"
+ href="https://www.youtube.com/watch?v=hKSW1I1_KM4"
+ target="_blank" rel="noopener">
+▶ Відкрити на YouTube
+</a>
+</div>
+</div>
+
+<div class="grid" style="margin-top:14px">
+<div class="panel green">
+<h3>3️⃣ OpenTuition — Decision Trees Part 1</h3>
+<p>Відеоурок про побудову дерев,
+chance nodes та Expected Value.</p>
+<a class="video-link"
+ href="https://opentuition.com/acca/pm/risk-and-uncertainty-decision-trees-part-1-acca-performance-management-pm/"
+ target="_blank" rel="noopener">
+▶ Переглянути відеоурок Part 1
+</a>
+</div>
+
+<div class="panel purple">
+<h3>4️⃣ OpenTuition — Decision Trees Part 2</h3>
+<p>Складніші задачі, market research
+та багатоступеневі рішення.</p>
+<a class="video-link"
+ href="https://opentuition.com/acca/pm/risk-and-uncertainty-decision-trees-part-2-acca-performance-management-pm/"
+ target="_blank" rel="noopener">
+▶ Переглянути відеоурок Part 2
+</a>
+</div>
+</div>
+
+<div class="note">
+Якщо YouTube не дозволяє відтворення
+всередині Google Sites, скористайтеся
+посиланням «Відкрити на YouTube».
+OpenTuition відкривається на його
+власній навчальній сторінці.
+</div>
+</section>
+
+<section class="card">
+<h2>✅ Підсумковий тест</h2>
+<div id="quiz"></div>
+<button onclick="gradeQuiz()">Перевірити тест</button>
+<button class="secondary" onclick="resetQuiz()">Повторити</button>
+<div id="quizFeedback" class="feedback"></div>
+</section>
+
+<section class="card">
+<h2>🧠 Шпаргалка</h2>
+<div class="formula">
+Chance Node → Σ (p × Result)
+</div>
+<div class="formula">
+Decision Node (profit) → MAX
+</div>
+<div class="formula">
+Decision Node (cost) → MIN
+</div>
+
+<p>1️⃣ Запиши всі рішення.</p>
+<p>2️⃣ Розмісти випадкові події.</p>
+<p>3️⃣ Постав ймовірності на гілках.</p>
+<p>4️⃣ Постав гроші наприкінці гілок.</p>
+<p>5️⃣ Повернися справа наліво.</p>
+<p>6️⃣ У колах обчислюй EV.</p>
+<p>7️⃣ У квадратах вибирай кращий варіант.</p>
+<p>8️⃣ Зроби бізнес-висновок словами.</p>
+
+<button onclick="window.print()">🖨️ Друкувати матеріали</button>
+</section>
+
+</main>
+
+<footer>
+ACCA Performance Management • Decision Tree Lab
+</footer>
+
+<script>
+"use strict";
+
+/* Усі фінансові значення — у тисячах відповідної валюти.
+   d = decision, c = chance, t = terminal.
+   cost на гілці враховується лише один раз. */
+
+const problems=[
+{
+ title:"🚀 1. Запуск нового продукту",
+ menu:"🚀 Запуск",
+ description:"Компанія вирішує, чи запускати продукт. "+
+ "Запуск коштує $20 000. Майбутній попит невідомий.",
+ unit:"тис. $",goal:"max",
+ question:"Який максимальний очікуваний прибуток?",
+ data:[
+ ["Вартість запуску","20"],
+ ["Високий попит","60%, виручка 80"],
+ ["Низький попит","40%, виручка 30"],
+ ["Не запускати","0"]
+ ],
+ stages:[
+ "BUILD: спочатку квадрат із двома рішеннями: запускати або ні. Після запуску додаємо випадковий вузол попиту.",
+ "LABEL: на гілках попиту пишемо 60% та 40%. Наприкінці — виручку 80 та 30. Вартість запуску −20 записуємо один раз.",
+ "CALCULATE: EV виручки = 0,6×80 + 0,4×30 = 60. Після витрат запуску: 60−20=40.",
+ "ROLLBACK: порівнюємо запуск із прибутком 40 та відмову з результатом 0. Найкраще — запускати."
+ ],
+ tree:{
+ type:"d",name:"Запускати?",
+ edges:[
+ {name:"Запуск",cost:-20,to:{
+ type:"c",name:"Попит",edges:[
+ {name:"Високий",p:.6,to:{type:"t",name:"Виручка",v:80}},
+ {name:"Низький",p:.4,to:{type:"t",name:"Виручка",v:30}}
+ ]}},
+ {name:"Не запускати",to:{type:"t",name:"Відмова",v:0}}
+ ]}
+},
+{
+ title:"🏭 2. Вибір виробництва",
+ menu:"🏭 Фабрика",
+ description:"Фабрика вирішує, виробляти багато чи мало. "+
+ "Після вибору обсягу можливий високий або низький попит.",
+ unit:"тис. £",goal:"max",
+ question:"Який найбільший EV для фабрики?",
+ data:[
+ ["Попит","Високий 60%, низький 40%"],
+ ["Багато: високий / низький","100 / 20"],
+ ["Мало: високий / низький","50 / 60"]
+ ],
+ stages:[
+ "BUILD: два можливі обсяги виробництва. Після кожного — окремий шанс високого чи низького попиту.",
+ "LABEL: для кожного chance node ставимо 60% та 40%. Наприкінці гілок — прибутки.",
+ "CALCULATE: багато = 100×0,6+20×0,4=68. Мало = 50×0,6+60×0,4=54.",
+ "ROLLBACK: 68 більше за 54. За EV обираємо велике виробництво."
+ ],
+ tree:{
+ type:"d",name:"Обсяг?",
+ edges:[
+ {name:"Багато",to:{type:"c",name:"Попит",edges:[
+ {name:"Високий",p:.6,to:{type:"t",name:"Прибуток",v:100}},
+ {name:"Низький",p:.4,to:{type:"t",name:"Прибуток",v:20}}
+ ]}},
+ {name:"Мало",to:{type:"c",name:"Попит",edges:[
+ {name:"Високий",p:.6,to:{type:"t",name:"Прибуток",v:50}},
+ {name:"Низький",p:.4,to:{type:"t",name:"Прибуток",v:60}}
+ ]}}
+ ]}
+},
+{
+ title:"🎓 3. University Advertising",
+ menu:"🎓 Реклама",
+ description:"Університет вирішує, чи рекламувати "+
+ "навчальну програму. Реклама коштує $15 000. "+
+ "Стан економіки впливає на кількість студентів. "+
+ "Приклад адаптовано за Kaplan PM Study Text.",
+ unit:"тис. $",goal:"max",
+ question:"Який максимальний очікуваний прибуток?",
+ data:[
+ ["Економіка","Погана 60%, хороша 40%"],
+ ["Вартість реклами","15"],
+ ["Погана економіка: реклама спрацює","65%"],
+ ["Хороша економіка: реклама спрацює","25%"],
+ ["40 / 50 студентів","Прибуток 115 / 165"],
+ ["20 / 25 студентів","Прибуток 15 / 40"]
+ ],
+ stages:[
+ "BUILD: у квадраті обираємо Advertise або No advertising. Після реклами спочатку виникає економічний стан, а потім — успіх реклами.",
+ "LABEL: економіка 60% / 40%. Ефект реклами за поганої економіки 65% / 35%; за хорошої 25% / 75%. Вартість реклами −15.",
+ "CALCULATE: за поганої економіки EV до реклами = 147,5; за хорошої = 21,25. Зважений результат мінус 15 = 82. Без реклами = 75.",
+ "ROLLBACK: 82 більше за 75. Університету вигідніше рекламувати програму; додаткова очікувана вигода становить 7."
+ ],
+ tree:{
+ type:"d",name:"Реклама?",
+ edges:[
+ {name:"Advertise",cost:-15,to:{
+ type:"c",name:"Економіка",edges:[
+ {name:"Погана",p:.6,to:{type:"c",name:"Ефект реклами",edges:[
+ {name:"Успіх",p:.65,to:{type:"t",name:"50 студентів",v:165}},
+ {name:"Без ефекту",p:.35,to:{type:"t",name:"40 студентів",v:115}}
+ ]}},
+ {name:"Хороша",p:.4,to:{type:"c",name:"Ефект реклами",edges:[
+ {name:"Успіх",p:.25,to:{type:"t",name:"25 студентів",v:40}},
+ {name:"Без ефекту",p:.75,to:{type:"t",name:"20 студентів",v:15}}
+ ]}}
+ ]}},
+ {name:"No advertising",to:{type:"c",name:"Економіка",edges:[
+ {name:"Погана",p:.6,to:{type:"t",name:"40 студентів",v:115}},
+ {name:"Хороша",p:.4,to:{type:"t",name:"20 студентів",v:15}}
+ ]}}
+ ]}
+},
+{
+ title:"🔍 4. Дослідження перед запуском",
+ menu:"🔍 Дослідження",
+ description:"Компанія може замовити дослідження ринку "+
+ "за 6 тис. $. Потім, залежно від прогнозу, "+
+ "вирішити, чи запускати продукт.",
+ unit:"тис. $",goal:"max",
+ question:"Який оптимальний очікуваний прибуток?",
+ data:[
+ ["Вартість дослідження","6"],
+ ["Хороший / поганий прогноз","50% / 50%"],
+ ["Після хорошого: високий попит","80%"],
+ ["Після поганого: високий попит","20%"],
+ ["Прибуток: високий / низький попит","90 / −30"],
+ ["Без дослідження: високий / низький","50% / 50%"]
+ ],
+ stages:[
+ "BUILD: спочатку вибираємо, чи купити дослідження. Якщо купимо, з'явиться прогноз, а після кожного прогнозу — нове рішення.",
+ "LABEL: дослідження коштує 6; кожен прогноз має ймовірність 50%; ймовірності попиту після прогнозів різні.",
+ "CALCULATE: після хорошого прогнозу EV запуску = 66, після поганого = −6. Тому за поганого прогнозу відмовляємося. EV з дослідженням = 0,5×66+0,5×0−6=27.",
+ "ROLLBACK: без дослідження запуск дає EV 30. Оскільки 30>27, дослідження не купуємо."
+ ],
+ tree:{
+ type:"d",name:"Дослідження?",
+ edges:[
+ {name:"Купити",cost:-6,to:{type:"c",name:"Прогноз",edges:[
+ {name:"Хороший",p:.5,to:{type:"d",name:"Запускати?",edges:[
+ {name:"Так",to:{type:"c",name:"Попит",edges:[
+ {name:"Високий",p:.8,to:{type:"t",name:"Прибуток",v:90}},
+ {name:"Низький",p:.2,to:{type:"t",name:"Прибуток",v:-30}}
+ ]}},
+ {name:"Ні",to:{type:"t",name:"Відмова",v:0}}
+ ]}},
+ {name:"Поганий",p:.5,to:{type:"d",name:"Запускати?",edges:[
+ {name:"Так",to:{type:"c",name:"Попит",edges:[
+ {name:"Високий",p:.2,to:{type:"t",name:"Прибуток",v:90}},
+ {name:"Низький",p:.8,to:{type:"t",name:"Прибуток",v:-30}}
+ ]}},
+ {name:"Ні",to:{type:"t",name:"Відмова",v:0}}
+ ]}}
+ ]}},
+ {name:"Не купити",to:{type:"d",name:"Запускати?",edges:[
+ {name:"Так",to:{type:"c",name:"Попит",edges:[
+ {name:"Високий",p:.5,to:{type:"t",name:"Прибуток",v:90}},
+ {name:"Низький",p:.5,to:{type:"t",name:"Прибуток",v:-30}}
+ ]}},
+ {name:"Ні",to:{type:"t",name:"Відмова",v:0}}
+ ]}}
+ ]}
+},
+{
+ title:"🚚 5. Мінімізація витрат",
+ menu:"🚚 Витрати",
+ description:"Компанія обирає спосіб доставки. "+
+ "Власна доставка залежить від ризику затримки. "+
+ "Аутсорсинг коштує 52 тис. $.",
+ unit:"тис. $",goal:"min",
+ question:"Які мінімальні очікувані витрати?",
+ data:[
+ ["Власна доставка без затримки","40, ймовірність 70%"],
+ ["Власна доставка із затримкою","90, ймовірність 30%"],
+ ["Аутсорсинг","52 гарантовано"]
+ ],
+ stages:[
+ "BUILD: вибираємо власну доставку або аутсорсинг. За власної доставки можливі два випадкові результати.",
+ "LABEL: 70% без затримки, 30% із затримкою. Витрати 40, 90 або гарантовані 52.",
+ "CALCULATE: очікувані витрати власної доставки = 0,7×40+0,3×90=55.",
+ "ROLLBACK: у задачі витрат вибираємо MIN. 52 менше за 55, тому обираємо аутсорсинг."
+ ],
+ tree:{
+ type:"d",name:"Доставка?",
+ edges:[
+ {name:"Власна",to:{type:"c",name:"Затримка?",edges:[
+ {name:"Немає",p:.7,to:{type:"t",name:"Витрати",v:40}},
+ {name:"Є",p:.3,to:{type:"t",name:"Витрати",v:90}}
+ ]}},
+ {name:"Аутсорсинг",to:{type:"t",name:"Витрати",v:52}}
+ ]}
+}
+];
+
+const detailedLessons = [
+  {
+    "statement": [
+      "Компанія розглядає запуск нового продукту. Запуск потребує одноразових витрат 20 тис. $. Якщо продукт запущено, попит може бути високим (імовірність 60%) або низьким (40%).",
+      "За високого попиту виручка становитиме 80 тис. $, за низького — 30 тис. $. Якщо компанія відмовиться від запуску, її результат дорівнюватиме нулю.",
+      "Завдання: побудувати дерево, обчислити очікуваний чистий результат запуску й обрати кращу альтернативу. Усі суми в задачі — тис. $."
+    ],
+    "steps": [
+      [
+        "Визначаємо рішення",
+        "Початковий квадрат має дві гілки: «Запуск» та «Не запускати». Лише після запуску виникає випадковий попит."
+      ],
+      [
+        "Розраховуємо очікувану виручку",
+        "0,60 × 80 + 0,40 × 30 = 48 + 12 = 60 тис. $. Це значення chance node «Попит»."
+      ],
+      [
+        "Віднімаємо одноразові витрати",
+        "60 − 20 = 40 тис. $. Вартість запуску стоїть на гілці запуску й віднімається один раз."
+      ],
+      [
+        "Порівнюємо альтернативи",
+        "Запуск: 40 тис. $. Відмова: 0. У квадраті вибираємо максимум: max(40; 0) = 40."
+      ]
+    ],
+    "conclusion": "Запускати продукт: очікуваний чистий прибуток 40 тис. $."
+  },
+  {
+    "statement": [
+      "Фабрика обирає обсяг виробництва: «Багато» або «Мало». Після цього фактичний попит може бути високим (60%) або низьким (40%).",
+      "За великого виробництва прибуток становить 100 тис. £ при високому попиті та 20 тис. £ при низькому. За малого виробництва — 50 тис. £ при високому попиті та 60 тис. £ при низькому.",
+      "Завдання: побудувати два chance nodes, розрахувати очікуваний прибуток для кожної виробничої стратегії та обрати оптимальну. Усі суми — тис. £."
+    ],
+    "steps": [
+      [
+        "Початкове рішення",
+        "З одного квадрата виходять гілки «Багато» та «Мало». На кожній — власне коло «Попит»."
+      ],
+      [
+        "Велике виробництво",
+        "EV(багато) = 0,60 × 100 + 0,40 × 20 = 60 + 8 = 68 тис. £."
+      ],
+      [
+        "Мале виробництво",
+        "EV(мало) = 0,60 × 50 + 0,40 × 60 = 30 + 24 = 54 тис. £."
+      ],
+      [
+        "Rollback до першого квадрата",
+        "max(68; 54) = 68. Різниця між стратегіями — 14 тис. £."
+      ]
+    ],
+    "conclusion": "Обрати велике виробництво: очікуваний прибуток 68 тис. £."
+  },
+  {
+    "statement": [
+      "Університет вирішує, чи рекламувати навчальну програму. Вартість реклами — 15 тис. $. Економіка може бути поганою (60%) або хорошою (40%).",
+      "Якщо рекламу запущено, за поганої економіки вона спрацює з імовірністю 65% (50 студентів, прибуток 165 тис. $); без ефекту — 35% (40 студентів, прибуток 115 тис. $). За хорошої економіки реклама спрацює з імовірністю 25% (25 студентів, прибуток 40 тис. $); без ефекту — 75% (20 студентів, прибуток 15 тис. $).",
+      "Без реклами за поганої економіки очікується 40 студентів і прибуток 115 тис. $, за хорошої — 20 студентів і прибуток 15 тис. $. Указані прибутки до вирахування 15 тис. $ рекламних витрат.",
+      "Завдання: послідовно обчислити ефект реклами в кожному стані економіки, знайти EV реклами та відмови, а потім обрати стратегію. Суми — тис. $."
+    ],
+    "steps": [
+      [
+        "Гілка реклами: погана економіка",
+        "0,65 × 165 + 0,35 × 115 = 107,25 + 40,25 = 147,50 тис. $."
+      ],
+      [
+        "Гілка реклами: хороша економіка",
+        "0,25 × 40 + 0,75 × 15 = 10 + 11,25 = 21,25 тис. $."
+      ],
+      [
+        "Ураховуємо стан економіки",
+        "EV до витрат реклами = 0,60 × 147,50 + 0,40 × 21,25 = 88,50 + 8,50 = 97 тис. $."
+      ],
+      [
+        "Віднімаємо рекламу",
+        "EV з рекламою = 97 − 15 = 82 тис. $."
+      ],
+      [
+        "Альтернатива без реклами",
+        "EV без реклами = 0,60 × 115 + 0,40 × 15 = 69 + 6 = 75 тис. $."
+      ],
+      [
+        "Порівнюємо",
+        "max(82; 75) = 82. Реклама збільшує очікуваний прибуток на 7 тис. $."
+      ]
+    ],
+    "conclusion": "Рекламувати програму: EV 82 тис. $ проти 75 тис. $ без реклами."
+  },
+  {
+    "statement": [
+      "Компанія може купити маркетингове дослідження за 6 тис. $. Дослідження дає хороший прогноз з імовірністю 50% або поганий прогноз з імовірністю 50%. Після прогнозу компанія може запускати продукт або відмовитися.",
+      "За хорошого прогнозу ймовірність високого попиту 80%, низького — 20%. За поганого прогнозу високий попит має ймовірність 20%, низький — 80%.",
+      "Якщо продукт запущено, прибуток при високому попиті становить 90 тис. $, а при низькому виникає збиток 30 тис. $. Відмова від запуску дає 0. Без дослідження ймовірності високого й низького попиту — по 50%.",
+      "Завдання: обчислити найкращі рішення після кожного прогнозу, EV стратегії з дослідженням і без нього, а також EVSI. Суми — тис. $."
+    ],
+    "steps": [
+      [
+        "Після хорошого прогнозу",
+        "EV запуску = 0,80 × 90 + 0,20 × (−30) = 72 − 6 = 66. Порівнюємо з відмовою 0 → запускати."
+      ],
+      [
+        "Після поганого прогнозу",
+        "EV запуску = 0,20 × 90 + 0,80 × (−30) = 18 − 24 = −6. Порівнюємо з 0 → не запускати."
+      ],
+      [
+        "Значення прогнозу до вартості дослідження",
+        "EV із використанням прогнозів = 0,50 × 66 + 0,50 × 0 = 33 тис. $."
+      ],
+      [
+        "Вартість дослідження",
+        "Чистий EV із дослідженням = 33 − 6 = 27 тис. $."
+      ],
+      [
+        "Без дослідження",
+        "EV запуску = 0,50 × 90 + 0,50 × (−30) = 45 − 15 = 30; відмова = 0. Обираємо запуск з EV 30."
+      ],
+      [
+        "Обчислюємо EVSI",
+        "EVSI = 33 − 30 = 3 тис. $. Дослідження коштує 6 тис. $, тому чиста цінність інформації = 3 − 6 = −3 тис. $."
+      ],
+      [
+        "Фінальний rollback",
+        "Без дослідження 30 > із дослідженням 27. Отже, купувати інформацію невигідно."
+      ]
+    ],
+    "conclusion": "Не купувати дослідження; запускати продукт без нього. Оптимальний EV — 30 тис. $."
+  },
+  {
+    "statement": [
+      "Компанія має два варіанти доставки: власна служба або аутсорсинг. Це задача не на максимізацію прибутку, а на мінімізацію очікуваних витрат.",
+      "Власна доставка коштуватиме 40 тис. $, якщо затримки немає (ймовірність 70%). За затримки (30%) загальні витрати становитимуть 90 тис. $.",
+      "Аутсорсинг має гарантовану вартість 52 тис. $. Потрібно побудувати дерево, обчислити очікувані витрати власної доставки й вибрати дешевший варіант."
+    ],
+    "steps": [
+      [
+        "Розпізнаємо тип задачі",
+        "Ціль — MIN, тому в початковому квадраті обираємо найменші очікувані витрати, а не найбільший прибуток."
+      ],
+      [
+        "Власна доставка: chance node",
+        "EV(cost) = 0,70 × 40 + 0,30 × 90 = 28 + 27 = 55 тис. $."
+      ],
+      [
+        "Аутсорсинг",
+        "Витрати визначені наперед: 52 тис. $. Немає потреби в chance node."
+      ],
+      [
+        "Rollback",
+        "min(55; 52) = 52. Аутсорсинг дешевший за очікуваною вартістю на 3 тис. $."
+      ]
+    ],
+    "conclusion": "Обрати аутсорсинг: очікувані витрати 52 тис. $ замість 55 тис. $."
+  }
+];
+
+function renderDetailedLesson(index){
+ const d=detailedLessons[index];
+ const statement=document.getElementById("detailedStatement");
+ const solution=document.getElementById("fullDetailedSolution");
+ statement.replaceChildren();solution.replaceChildren();
+ const intro=document.createElement("div");
+ intro.className="lesson-hero";
+ intro.innerHTML="<h3>Повна умова задачі</h3><p>Прочитайте дані, визначте рішення, випадкові події та одиниці виміру.</p>";
+ statement.appendChild(intro);
+ d.statement.forEach((paragraph,i)=>{
+  const el=document.createElement("div");
+  el.className="lesson-step";
+  const h=document.createElement("h4");
+  h.textContent="Частина "+(i+1);
+  const p=document.createElement("p");p.textContent=paragraph;
+  el.append(h,p);statement.appendChild(el);
+ });
+ const sub=document.createElement("p");
+ sub.innerHTML="<b>Алгоритм:</b> прочитайте умову → побудуйте дерево → виконайте rollback → перевірте відповідь.";
+ statement.appendChild(sub);
+ d.steps.forEach((step,i)=>{
+  const el=document.createElement("div");
+  el.className="lesson-step";
+  const h=document.createElement("h4");
+  h.textContent="Крок "+(i+1)+". "+step[0];
+  const p=document.createElement("p");p.textContent=step[1];
+  el.append(h,p);solution.appendChild(el);
+ });
+ const conclusion=document.createElement("div");
+ conclusion.className="final-choice";
+ conclusion.textContent="✓ Підсумкова рекомендація: "+d.conclusion;
+ solution.appendChild(conclusion);
+ const caveat=document.createElement("div");
+ caveat.className="warning-note";
+ caveat.textContent="Екзаменаційна порада: обґрунтовуйте вибір числом; не змішуйте тисячі й повні грошові одиниці та не віднімайте одноразові витрати двічі.";
+ solution.appendChild(caveat);
+}
+
+const deepExplanations=["<p>Компанія планує випуск нового продукту. Для старту потрібні одноразові витрати <b>20 тис. $</b>. Після запуску попит може бути високим (60%, виручка 80 тис. $) або низьким (40%, виручка 30 тис. $). Відмова від запуску дає нульовий результат.</p><table><tr><th>Подія</th><th>Імовірність</th><th>Виручка</th><th>Внесок у EV</th></tr><tr><td>Високий попит</td><td>0,6</td><td>80</td><td>48</td></tr><tr><td>Низький попит</td><td>0,4</td><td>30</td><td>12</td></tr></table><div class=\"explain-steps\"><div class=\"explain-step\">Розраховуємо очікувану виручку: <b>0,6 × 80 + 0,4 × 30 = 60</b>.</div><div class=\"explain-step\">Віднімаємо одноразову вартість запуску: <b>60 − 20 = 40</b> тис. $.</div><div class=\"explain-step\">Порівнюємо: запуск = 40, відмова = 0. Вибираємо <b>запуск</b>.</div></div><div class=\"note good\">Висновок: максимальний очікуваний прибуток — <b>40 тис. $</b>. Число 60 — це очікувана виручка <em>до</em> витрат, а не кінцевий прибуток.</div>", "<p>Фабрика вибирає обсяг виробництва: великий або малий. Високий попит можливий з імовірністю 60%, низький — 40%. Усі результати — прибуток у тис. £.</p><table><tr><th>Обсяг</th><th>Високий попит (0,6)</th><th>Низький (0,4)</th></tr><tr><td>Багато</td><td>100</td><td>20</td></tr><tr><td>Мало</td><td>50</td><td>60</td></tr></table><div class=\"explain-steps\"><div class=\"explain-step\">Великий обсяг: <b>0,6 × 100 + 0,4 × 20 = 60 + 8 = 68</b>.</div><div class=\"explain-step\">Малий обсяг: <b>0,6 × 50 + 0,4 × 60 = 30 + 24 = 54</b>.</div><div class=\"explain-step\">Оскільки мета — максимальний прибуток, порівнюємо 68 і 54 та вибираємо <b>великий обсяг</b>.</div></div><div class=\"note good\">Висновок: великий обсяг забезпечує EV <b>68 тис. £</b>, на 14 тис. £ більше, ніж малий.</div>", "<p>Університет вирішує, чи рекламувати навчальну програму. Реклама коштує <b>15 тис. $</b>. Стан економіки може бути поганим (60%) або хорошим (40%). Ефективність реклами залежить від стану економіки. Усі грошові результати нижче — тис. $ <b>до витрат на рекламу</b>.</p><table><tr><th>Економіка</th><th>Ефект реклами</th><th>Імовірність ефекту</th><th>Прибуток</th></tr><tr><td>Погана (0,6)</td><td>Спрацює: 50 студентів</td><td>0,65</td><td>165</td></tr><tr><td>Погана (0,6)</td><td>Не спрацює: 40 студентів</td><td>0,35</td><td>115</td></tr><tr><td>Хороша (0,4)</td><td>Спрацює: 25 студентів</td><td>0,25</td><td>40</td></tr><tr><td>Хороша (0,4)</td><td>Не спрацює: 20 студентів</td><td>0,75</td><td>15</td></tr></table><div class=\"explain-steps\"><div class=\"explain-step\"><b>За поганої економіки:</b> 0,65 × 165 + 0,35 × 115 = 107,25 + 40,25 = <b>147,5</b>.</div><div class=\"explain-step\"><b>За хорошої економіки:</b> 0,25 × 40 + 0,75 × 15 = 10 + 11,25 = <b>21,25</b>.</div><div class=\"explain-step\"><b>Зважуємо за станом економіки:</b> 0,6 × 147,5 + 0,4 × 21,25 = 88,5 + 8,5 = <b>97</b>.</div><div class=\"explain-step\"><b>Віднімаємо вартість реклами:</b> 97 − 15 = <b>82</b> тис. $.</div><div class=\"explain-step\"><b>Без реклами:</b> 0,6 × 115 + 0,4 × 15 = 69 + 6 = <b>75</b> тис. $. Реклама краща на <b>7</b>.</div></div><div class=\"note good\">Висновок: рекламувати програму. EV із рекламою після витрат = <b>82 тис. $</b>; без реклами = 75 тис. $.</div>", "<p>Компанія вирішує, чи купувати прогноз ринку за <b>6 тис. $</b>. Хороший та поганий прогнози однаково ймовірні (по 50%). Після кожного прогнозу компанія може запускати продукт або відмовитися. При високому попиті прибуток 90 тис. $, при низькому — збиток 30 тис. $.</p><table><tr><th>Сигнал</th><th>P(високий попит)</th><th>P(низький)</th><th>EV запуску</th></tr><tr><td>Хороший</td><td>0,8</td><td>0,2</td><td>66</td></tr><tr><td>Поганий</td><td>0,2</td><td>0,8</td><td>−6</td></tr><tr><td>Без прогнозу</td><td>0,5</td><td>0,5</td><td>30</td></tr></table><div class=\"explain-steps\"><div class=\"explain-step\"><b>Хороший прогноз:</b> 0,8 × 90 + 0,2 × (−30) = 72 − 6 = <b>66</b>. Запускаємо.</div><div class=\"explain-step\"><b>Поганий прогноз:</b> 0,2 × 90 + 0,8 × (−30) = 18 − 24 = <b>−6</b>. Краще не запускати, тоді результат <b>0</b>.</div><div class=\"explain-step\"><b>EV з дослідженням до витрат:</b> 0,5 × 66 + 0,5 × 0 = <b>33</b>.</div><div class=\"explain-step\"><b>EVSI:</b> 33 − 30 = <b>3</b>. Це максимальна вигода від недосконалої інформації до оплати.</div><div class=\"explain-step\"><b>Після оплати:</b> 33 − 6 = <b>27</b>. Без дослідження EV = 0,5 × 90 + 0,5 × (−30) = <b>30</b>.</div></div><div class=\"note good\">Висновок: <b>не купувати</b> дослідження. Його ціна 6 перевищує EVSI 3; чиста втрата від купівлі становить 3 тис. $.</div>", "<p>Компанія вибирає між власною доставкою та аутсорсингом. Власна доставка без затримки коштує 40 тис. $ (70%), а за затримки — 90 тис. $ (30%). Аутсорсинг коштує гарантовано 52 тис. $.</p><div class=\"compare\"><div><b>Власна доставка</b><strong>55 тис. $</strong><p>0,7 × 40 + 0,3 × 90 = 28 + 27 = 55</p></div><div><b>Аутсорсинг</b><strong>52 тис. $</strong><p>Гарантована вартість, імовірності не потрібні.</p></div></div><div class=\"explain-steps\"><div class=\"explain-step\">Для власної доставки обчислюємо очікувані витрати: <b>55</b>.</div><div class=\"explain-step\">Для аутсорсингу витрати фіксовані: <b>52</b>.</div><div class=\"explain-step\">Мета — <b>мінімізувати</b> витрати, тому обираємо менше число: <b>52</b>.</div></div><div class=\"note good\">Висновок: <b>аутсорсинг</b>. Очікувана економія порівняно з власною доставкою — 3 тис. $.</div>"];
+
+let current=0;
+let stage=0;
+const solved=new Set();
+
+function fmt(n){
+ return Number(n.toFixed(4))
+ .toLocaleString("uk-UA",{maximumFractionDigits:4});
+}
+function pct(n){
+ return fmt(n*100)+"%";
+}
+
+/* Автоматично обчислюємо значення вузлів.
+   На chance node зважуємо результати.
+   На decision node вибираємо max або min. */
+function calculate(node,goal){
+ if(node.type==="t"){
+  node.ev=node.v;
+  return node.ev;
+ }
+ node.edges.forEach(e=>{
+  e.ev=calculate(e.to,goal)+(e.cost||0);
+ });
+ if(node.type==="c"){
+  node.ev=node.edges.reduce(
+   (sum,e)=>sum+e.p*e.ev,0);
+ }else{
+  const values=node.edges.map(e=>e.ev);
+  node.ev=goal==="min"?
+   Math.min(...values):Math.max(...values);
+  node.edges.forEach(e=>{
+   e.best=Math.abs(e.ev-node.ev)<1e-8;
+  });
+ }
+ return node.ev;
+}
+
+/* Розташування вузлів.
+   Кінцеві вузли мають власні рядки.
+   Батьківський вузол стоїть посередині дітей. */
+function layout(root){
+ let leaves=0,maxDepth=0;
+ function walk(n,depth){
+  n.depth=depth;
+  maxDepth=Math.max(maxDepth,depth);
+  if(n.type==="t"){
+   n.y=70+leaves*100;
+   leaves++;
+  }else{
+   n.edges.forEach(e=>walk(e.to,depth+1));
+   n.y=(n.edges[0].to.y+
+    n.edges[n.edges.length-1].to.y)/2;
+  }
+  n.x=125+depth*250;
+ }
+ walk(root,0);
+ return {
+  width:Math.max(950,275+250*maxDepth),
+  height:Math.max(310,140+(leaves-1)*100)
+ };
+}
+
+const NS="http://www.w3.org/2000/svg";
+function svgEl(tag,attrs,text){
+ const el=document.createElementNS(NS,tag);
+ Object.entries(attrs||{}).forEach(([k,v])=>
+  el.setAttribute(k,String(v)));
+ if(text!==undefined)el.textContent=text;
+ return el;
+}
+function txt(svg,x,y,text,size=13,color="#294660",
+ weight="normal"){
+ svg.appendChild(svgEl("text",{
+  x,y,"text-anchor":"middle",
+  "font-size":size,fill:color,"font-weight":weight
+ },text));
+}
+function renderTree(){
+ const p=problems[current];
+ const root=p.tree;
+ const size=layout(root);
+ const svg=document.getElementById("treeSvg");
+ svg.replaceChildren();
+ svg.setAttribute("viewBox",
+  `0 0 ${size.width} ${size.height}`);
+
+ function edges(n){
+  if(n.type==="t")return;
+  n.edges.forEach(e=>{
+   const c=e.to;
+   const best=stage===3 &&
+    n.type==="d" && e.best;
+   svg.appendChild(svgEl("line",{
+    x1:n.x+23,y1:n.y,
+    x2:c.x-25,y2:c.y,
+    stroke:best?"#168653":"#9aacc1",
+    "stroke-width":best?5:2.5,
+    "stroke-linecap":"round"
+   }));
+   if(stage>=1){
+    const mx=(n.x+c.x)/2;
+    const my=(n.y+c.y)/2;
+    let name=e.name;
+    if(n.type==="c")name+=" "+pct(e.p);
+    if(e.cost)name+=" ("+fmt(e.cost)+")";
+    txt(svg,mx,my-12,name,11,
+     best?"#168653":"#546c85",
+     best?"bold":"normal");
+   }
+   edges(c);
+  });
+ }
+ edges(root);
+
+ function nodes(n){
+  if(n.type==="d"){
+   svg.appendChild(svgEl("rect",{
+    x:n.x-22,y:n.y-22,width:44,height:44,
+    rx:4,fill:"#dceafb",stroke:"#377bb7",
+    "stroke-width":3
+   }));
+   txt(svg,n.x,n.y+8,"□",25,"#2a6ca7");
+  }else if(n.type==="c"){
+   svg.appendChild(svgEl("circle",{
+    cx:n.x,cy:n.y,r:23,
+    fill:"#ffebc8",stroke:"#c39139",
+    "stroke-width":3
+   }));
+   txt(svg,n.x,n.y+8,"○",26,"#a97727");
+  }else{
+   svg.appendChild(svgEl("rect",{
+    x:n.x-27,y:n.y-20,
+    width:54,height:40,rx:8,
+    fill:"#e0f5e8",stroke:"#55a778",
+    "stroke-width":2
+   }));
+   txt(svg,n.x,n.y+6,"$",18,"#17734a","bold");
+  }
+  txt(svg,n.x,n.y-32,n.name,12,"#254562","bold");
+  if(n.type==="t"&&stage>=1){
+   txt(svg,n.x,n.y+39,fmt(n.v),13,
+    "#187449","bold");
+  }
+  if(n.type!=="t"&&stage>=2){
+   txt(svg,n.x,n.y+44,"EV="+fmt(n.ev),13,
+    "#215e9b","bold");
+  }
+  if(n.edges)n.edges.forEach(e=>nodes(e.to));
+ }
+ nodes(root);
+}
+
+function getWorking(tree,goal){
+ const results=[];
+ function visit(n){
+  if(n.type==="t")return;
+  n.edges.forEach(e=>visit(e.to));
+  let formula,explanation;
+  if(n.type==="c"){
+   formula=n.edges.map(e=>{
+    let item=fmt(e.to.ev);
+    if(e.cost)item+=" "+(e.cost<0?"−":"+")+
+     " "+fmt(Math.abs(e.cost));
+    return fmt(e.p)+" × ("+item+")";
+   }).join(" + ");
+   explanation="У випадковому вузлі результат "+
+    "зважується на ймовірності.";
+  }else{
+   formula=n.edges.map(e=>
+    e.name+" = "+fmt(e.ev)).join("; ");
+   explanation=goal==="min"?
+    "У квадраті мінімізуємо очікувані витрати.":
+    "У квадраті максимізуємо очікуваний прибуток.";
+  }
+  results.push({
+   name:n.name,type:n.type,formula,
+   ev:n.ev,explanation
+  });
+ }
+ visit(tree);
+ return results;
+}
+
+function workElement(w,index,unit){
+ const box=document.createElement("div");
+ box.className="work";
+ const h=document.createElement("h3");
+ h.textContent=(index+1)+". "+
+  (w.type==="c"?"○ Chance — ":"□ Decision — ")+w.name;
+ const p=document.createElement("p");
+ p.textContent=w.formula;
+ const value=document.createElement("div");
+ value.className="formula";
+ value.textContent="EV = "+fmt(w.ev)+" "+unit;
+ const note=document.createElement("p");
+ note.textContent=w.explanation;
+ box.append(h,p,value,note);
+ return box;
+}
+
+function updateWorking(){
+ const root=document.getElementById("workings");
+ root.replaceChildren();
+ if(stage<2){
+  const info=document.createElement("div");
+  info.className="note";
+  info.textContent=stage===0?
+   "Спочатку знайди квадрат, кола та кінцеві результати.":
+   "Перевір підписи: сума ймовірностей із кожного chance node має дорівнювати 100%.";
+  root.appendChild(info);
+  return;
+ }
+ const p=problems[current];
+ getWorking(p.tree,p.goal).forEach((w,i)=>{
+  root.appendChild(workElement(w,i,p.unit));
+ });
+ if(stage===3){
+  const conclusion=document.createElement("div");
+  conclusion.className="result";
+  conclusion.textContent="Оптимальне значення: "+
+   fmt(p.tree.ev)+" "+p.unit;
+  root.appendChild(conclusion);
+ }
+}
+
+function setStage(n){
+ stage=Math.max(0,Math.min(3,n));
+ for(let i=0;i<4;i++){
+  const el=document.getElementById("stage"+i);
+  el.classList.toggle("active",i===stage);
+  el.classList.toggle("done",i<stage);
+ }
+ document.getElementById("backStage").disabled=stage===0;
+ document.getElementById("forwardStage").disabled=stage===3;
+ document.getElementById("stageInfo").textContent=
+  problems[current].stages[stage];
+ renderTree();
+ updateWorking();
+}
+
+function loadProblem(i){
+ current=i;
+ renderDetailedLesson(i);
+ const p=problems[i];
+ calculate(p.tree,p.goal);
+ document.getElementById("deepSolution").innerHTML=deepExplanations[i];
+ document.getElementById("problemTitle").textContent=p.title;
+ document.getElementById("problemDescription").textContent=
+  p.description;
+ const table=document.createElement("table");
+ const head=document.createElement("tr");
+ ["Дані","Значення"].forEach(s=>{
+  const th=document.createElement("th");
+  th.textContent=s;head.appendChild(th);
+ });
+ table.appendChild(head);
+ p.data.forEach(([a,b])=>{
+  const tr=document.createElement("tr");
+  [a,b].forEach(s=>{
+   const td=document.createElement("td");
+   td.textContent=s;tr.appendChild(td);
+  });
+  table.appendChild(tr);
+ });
+ document.getElementById("problemData").replaceChildren(table);
+ document.getElementById("answerQuestion").textContent=
+  p.question+" Введіть лише числове значення у "+p.unit+
+  " (наприклад, 40 означає 40 000).";
+ document.getElementById("answerContext").textContent=[
+  "Запуск: 60% → виручка 80; 40% → виручка 30; запуск коштує 20. Порівняйте очікуваний прибуток із відмовою (0).",
+  "Порівняйте EMV великого і малого обсягу виробництва. Для кожного використайте ймовірності 0,6 і 0,4.",
+  "Врахуйте ймовірності стану економіки та ефективності реклами, відніміть 15 і порівняйте з варіантом без реклами.",
+  "Після хорошого й поганого прогнозу спочатку виберіть кращу дію, потім відніміть вартість дослідження 6 і порівняйте з відмовою від нього.",
+  "Це задача на мінімізацію: порівняйте очікувані витрати власної доставки з гарантованою вартістю аутсорсингу."
+ ][i];
+ document.getElementById("answerInput").value="";
+ document.getElementById("answerFeedback").style.display="none";
+ document.getElementById("solutionDetails").open=false;
+
+ const solution=document.getElementById("solution");
+ solution.replaceChildren();
+ getWorking(p.tree,p.goal).forEach((w,j)=>{
+  solution.appendChild(workElement(w,j,p.unit));
+ });
+ const final=document.createElement("div");
+ final.className="result";
+ final.textContent="Відповідь: "+fmt(p.tree.ev)+" "+p.unit;
+ solution.appendChild(final);
+ setStage(0);
+ refreshNav();
+}
+
+function refreshNav(){
+ [...document.getElementById("taskNav").children]
+ .forEach((b,i)=>{
+  b.classList.toggle("active",i===current);
+  b.textContent=problems[i].menu+
+   (solved.has(i)?" ✅":"");
+ });
+ document.getElementById("progressText").textContent=
+  "Розв'язано: "+solved.size+" із "+problems.length;
+ document.getElementById("progressBar").style.width=
+  (solved.size/problems.length*100)+"%";
+}
+
+function checkAnswer(){
+ const raw=document.getElementById("answerInput").value;
+ const fb=document.getElementById("answerFeedback");
+ fb.style.display="block";
+ if(raw===""){
+  fb.textContent="Спочатку введіть відповідь.";
+  return;
+ }
+ const p=problems[current];
+ const good=Math.abs(Number(raw)-p.tree.ev)<.001;
+ if(good){
+  solved.add(current);
+  fb.textContent="✅ Правильно! "+
+   fmt(p.tree.ev)+" "+p.unit+
+   ". Відкрийте повне розв'язання для повторення.";
+ }else{
+  fb.textContent="❌ Відповідь не збігається. "+
+   "Почніть справа: у колах обчислюйте EV, "+
+   "у квадратах вибирайте MAX або MIN.";
+ }
+ refreshNav();
+}
+
+/* ТЕСТ */
+const quiz=[
+{
+ q:"Що означає квадрат у дереві рішень?",
+ a:["Випадкову подію","Точку рішення",
+ "Прибуток"],c:1,
+ e:"У квадраті менеджер вибирає альтернативу."
+},
+{
+ q:"Що означає коло?",
+ a:["Chance node","Decision node",
+ "Результат"],c:0,
+ e:"Коло показує випадкову подію."
+},
+{
+ q:"У якому напрямку виконуємо rollback?",
+ a:["Зліва направо","Справа наліво",
+ "Знизу вгору"],c:1,
+ e:"Спочатку обчислюємо кінцеві вузли."
+},
+{
+ q:"За високого попиту (60%) виручка становить 80 тис. $, за низького (40%) — 30 тис. $. Яка очікувана виручка ДО витрат на запуск?",
+ a:["60","40","80"],c:0,
+ e:"48+12=60."
+},
+{
+ q:"Компанія очікує виручку 60 тис. $, а одноразовий запуск коштує 20 тис. $. Який EV прибутку після витрат?",
+ a:["80","40","60"],c:1,
+ e:"Спочатку очікувана виручка: 0,6×80 + 0,4×30 = 60 тис. $. Після одноразової вартості запуску: 60−20=40 тис. $."
+},
+{
+ q:"Університет: EV до вартості реклами = 97 тис. $, реклама коштує 15 тис. $. Який EV після витрат?",
+ a:["75","82","132,5"],c:1,
+ e:"За поганої економіки EV=147,5; за хорошої EV=21,25. Разом: 0,6×147,5 + 0,4×21,25 = 97. Віднімаємо рекламу 15: EV=82 тис. $."
+},
+{
+ q:"Після врахування вартості дослідження очікуваний прибуток становить 27 тис. $, а без дослідження — 30 тис. $. Чи доцільно купувати дослідження?",
+ a:["Так","Ні","Однаково"],c:1,
+ e:"30 більше за 27."
+},
+{
+ q:"Власна доставка: очікувані витрати 55 тис. $. Аутсорсинг: гарантовані 52 тис. $. Який варіант мінімізує витрати?",
+ a:["Власна доставка — 55 тис. $","Аутсорсинг — 52 тис. $","Доставка із затримкою — 90 тис. $"],c:1,
+ e:"Це задача мінімізації витрат (MIN): власна доставка = 0,7×40 + 0,3×90 = 55; аутсорсинг = 52. Обираємо 52 тис. $."
+}
+];
+
+function buildQuiz(){
+ const root=document.getElementById("quiz");
+ root.replaceChildren();
+ quiz.forEach((q,i)=>{
+  const box=document.createElement("div");
+  box.className="work";
+  const h=document.createElement("h3");
+  h.textContent=(i+1)+". "+q.q;
+  box.appendChild(h);
+  q.a.forEach((a,j)=>{
+   const label=document.createElement("label");
+   label.className="quiz-option";
+   const input=document.createElement("input");
+   input.type="radio";input.name="q"+i;input.value=j;
+   label.append(input,document.createTextNode(a));
+   box.appendChild(label);
+  });
+  const detail=document.createElement("div");
+  detail.className="feedback";
+  detail.id="qFeedback"+i;
+  box.appendChild(detail);
+  root.appendChild(box);
+ });
+}
+
+function gradeQuiz(){
+ let score=0,missing=0;
+ quiz.forEach((q,i)=>{
+  const selected=document.querySelector(
+   'input[name="q'+i+'"]:checked');
+  if(!selected){missing++;return}
+  const correct=Number(selected.value)===q.c;
+  if(correct)score++;
+  const detail=document.getElementById("qFeedback"+i);
+  detail.style.display="block";
+  detail.textContent=(correct?"✅ Правильно. ":
+   "❌ Правильна відповідь: "+q.a[q.c]+". ")+q.e;
+ });
+ const fb=document.getElementById("quizFeedback");
+ fb.style.display="block";
+ fb.textContent=missing?
+  "Дайте відповіді на всі питання. Залишилося: "+missing:
+  "Результат: "+score+" із "+quiz.length+". "+
+  (score===quiz.length?"Відмінно!":
+   "Повторіть помилки та спробуйте ще.");
+}
+
+function resetQuiz(){
+ buildQuiz();
+ document.getElementById("quizFeedback").style.display="none";
+}
+
+/* ІНІЦІАЛІЗАЦІЯ */
+const nav=document.getElementById("taskNav");
+problems.forEach((p,i)=>{
+ const btn=document.createElement("button");
+ btn.textContent=p.menu;
+ btn.onclick=()=>{
+  loadProblem(i);
+  document.getElementById("problemSection")
+  .scrollIntoView({behavior:"smooth"});
+ };
+ nav.appendChild(btn);
+});
+buildQuiz();
+loadProblem(0);
+</script>
+</body>
+</html>
