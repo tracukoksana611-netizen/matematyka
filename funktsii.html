@@ -1,0 +1,243 @@
+<!doctype html><html lang="uk"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Функції · інтерактивний урок</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']]}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
+<style>
+:root{color-scheme:light;--ink:#222042;--muted:#595477;--violet:#5935b5;--line:#e7dff7}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#eee2ff,transparent 42rem),#faf7ff;color:var(--ink);font:17px/1.65 system-ui,sans-serif}
+header,main,nav{width:min(940px,calc(100% - 32px));margin-inline:auto}
+header{margin-top:28px;padding:clamp(24px,6vw,64px);border-radius:30px;background:linear-gradient(120deg,#25184f,#5632a0 65%,#6741b2);color:#fff;box-shadow:0 18px 42px #3b237632}
+header small{color:#f2ddff;font-weight:700}h1{font-size:clamp(2.1rem,6vw,4rem);line-height:1.05;letter-spacing:-.055em;margin:18px 0}header p{max-width:34rem;color:#f4ecff}
+nav{display:flex;gap:10px;flex-wrap:wrap;margin-block:20px}nav a{color:#4b299b;background:white;border:1px solid var(--line);padding:6px 14px;border-radius:999px;text-decoration:none;font-weight:700}
+section{background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(18px,4vw,34px);margin:16px 0;box-shadow:0 6px 24px #42258a0c;scroll-margin-top:16px}
+h2{font-size:clamp(1.3rem,3.5vw,1.8rem);line-height:1.2;margin:0 0 16px;letter-spacing:-.024em}p{margin:0 0 12px}p:last-child{margin-bottom:0}
+section:first-child p:nth-of-type(2){background:#f2ebff;border-left:4px solid #9163e6;padding:14px 16px;border-radius:0 12px 12px 0}
+button,input,select{font:inherit;padding:8px 13px;border-radius:11px;border:1px solid #b4a4d2}button{background:var(--violet);color:white;font-weight:650;cursor:pointer;margin-block:4px}button:hover{background:#462594}#hint,#solution,#next{background:#f1e9ff;color:#482691}input[type=text]{width:115px}input[type=range]{accent-color:var(--violet);vertical-align:middle}form{margin:12px 0}:focus-visible{outline:3px solid #9464e6;outline-offset:3px}
+output{display:block;color:#412581;font-weight:650;margin-top:8px}output:empty{display:none}output:not(:empty){background:#f5efff;border-radius:10px;padding:8px 12px}
+details{background:#f8f3ff;padding:10px 14px;border-radius:12px;margin:12px 0}summary{cursor:pointer;font-weight:700;color:#4b299b}
+canvas{display:block;width:min(100%,520px);height:auto;margin-top:12px;border:1px solid var(--line);border-radius:16px;background:repeating-linear-gradient(0deg,transparent 0 22px,#ece3fa 22px 23px),repeating-linear-gradient(90deg,#faf6ff 0 22px,#ece3fa 22px 23px)}
+@media print{nav,button,input,select,output,canvas{display:none}header,main{width:100%}header{background:white;color:black;box-shadow:none;padding:0}header p,header small{color:black}section{box-shadow:none;break-inside:avoid}}
+#diagnostic fieldset{border:1px solid var(--line);border-radius:14px;margin:14px 0;padding:16px}#diagnostic legend{font-weight:750;color:var(--violet)}#diagnostic label{display:block;margin:8px 0}#diagnostic input,#diagnostic select{margin-left:8px}#progress{color:var(--muted)}.math-option{display:block} mjx-container{max-width:100%}
+
+#assessment h2{font-size:clamp(1.65rem,4vw,2.1rem)}
+#quiz{font-size:clamp(1.2rem,3vw,1.5rem);line-height:1.65}
+#quiz p{padding:14px 16px;border:1px solid var(--line);border-radius:14px;margin-bottom:12px}
+#quiz input,#quiz select{margin:8px 0 0;display:block;max-width:100%}
+#explanation li{margin-bottom:1rem}
+
+body{font-size:clamp(19px,2.65vw,23px)} h2{font-size:clamp(1.6rem,4vw,2.25rem)} header small{font-size:1rem} #quiz{font-size:inherit} input[type=text]{width:145px} mjx-container{overflow-x:auto;vertical-align:middle}
+#explanation ol{list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+#explanation li{margin:0;padding:20px;border:1px solid var(--line);border-radius:18px;background:#faf6ff}
+#explanation li>b{display:block;color:#4b299b;margin-bottom:8px}
+figure{margin:14px 0 0}figure svg{width:100%;height:auto;display:block;background:white;border-radius:12px}figcaption{font-size:1rem;color:var(--muted);margin-top:7px}
+@media(max-width:730px){#explanation ol{grid-template-columns:1fr}} @media print{body{font-size:12pt}#explanation ol{display:block}#explanation li{break-inside:avoid;margin-bottom:12px}}
+</style>
+<header><small>Математика · перше заняття · 45–50 хв</small><h1>Функції та їхні властивості</h1><p>Підставляю число, перевіряю точку, знаходжу нулі й область визначення.</p></header>
+<nav aria-label="Розділи уроку"><a href="#theory">Теорія</a><a href="#training">Тренажер</a><a href="#assessment">Самостійна</a><a href="#diagnostic">Діагностика 9 класу</a><a href="#homework">Домашня робота</a></nav>
+<main>
+<section id="theory"><h2>1. Підстав число</h2><p>Функція задає кожному дозволеному значенню <i>x</i> рівно одне значення <i>y</i>. Запис <i>f</i>(−2) означає «підстав −2 замість <i>x</i>».</p><p>Якщо <i>f</i>(<i>x</i>) = <i>x</i>² − 2<i>x</i>, то <i>f</i>(−2) = (−2)² − 2·(−2) = 4 + 4 = <b>8</b>.</p><p>Зверни увагу: (−2)² = 4, а −2² = −4. Скопіюй від’ємне число в дужках.</p></section>
+<section><h2>2. Перевір точку на графіку</h2><p>Точка (<i>a</i>; <i>b</i>) належить графіку, якщо <i>a</i> дозволене й <i>f</i>(<i>a</i>) = <i>b</i>. Наприклад, для <i>y</i> = 3<i>x</i> + 5 і точки (−1; 2) маємо 3·(−1) + 5 = 2. Точка належить графіку.</p><label>Пересунь точку на графіку <i>y</i> = <i>x</i>² <input id="slider" type="range" min="-3" max="3" step="1" value="-2"></label><output id="position"></output><canvas id="graph" width="360" height="230" aria-label="Графік функції і вибрана точка"></canvas></section>
+<section><h2>3. Нулі й область визначення</h2><p><b>Нулі функції</b> — значення <i>x</i>, для яких <i>f</i>(<i>x</i>) = 0. Наприклад, 9<i>x</i> − <i>x</i>² = <i>x</i>(9 − <i>x</i>). Добуток дорівнює нулю, коли <i>x</i> = 0 або <i>x</i> = 9.</p><p><b>Область визначення</b> — усі дозволені <i>x</i>. Під квадратним коренем вираз має бути ≥ 0. Якщо цей корінь стоїть у знаменнику, вираз під ним має бути > 0. Тому для <i>x</i>/√(<i>x</i> − 2) маємо <i>x</i> &gt; 2, тобто (2; +∞).</p><details><summary>Додатково · парність</summary><p>Для парної функції <i>f</i>(−<i>x</i>) = <i>f</i>(<i>x</i>). Якщо праворуч від осі <i>Oy</i> дано <i>y</i> = <i>x</i>² − 4<i>x</i>, віддзеркаль цю частину відносно осі <i>Oy</i>. Отримаєш <i>y</i> = <i>x</i>² − 4|<i>x</i>|.</p></details></section>
+<section id="explanation">
+<h2>Як розв’язувати завдання про функції</h2>
+<ol>
+<li><b>Значення функції.</b> Запис \(f(a)\) означає «підстав \(a\) замість кожного \(x\)». Від’ємне число бери в дужки. Наприклад, якщо \(f(x)=x^2-3x\), то \(f(-2)=(-2)^2-3(-2)=4+6=10\).<figure><svg viewBox="0 0 340 130" role="img" aria-label="Підстановка дає одне значення функції." text-anchor="middle" font-size="18" fill="#292042" stroke="#655289" stroke-width="1.2" style="overflow:hidden"><rect x="12" y="39" width="81" height="48" rx="12" fill="#ebe0ff"/><rect x="113" y="39" width="122" height="48" rx="12" fill="#ebe0ff"/><rect x="257" y="39" width="70" height="48" rx="12" fill="#dff4ed"/><text stroke="none" x="52" y="70">−2</text><text stroke="none" x="174" y="70">f(x)</text><text stroke="none" x="292" y="70">10</text><path d="M94 63h17m-5-5 5 5-5 5m130-5h19m-5-5 5 5-5 5"/></svg><figcaption>Підстановка дає одне значення функції.</figcaption></figure></li>
+<li><b>Нуль функції.</b> Тут шукаємо \(x\), за якого значення функції дорівнює нулю. Для \(f(x)=x^2+5x\) записуємо \(x^2+5x=0\), виносимо \(x\) за дужки й дістаємо \(x(x+5)=0\). Розв’язки \(0\) та \(-5\). Ненульовий нуль — \(-5\).<figure><svg viewBox="0 0 340 130" role="img" aria-label="Нулі видно там, де графік перетинає вісь x." text-anchor="middle" font-size="18" fill="#292042" stroke="#655289" stroke-width="1.2" style="overflow:hidden"><path d="M20 52h297m-12-6 12 6-12 6M232 10v106"/><path d="M38 15Q149 183 260 15" fill="none" stroke="#7c4cce" stroke-width="4"/><circle cx="67" cy="52" r="6" fill="#7c4cce"/><circle cx="231" cy="52" r="6" fill="#7c4cce"/><text stroke="none" x="66" y="39">−5</text><text stroke="none" x="245" y="45">0</text><text stroke="none" x="317" y="78">x</text></svg><figcaption>Нулі видно там, де графік перетинає вісь x.</figcaption></figure></li>
+<li><b>Точка на графіку.</b> У точці \(M(a;b)\) перше число підставляємо замість \(x\), а з другим порівнюємо результат. Для \(y=5-x^2\) і точки \(M(2;1)\) маємо \(5-2^2=1\). Значення збігаються, отже точка належить графіку.<figure><svg viewBox="0 0 340 130" role="img" aria-label="Штрихові лінії показують координати точки M(2; 1)." text-anchor="middle" font-size="18" fill="#292042" stroke="#655289" stroke-width="1.2" style="overflow:hidden"><path d="M25 89h290M145 12v108"/><path d="M55 112Q145 -80 235 112" fill="none" stroke="#7c4cce" stroke-width="4"/><path d="M145 68h61v21" fill="none" stroke-dasharray="4 4"/><circle cx="206" cy="68" r="6" fill="#7c4cce"/><text stroke="none" x="252" y="65">M(2; 1)</text><text stroke="none" x="205" y="111">2</text><text stroke="none" x="130" y="73">1</text></svg><figcaption>Штрихові лінії показують координати точки M(2; 1).</figcaption></figure></li>
+<li><b>Область визначення.</b> Спочатку визнач, які дії обмежують \(x\). У виразі \(\sqrt{x-4}\) дозволено \(x-4\ge 0\), зокрема \(x=4\). У виразі \(\frac{1}{\sqrt{x-4}}\) значення \(x=4\) дало б нуль у знаменнику. Тому потрібно \(x-4>0\), а область визначення — \((4;+\infty)\).<figure><svg viewBox="0 0 340 130" role="img" aria-label="Заповнена точка включає 4, порожня його виключає." text-anchor="middle" font-size="18" fill="#292042" stroke="#655289" stroke-width="1.2" style="overflow:hidden"><path d="M95 44h220M95 88h220"/><path d="M155 44h151m-8-6 8 6-8 6M155 88h151m-8-6 8 6-8 6" fill="none" stroke="#7c4cce" stroke-width="4"/><circle cx="155" cy="44" r="6" fill="#7c4cce"/><circle cx="155" cy="88" r="6" fill="white" stroke="#7c4cce" stroke-width="3"/><text stroke="none" x="49" y="50">x ≥ 4</text><text stroke="none" x="49" y="94">x &gt; 4</text><text stroke="none" x="155" y="115">4</text></svg><figcaption>Заповнена точка включає 4, порожня його виключає.</figcaption></figure></li>
+</ol>
+</section>
+<section id="training"><h2>4. Тренажер A / B / C</h2><label>Рівень <select id="level"><option>A</option><option>B</option><option>C</option></select></label><p id="progress"></p><p id="prompt"></p><form id="practice"><label>Відповідь <input id="answer" type="text" required autocomplete="off"></label> <button>Перевірити</button></form><button id="hint">Підказка</button> <button id="solution">Показати розв’язання</button> <button id="next">Наступне</button><output id="feedback" aria-live="polite"></output></section>
+<section><h2>5. Знайди помилку</h2><p>Учень записав (−3)² = −9. Який рядок виправляє помилку?</p><button data-error="0">−3 − 3 = −6</button> <button data-error="1">(−3)·(−3) = 9</button><output id="error" aria-live="polite"></output></section>
+<section id="assessment"><h2>6. Самостійна робота</h2><form id="quiz">
+<p><label>1. Якщо \(f(x)=x^2+2x\), знайди \(f(-1)\). <input type="text" required></label></p>
+<p><label>2. Знайди ненульовий нуль функції \(f(x)=x^2+4x\). <input type="text" required></label></p>
+<p><label>3. Чи належить точка \((1;2)\) графіку \(y=3-x^2\)? <select required><option value="">Обери</option><option>так</option><option>ні</option></select></label></p>
+<p><label>4. Знайди область визначення \(f(x)=\frac{1}{\sqrt{x-3}}\). <select required><option value="">Обери</option><option>[3; +∞)</option><option>(3; +∞)</option><option>ℝ</option></select></label></p>
+<button>Перевірити тест</button></form><output id="result" aria-live="polite"></output></section>
+<section id="diagnostic"><h2>Діагностика за темами 9 класу</h2><p>18 завдань. Можна залишити відповідь порожньою або вибрати «Пропустити». За результатом побачиш теми для повторення.</p><form id="diagnostic-form"><div id="diagnostic-items"></div><button>Показати результат</button></form><div id="diagnostic-result" aria-live="polite"></div></section><section id="homework"><h2>Домашня робота</h2><ol><li>Знайди значення x² − 3x при x = −2.</li><li>Знайди нулі функції x² − 6x.</li><li>Чи належить точка (−2; 0) графіку y = x² + 4?</li></ol><details><summary>Ключ для вчителя</summary><p>1. 10. 2. 0 і 6. 3. Ні, бо при x = −2 отримуємо 8.</p></details><button id="print">Друк</button></section>
+</main>
+<script>
+const get = id => document.getElementById(id);
+const exercises = {
+ A: [['f(x) = 2x − 1. Знайди f(−2).','-5','Запиши 2·(−2) − 1.','2·(−2) − 1 = −4 − 1 = −5.'],['f(x) = x² + 4. Знайди f(−2).','8','Піднеси до квадрата число в дужках.','(−2)² + 4 = 8.']],
+ B: [['Знайди ненульовий нуль функції x² + 4x.','-4','Винеси x за дужки.','x(x + 4) = 0, тому x = 0 або x = −4.'],['Знайди ненульовий нуль функції 9x − x².','9','Винеси x за дужки.','x(9 − x) = 0, тому x = 0 або x = 9.']],
+ C: [['Яке число є лівою межею області визначення x/√(x − 2)?','2','Корінь у знаменнику має бути додатним.','x − 2 > 0, тому область (2; +∞).'],['Яке число є лівою межею області визначення √(x + 5)?','-5','Підкореневий вираз може дорівнювати нулю.','x + 5 ≥ 0, тому область [−5; +∞).']]
+};
+
+const typeset = element => {
+ const math = window.MathJax;
+ if (math?.typesetPromise) math.typesetPromise([element]).catch(console.error);
+};
+const mathText = tex => '\\(' + tex + '\\)';
+const extra = {
+ A: [
+  [String.raw`f(x)=3x+5,\quad f(-1)=?`,'2','Підстав −1 замість x.','f(-1)=3(-1)+5=2'],
+  [String.raw`f(x)=x^2+2x,\quad f(-1)=?`,'-1','Квадрат −1 дорівнює 1.','f(-1)=1-2=-1'],
+  [String.raw`f(x)=\sqrt{x+2},\quad f(-2)=?`,'0','Спочатку виконай додавання під коренем.',String.raw`f(-2)=\sqrt{0}=0`],
+  [String.raw`f(x)=5-2x,\quad f(3)=?`,'-1','Спочатку виконай множення.','f(3)=5-6=-1']
+ ],
+ B: [
+  [String.raw`y=2x-x^2,\quad x=0.\ \text{Знайди ординату.}`,'0','Підстав 0 у праву частину.','y=2\\cdot0-0^2=0'],
+  [String.raw`f(x)=x^2-7x.\ \text{Знайди ненульовий нуль.}`,'7','Винеси x за дужки.','x(x-7)=0'],
+  [String.raw`f(x)=x^2-25.\ \text{Знайди додатний нуль.}`,'5','Розв’яжи рівняння x² = 25.','x^2=25,\\quad x=5\\ \\text{або}\\ x=-5'],
+  [String.raw`y=3-x^2,\quad x=-2.\ \text{Знайди ординату.}`,'-1','Піднеси до квадрата число в дужках.','y=3-(-2)^2=-1']
+ ],
+ C: [
+  [String.raw`f(x)=\sqrt{2x-8}.\ \text{Знайди ліву межу області визначення.}`,'4','Підкореневий вираз має бути невід’ємним.',String.raw`2x-8\ge0\Rightarrow x\ge4`],
+  [String.raw`f(x)=\frac{1}{\sqrt{x+6}}.\ \text{Знайди ліву межу області визначення.}`,'-6','Корінь у знаменнику не може дорівнювати нулю.',String.raw`x+6>0\Rightarrow x>-6`],
+  [String.raw`f(x)=\frac{3}{x-5}.\ \text{Яке значення виключено?}`,'5','Прирівняй знаменник до нуля.','x-5=0\\Rightarrow x=5'],
+  [String.raw`f(x)=x^2-4|x|.\ \text{Знайди } f(-3).`,'-3','Модуль −3 дорівнює 3.','f(-3)=9-12=-3']
+ ]
+};
+const formatted = [
+ ['f(x)=2x-1.\\quad f(-2)=?', 'f(x)=x^2+4.\\quad f(-2)=?'],
+ ['x^2+4x=0','9x-x^2=0'],
+ [String.raw`\frac{x}{\sqrt{x-2}}`,String.raw`\sqrt{x+5}`]
+];
+Object.keys(exercises).forEach((level,i)=>{
+ exercises[level].forEach((item,j)=>{
+  const lead = ['Знайди значення: ','Знайди ненульовий нуль: ','Знайди ліву межу області визначення: '][i];
+  item[0] = lead + mathText(formatted[i][j]);
+ });
+ exercises[level].push(...extra[level].map(([q,a,h,s])=>[mathText(q),a,h,mathText(s)]));
+});
+const diagnostic = [
+ ['Числа, дроби й проценти', [
+  [String.raw`\frac34-\frac16`,'7/12',['7/12','2/3','2/10'],'Приведи дроби до знаменника 12.'],
+  [String.raw`15\%\text{ від }240`,'36',null,'Помнож 240 на 0,15.'],
+  [String.raw`(-3)^2-2^3`,'1',null,'Спочатку обчисли обидва степені.']
+ ]],
+ ['Вирази та квадратні корені',[
+  [String.raw`\sqrt{81}-\sqrt{16}`,'5',null,'Окремо знайди кожен корінь.'],
+  [String.raw`(a-4)(a+4)`,'a^2-16',['a^2-16','a^2+16','a^2-8a+16'],'Застосуй формулу різниці квадратів.']
+ ]],
+ ['Рівняння та системи',[
+  ['3x-7=8','5',null,'Додай 7 до обох частин, потім поділи на 3.'],
+  ['x^2-5x+6=0','2;3',['2;3','-2;-3','1;6'],'Подумай, які два числа мають суму 5 і добуток 6.'],
+  [String.raw`\begin{cases}x+y=7\\x-y=1\end{cases}\quad\text{Знайди }x.`,'4',null,'Додай рівняння, щоб позбутися y.']
+ ]],
+ ['Нерівності',[
+  ['-2x>6','x<-3',['x<-3','x>-3','x<3'],'При діленні на від’ємне число зміни напрям нерівності.'],
+  ['x^2-9<0','(-3;3)',['(-3;3)','(-∞;-3)∪(3;+∞)','[-3;3]'],'Умова рівносильна |x| < 3.']
+ ]],
+ ['Функції та графіки',[
+  ['f(x)=x^2-3x,\\quad f(-2)=?','10',null,'Підстав −2 у дужках у кожен доданок.'],
+  ['y=x^2-4x+1.\\quad\\text{Знайди абсцису вершини.}','2',null,'Використай формулу −b/(2a).']
+ ]],
+ ['Послідовності, статистика й імовірність',[
+  ['a_1=4,\\quad d=3.\\quad\\text{Знайди }a_5.','16',null,'Від першого до п’ятого члена чотири кроки.'],
+  [String.raw`\text{Знайди середнє чисел } 2,4,9.`,'5',null,'Поділи суму на кількість чисел.'],
+  [String.raw`\text{Яка ймовірність випадання числа більше }4\text{ на кубику?}`,'1/3',['1/3','1/2','2/3'],'Сприятливі результати — 5 і 6 із шести.']
+ ]],
+ ['Геометрія',[
+  [String.raw`\text{Катети } 6\text{ і }8.\quad\text{Знайди гіпотенузу.}`,'10',null,'Знайди квадратний корінь із суми квадратів катетів.'],
+  [String.raw`A(1;2),\ B(5;8).\quad\text{Знайди абсцису середини }AB.`,'3',null,'Знайди середнє арифметичне абсцис.'],
+  [String.raw`\vec a=(2;-1),\ \vec b=(3;4).\quad\text{Знайди }\vec a\cdot\vec b.`,'2',null,'Перемнож відповідні координати й додай добутки.']
+ ]]
+];
+function setupDiagnostic() {
+ let number = 0;
+ const groups = diagnostic.map(([topic, tasks]) => {
+  const fieldset = document.createElement('fieldset');
+  const legend = document.createElement('legend');
+  legend.textContent = topic;
+  fieldset.append(legend);
+  const entries = tasks.map(([question, key, choices, hint]) => {
+   const label = document.createElement('label');
+   label.textContent = (++number) + '. ' + mathText(question);
+   const control = document.createElement(choices ? 'select' : 'input');
+   if (choices) {
+    control.append(new Option('Пропустити',''));
+    choices.forEach(choice => control.append(new Option(choice,choice)));
+   } else {
+    control.type = 'text';
+    control.autocomplete = 'off';
+   }
+   label.append(control);
+   fieldset.append(label);
+   return {control,key,hint,number};
+  });
+  get('diagnostic-items').append(fieldset);
+  return {topic, entries};
+ });
+ get('diagnostic-form').onsubmit = event => {
+  event.preventDefault();
+  const output = get('diagnostic-result');
+  output.replaceChildren();
+  let total = 0, answered = 0;
+  for (const {topic,entries} of groups) {
+   let correct = 0;
+   const review = document.createElement('details');
+   const summary = document.createElement('summary');
+   review.append(summary);
+   for (const {control,key,hint,number} of entries) {
+    const value = normalize(control.value);
+    answered += Number(Boolean(value));
+    if (value === key) {correct++; continue;}
+    const prompt = document.createElement('p');
+    prompt.textContent = number + (value ? '. ' : '. Пропущено. ') + hint;
+    review.append(prompt);
+   }
+   total += correct;
+   summary.textContent = topic + ' — ' + correct + '/' + entries.length + (correct === entries.length ? ' · впевнено на цих завданнях' : correct === 0 ? ' · почати з основ' : ' · варто закріпити');
+   output.append(review);
+  }
+  const headline = document.createElement('h3');
+  headline.textContent = 'Результат: ' + total + '/18 · пропущено ' + (18-answered);
+  output.prepend(headline);
+ };
+}
+setupDiagnostic();
+
+const normalize = text => text.trim().replaceAll('−','-');
+let index = 0;
+const current = () => exercises[get('level').value][index];
+function show() {
+ const prompt = get('prompt');
+ window.MathJax?.typesetClear?.([prompt]);
+ prompt.textContent = current()[0];
+ get('progress').textContent = (index + 1) + ' / ' + exercises[get('level').value].length;
+ typeset(prompt);
+ get('answer').value = '';
+ get('feedback').textContent = '';
+}
+get('level').onchange = () => { index = 0; show(); };
+get('next').onclick = () => { index = (index + 1) % exercises[get('level').value].length; show(); };
+get('hint').onclick = () => get('feedback').textContent = current()[2];
+get('solution').onclick = () => { get('feedback').textContent = current()[3]; typeset(get('feedback')); };
+get('practice').onsubmit = event => {
+ event.preventDefault();
+ get('feedback').textContent = normalize(get('answer').value) === current()[1]
+   ? 'Правильно. Спробуй наступне завдання.'
+   : 'Перевір перший крок. За потреби відкрий підказку.';
+};
+document.querySelectorAll('[data-error]').forEach(button => {
+ button.onclick = () => get('error').textContent = button.dataset.error === '1'
+   ? 'Правильно. Добуток двох від’ємних чисел додатний.'
+   : 'Квадрат числа означає множення числа на себе. Спробуй ще.';
+});
+get('quiz').onsubmit = event => {
+ event.preventDefault();
+ const fields = [...event.currentTarget.querySelectorAll('input,select')];
+ const keys = ['-1','-4','так','(3; +∞)'];
+ const feedback = ['Підстав −1 у дужках і перевір знак у 2·(−1).','Запиши x(x + 4) = 0.','Порівняй 3 − 1² з ординатою точки.','Підкореневий вираз у знаменнику має бути строго додатним.'];
+ const errors = fields.flatMap((field,i) => normalize(field.value) === keys[i] ? [] : [String(i+1) + '. ' + feedback[i]]);
+ get('result').textContent = (4-errors.length) + ' з 4. ' + (errors.join(' ') || 'Усі відповіді правильні.');
+};
+function draw() {
+ const x = Number(get('slider').value);
+ get('position').textContent = 'x = ' + x + ', y = ' + x*x;
+ const g = get('graph').getContext('2d');
+ g.clearRect(0,0,360,230);
+ g.strokeStyle = '#678'; g.beginPath(); g.moveTo(15,195); g.lineTo(345,195); g.moveTo(180,12); g.lineTo(180,215); g.stroke();
+ g.fillStyle = '#183a3a'; g.font = '14px system-ui'; g.fillText('x',346,211); g.fillText('y',188,17); g.fillText('0',165,211);
+ g.strokeStyle = '#156465'; g.lineWidth = 2; g.beginPath();
+ for(let i=-3; i<=3.001; i+=0.05) g.lineTo(180+i*46,195-i*i*19);
+ g.stroke(); g.fillStyle = '#c74133'; g.beginPath(); g.arc(180+x*46,195-x*x*19,6,0,2*Math.PI); g.fill();
+}
+get('slider').oninput = draw;
+get('print').onclick = () => window.print();
+show(); draw();
+</script></html>
